@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>TemanGuruTK — Asisten AI Guru TK/PAUD</title>
+<meta name="theme-color" content="#0B7A75">
+<meta name="description" content="Platform AI untuk membantu guru TK/PAUD menyusun pembelajaran, mengelola administrasi, dan bekerja lebih efisien lewat perintah suara.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+:root{
+  --toska:#0B7A75;
+  --toska-dark:#0A5F5B;
+  --toska-light:#E4F5F3;
+  --orange:#FF7A33;
+  --orange-dark:#E4611D;
+  --cream:#FBF8F2;
+  --ink:#193B39;
+  --ink-soft:#4C6664;
+  --radius:18px;
+  font-size:16px;
+}
+*{-webkit-tap-highlight-color:transparent;}
+body{
+  background:var(--cream);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  padding-bottom:86px;
+  overscroll-behavior-y:none;
+}
+h1,h2,h3,h4,.brand,.nav-label,.btn{font-family:'Baloo 2',sans-serif;}
+.app-shell{max-width:480px;margin:0 auto;min-height:100vh;background:var(--cream);position:relative;box-shadow:0 0 40px rgba(11,95,91,.08);}
+
+/* ===== Topbar ===== */
+.topbar{
+  background:linear-gradient(135deg,var(--toska) 0%,var(--toska-dark) 100%);
+  color:#fff;padding:18px 20px 26px;border-radius:0 0 26px 26px;position:relative;overflow:hidden;
+}
+.topbar::after{
+  content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;
+  background:rgba(255,122,51,.18);
+}
+.topbar::before{
+  content:"";position:absolute;left:-30px;bottom:-60px;width:120px;height:120px;border-radius:50%;
+  background:rgba(255,255,255,.06);
+}
+.brand-row{display:flex;align-items:center;gap:10px;position:relative;z-index:1;}
+.brand{font-weight:700;font-size:1.15rem;letter-spacing:.2px;}
+.brand small{display:block;font-family:'Inter';font-weight:400;font-size:.68rem;opacity:.85;}
+.greet{position:relative;z-index:1;margin-top:14px;font-size:.92rem;opacity:.92;}
+.greet b{font-family:'Baloo 2';font-weight:700;}
+
+/* ===== logo mark ===== */
+.logo-mark{width:40px;height:40px;flex:0 0 auto;}
+
+/* ===== Sections ===== */
+.screen{display:none;padding:16px 16px 8px;animation:fadeIn .25s ease;}
+.screen.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+.section-title{font-weight:700;font-size:1.05rem;margin:6px 0 12px;display:flex;align-items:center;gap:8px;}
+.section-title .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);}
+
+.card-soft{
+  background:#fff;border:1px solid #EAE3D6;border-radius:var(--radius);padding:16px;margin-bottom:14px;
+  box-shadow:0 3px 14px rgba(25,59,57,.04);
+}
+
+/* ===== Voice command bar ===== */
+.voice-bar{
+  background:#fff;border:1.5px solid var(--toska-light);border-radius:22px;padding:10px 12px;
+  display:flex;align-items:center;gap:10px;margin:-30px 16px 16px;position:relative;z-index:2;
+  box-shadow:0 8px 24px rgba(11,95,91,.12);
+}
+.mic-btn{
+  width:46px;height:46px;border-radius:50%;border:none;flex:0 0 auto;
+  background:linear-gradient(135deg,var(--orange),var(--orange-dark));color:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;
+  box-shadow:0 4px 12px rgba(255,122,51,.35);transition:transform .15s;
+}
+.mic-btn:active{transform:scale(.92);}
+.mic-btn.listening{animation:pulse 1.1s infinite;}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,122,51,.5)}70%{box-shadow:0 0 0 14px rgba(255,122,51,0)}100%{box-shadow:0 0 0 0 rgba(255,122,51,0)}}
+.voice-input{border:none;outline:none;flex:1;font-size:.92rem;background:transparent;color:var(--ink);}
+.voice-input::placeholder{color:#9CB3B1;}
+.voice-send{border:none;background:var(--toska);color:#fff;width:38px;height:38px;border-radius:50%;flex:0 0 auto;font-size:.9rem;}
+
+/* ===== Quick actions ===== */
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+.quick-item{background:#fff;border:1px solid #EAE3D6;border-radius:16px;padding:12px 4px;text-align:center;font-size:.72rem;color:var(--ink-soft);font-weight:600;cursor:pointer;transition:.15s;}
+.quick-item:active{transform:scale(.95);background:var(--toska-light);}
+.quick-icon{font-size:1.35rem;display:block;margin-bottom:4px;}
+
+/* ===== stat pills ===== */
+.stat-row{display:flex;gap:10px;margin-bottom:16px;}
+.stat-pill{flex:1;background:#fff;border-radius:16px;padding:12px;border:1px solid #EAE3D6;}
+.stat-pill .num{font-family:'Baloo 2';font-weight:800;font-size:1.3rem;color:var(--toska-dark);}
+.stat-pill .lbl{font-size:.68rem;color:var(--ink-soft);font-weight:600;}
+
+/* ===== chips ===== */
+.chip{display:inline-block;background:var(--toska-light);color:var(--toska-dark);font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:20px;margin:2px 4px 2px 0;}
+.chip.orange{background:#FFEADD;color:var(--orange-dark);}
+
+/* ===== buttons ===== */
+.btn-toska{background:var(--toska);border:none;color:#fff;font-weight:600;border-radius:12px;padding:10px 18px;}
+.btn-toska:hover{background:var(--toska-dark);color:#fff;}
+.btn-orange{background:var(--orange);border:none;color:#fff;font-weight:600;border-radius:12px;padding:10px 18px;}
+.btn-orange:hover{background:var(--orange-dark);color:#fff;}
+.btn-outline-toska{border:1.5px solid var(--toska);color:var(--toska-dark);background:#fff;font-weight:600;border-radius:12px;}
+.btn-outline-toska:hover{background:var(--toska-light);}
+
+/* ===== worksheet preview ===== */
+.ws-preview{background:#fff;border:2px dashed #CFE3E1;border-radius:16px;padding:14px;text-align:center;position:relative;}
+.ws-preview svg{max-width:100%;height:auto;}
+.watermark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+.watermark span{transform:rotate(-22deg);font-size:1.4rem;color:rgba(11,122,117,.16);font-weight:800;letter-spacing:2px;}
+
+/* ===== bottom nav ===== */
+.bottom-nav{
+  position:fixed;left:50%;transform:translateX(-50%);bottom:0;max-width:480px;width:100%;
+  background:#fff;border-top:1px solid #EAE3D6;display:flex;justify-content:space-around;
+  padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:50;
+}
+.nav-item{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;color:#9CB3B1;font-size:1.05rem;padding:4px 8px;flex:1;}
+.nav-item .nav-label{font-size:.62rem;font-weight:600;}
+.nav-item.active{color:var(--toska);}
+.nav-item.active .nav-label{color:var(--toska-dark);}
+
+/* ===== list items ===== */
+.child-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #F0EBE0;}
+.child-item:last-child{border-bottom:none;}
+.avatar{width:42px;height:42px;border-radius:50%;background:var(--toska-light);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--toska-dark);flex:0 0 auto;}
+
+/* ===== reminder item ===== */
+.reminder-item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #EAE3D6;border-radius:14px;padding:10px 12px;margin-bottom:8px;}
+.reminder-time{background:var(--toska);color:#fff;border-radius:10px;padding:6px 10px;font-weight:700;font-size:.8rem;font-family:'Baloo 2';min-width:56px;text-align:center;}
+
+/* ===== market card ===== */
+.market-card{background:#fff;border:1px solid #EAE3D6;border-radius:16px;overflow:hidden;margin-bottom:12px;}
+.market-thumb{height:100px;background:linear-gradient(135deg,var(--toska-light),#fff);display:flex;align-items:center;justify-content:center;font-size:2.1rem;}
+.market-body{padding:10px 12px;}
+.price{color:var(--orange-dark);font-weight:700;font-family:'Baloo 2';}
+
+/* premium banner */
+.premium-banner{
+  background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 100%);
+  border-radius:18px;padding:16px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden;
+}
+.premium-banner::after{content:"";position:absolute;right:-20px;bottom:-30px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.12);}
+
+.toast-mini{
+  position:fixed;left:50%;top:16px;transform:translateX(-50%);background:var(--ink);color:#fff;
+  padding:10px 18px;border-radius:30px;font-size:.82rem;z-index:200;opacity:0;transition:.3s;pointer-events:none;
+}
+.toast-mini.show{opacity:1;top:24px;}
+
+.form-control,.form-select{border-radius:12px;border-color:#DCE7E5;font-size:.9rem;}
+.form-control:focus,.form-select:focus{border-color:var(--toska);box-shadow:0 0 0 3px rgba(11,122,117,.12);}
+label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
+
+.install-strip{background:var(--toska-light);border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:.8rem;color:var(--toska-dark);}
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ===== TOPBAR ===== -->
+  <div class="topbar">
+    <div class="brand-row">
+      <svg class="logo-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M20 6 L44 6 L48 14 L16 14 Z" fill="#FF7A33"/>
+        <rect x="14" y="14" width="36" height="4" rx="2" fill="#FF7A33"/>
+        <circle cx="32" cy="34" r="15" fill="#fff" opacity=".14"/>
+        <path d="M32 20c-7.7 0-14 6.3-14 14 0 5.6 3.3 10.4 8 12.6V50h12v-3.4c4.7-2.2 8-7 8-12.6 0-7.7-6.3-14-14-14z" fill="#fff"/>
+        <rect x="27" y="50" width="10" height="4" rx="2" fill="#FF7A33"/>
+        <rect x="28.5" y="55" width="7" height="3" rx="1.5" fill="#FF7A33"/>
+        <path d="M32 6 L32 0M18 12 L13 8M46 12 L51 8" stroke="#FF7A33" stroke-width="2.4" stroke-linecap="round"/>
+      </svg>
+      <div>
+        <div class="brand">TemanGuruTK<small>Asisten AI untuk Guru TK & PAUD</small></div>
+      </div>
+      <div class="ms-auto position-relative">
+        <button class="btn btn-sm text-white p-1" onclick="showToast('Belum ada notifikasi baru')" style="font-size:1.15rem;line-height:1;">🔔</button>
+      </div>
+    </div>
+    <div class="greet">Selamat datang kembali, <b id="teacherName">Bu Guru</b> 👋</div>
+  </div>
+
+  <!-- ===== VOICE BAR (always visible, floats over topbar) ===== -->
+  <div class="voice-bar">
+    <button class="mic-btn" id="micBtn" title="Tekan dan ucapkan perintah">🎤</button>
+    <input type="text" class="voice-input" id="voiceInput" placeholder='Coba: "Buat aktivitas tema binatang, 20 menit"'>
+    <button class="voice-send" id="voiceSend">➤</button>
+  </div>
+
+  <!-- ===== INSTALL STRIP ===== -->
+  <div class="px-3">
+    <div class="install-strip" id="installStrip" style="display:none;">
+      📲 <div class="flex-grow-1">Install TemanGuruTK ke layar utama untuk akses offline.</div>
+      <button class="btn btn-sm btn-toska" id="installBtn">Install</button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SCREEN: DASHBOARD -->
+  <!-- ============================================================ -->
+  <div class="screen active" id="screen-dashboard">
+    <div class="stat-row">
+      <div class="stat-pill"><div class="num" id="statPlans">0</div><div class="lbl">Rencana dibuat</div></div>
+      <div class="stat-pill"><div class="num" id="statWs">0/1</div><div class="lbl">Worksheet hari ini</div></div>
+      <div class="stat-pill"><div class="num" id="statChildren">0</div><div class="lbl">Anak tercatat</div></div>
+    </div>
+
+    <div class="section-title"><span class="dot"></span>Menu Cepat</div>
+    <div class="quick-grid">
+      <div class="quick-item" onclick="goTo('planning')"><span class="quick-icon">🗓️</span>Perencanaan</div>
+      <div class="quick-item" onclick="goTo('worksheet')"><span class="quick-icon">🎨</span>Worksheet</div>
+      <div class="quick-item" onclick="goTo('children')"><span class="quick-icon">📝</span>Catatan Anak</div>
+      <div class="quick-item" onclick="goTo('reminder')"><span class="quick-icon">⏰</span>Pengingat</div>
+    </div>
+
+    <div class="premium-banner">
+      <div class="d-flex justify-content-between align-items-start position-relative">
+        <div>
+          <div style="font-family:'Baloo 2';font-weight:700;">Upgrade ke Premium</div>
+          <div style="font-size:.8rem;opacity:.95;max-width:220px;">Worksheet unlimited, kualitas HD, tanpa watermark — Rp20.000/bulan.</div>
+        </div>
+        <div style="font-size:2rem;">⭐</div>
+      </div>
+      <button class="btn btn-light btn-sm mt-2 fw-bold" style="border-radius:10px;color:var(--orange-dark);" onclick="goTo('premium')">Lihat Paket</button>
+    </div>
+
+    <div class="section-title"><span class="dot"></span>Pengingat Terdekat</div>
+    <div id="dashReminderList"></div>
+
+    <div class="section-title"><span class="dot"></span>Aktivitas Terbaru</div>
+    <div id="recentPlans"><p class="text-muted small">Belum ada rencana. Coba ucapkan perintah di atas ✨</p></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SCREEN: SMART PLANNING -->
+  <!-- ============================================================ -->
+  <div class="screen" id="screen-planning">
+    <div class="section-title"><span class="dot"></span>Perencanaan Cerdas</div>
+    <div class="card-soft">
+      <p class="small text-muted mb-2">Buat rencana lewat suara/teks, atau isi form manual.</p>
+      <div class="row g-2">
+        <div class="col-7">
+          <label class="form-label">Tema</label>
+          <input type="text" class="form-control form-control-sm" id="planTema" placeholder="cth: Binatang">
+        </div>
+        <div class="col-5">
+          <label class="form-label">Durasi (menit)</label>
+          <input type="number" class="form-control form-control-sm" id="planDurasi" placeholder="20" min="15" max="60">
+        </div>
+        <div class="col-12">
+          <label class="form-label">Jenis Rencana</label>
+          <select class="form-select form-select-sm" id="planJenis">
+            <option value="harian">Aktivitas Harian</option>
+            <option value="mingguan">Rencana Mingguan (5 hari)</option>
+            <option value="semester">Rencana Per Semester</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-orange w-100 mt-3" onclick="generatePlanFromForm()">✨ Buatkan dengan AI</button>
+    </div>
+
+    <div id="planResultWrap"></div>
+
+    <div class="section-title"><span class="dot"></span>Riwayat Rencana</div>
+    <div id="planHistory"></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SCREEN: WORKSHEET -->
+  <!-- ============================================================ -->
+  <div class="screen" id="screen-worksheet">
+    <div class="section-title"><span class="dot"></span>Media & Lembar Kerja</div>
+    <div class="card-soft">
+      <div class="row g-2 mb-2">
+        <div class="col-6">
+          <label class="form-label">Jenis Worksheet</label>
+          <select class="form-select form-select-sm" id="wsType">
+            <option value="mewarnai">Mewarnai</option>
+            <option value="tracing">Tracing</option>
+            <option value="berhitung">Berhitung</option>
+            <option value="flashcard">Flashcard</option>
+          </select>
+        </div>
+        <div class="col-6">
+          <label class="form-label">Tema</label>
+          <input type="text" class="form-control form-control-sm" id="wsTema" placeholder="cth: Buah-buahan">
+        </div>
+      </div>
+      <button class="btn btn-orange w-100" onclick="generateWorksheet()">🎨 Generate Worksheet</button>
+      <div class="form-text mt-2" id="wsQuotaText"></div>
+    </div>
+
+    <div id="wsResultWrap"></div>
+
+    <div class="section-title"><span class="dot"></span>Marketplace Template Lokal</div>
+    <p class="small text-muted">Beli template siap pakai dari sesama guru & creator lokal, atau jual template kamu sendiri (komisi platform 15%).</p>
+    <button class="btn btn-outline-toska btn-sm w-100 mb-2" onclick="goTo('marketplace')">Buka Marketplace →</button>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SCREEN: CHILDREN / NOTES -->
+  <!-- ============================================================ -->
+  <div class="screen" id="screen-children">
+    <div class="section-title"><span class="dot"></span>Data & Catatan Anak</div>
+    <div class="card-soft">
+      <div class="row g-2">
+        <div class="col-7">
+          <label class="form-label">Nama Anak</label>
+          <input type="text" class="form-control form-control-sm" id="childName" placeholder="Nama lengkap">
+        </div>
+        <div class="col-5">
+          <label class="form-label">Usia</label>
+          <input type="text" class="form-control form-control-sm" id="childAge" placeholder="cth: 5 th">
+        </div>
+      </div>
+      <button class="btn btn-toska w-100 mt-3" onclick="addChild()">+ Tambah Anak</button>
+    </div>
+
+    <div class="card-soft" id="childListWrap">
+      <div class="fw-semibold small mb-1">Daftar Anak</div>
+      <div id="childList"><p class="text-muted small mb-0">Belum ada data anak.</p></div>
+    </div>
+
+    <div class="section-title"><span class="dot"></span>Buat Catatan Perkembangan Otomatis</div>
+    <div class="card-soft">
+      <label class="form-label">Pilih Anak</label>
+      <select class="form-select form-select-sm mb-2" id="noteChildSelect"></select>
+      <label class="form-label">Aspek Perkembangan</label>
+      <div class="mb-2">
+        <span class="chip" onclick="toggleAspect(this,'motorik')" data-aspect="motorik">Motorik</span>
+        <span class="chip" onclick="toggleAspect(this,'sosial')" data-aspect="sosial">Sosial</span>
+        <span class="chip orange" onclick="toggleAspect(this,'komunikasi')" data-aspect="komunikasi">Komunikasi</span>
+      </div>
+      <button class="btn btn-orange w-100" onclick="generateChildNote()">📝 Buat Catatan Otomatis</button>
+    </div>
+    <div id="noteResultWrap"></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SCREEN: REMINDER -->
+  <!-- ============================================================ -->
+  <div class="screen" id="screen-reminder">
+    <div class="section-title"><span class="dot"></span>Smart Reminder</div>
+    <div class="card-soft">
+      <div class="row g-2">
+        <div class="col-7">
+          <label class="form-label">Judul</label>
+          <input type="text" class="form-control form-control-sm" id="remTitle" placeholder="cth: Kelas Kelompok A">
+        </div>
+        <div class="col-5">
+          <label class="form-label">Jam</label>
+          <input type="time" class="form-control form-control-sm" id="remTime">
+        </div>
+      </div>
+      <button class="btn btn-toska w-100 mt-3" onclick="addReminder()">⏰ Tambah Pengingat</button>
+      <div class="form-text mt-1">Notifikasi otomatis muncul 5 menit sebelum jadwal (izinkan notifikasi browser).</div>
+    </div>
+    <div id="reminderList"></div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SCREEN: MARKETPLACE -->
+  <!-- ============================================================ -->
+  <div class="screen" id="screen-marketplace">
+    <div class="section-title"><span class="dot"></span>Marketplace Template</div>
+    <p class="small text-muted">Template dari creator lokal Solo Raya. Komisi platform 15% otomatis terpotong saat penjualan.</p>
+    <div id="marketGrid"></div>
+    <div class="card-soft">
+      <div class="fw-semibold small mb-2">Jual Template Kamu</div>
+      <input type="text" class="form-control form-control-sm mb-2" id="marketTitle" placeholder="Judul template">
+      <input type="number" class="form-control form-control-sm mb-2" id="marketPrice" placeholder="Harga (Rp)">
+      <button class="btn btn-outline-toska w-100" onclick="addMarketTemplate()">+ Upload Template</button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- SCREEN: PREMIUM / PROFILE -->
+  <!-- ============================================================ -->
+  <div class="screen" id="screen-premium">
+    <div class="section-title"><span class="dot"></span>Paket & Profil</div>
+    <div class="card-soft d-flex align-items-center gap-3">
+      <div class="avatar" style="width:52px;height:52px;font-size:1.2rem;">👩‍🏫</div>
+      <div class="flex-grow-1">
+        <input type="text" class="form-control form-control-sm mb-1" id="teacherNameInput" placeholder="Nama guru">
+        <div class="small text-muted">Status: <span id="premiumStatus" class="fw-semibold">Gratis</span></div>
+      </div>
+      <button class="btn btn-sm btn-toska" onclick="saveTeacherName()">Simpan</button>
+    </div>
+
+    <div class="card-soft">
+      <div class="fw-semibold mb-2">🆓 Paket Gratis</div>
+      <ul class="small text-muted ps-3 mb-2">
+        <li>1 worksheet/hari dengan watermark</li>
+        <li>Perencanaan cerdas via suara tanpa batas</li>
+        <li>Catatan & pengingat dasar</li>
+      </ul>
+    </div>
+
+    <div class="premium-banner">
+      <div style="font-family:'Baloo 2';font-weight:700;">⭐ Premium — Rp20.000/bulan</div>
+      <ul class="small ps-3 mb-2 mt-2" style="opacity:.95;">
+        <li>Worksheet unlimited & kualitas HD</li>
+        <li>Tanpa watermark</li>
+        <li>Prioritas pemrosesan suara AI</li>
+      </ul>
+      <button class="btn btn-light btn-sm fw-bold" style="border-radius:10px;color:var(--orange-dark);" onclick="upgradePremium()">Upgrade Sekarang</button>
+    </div>
+
+    <div class="card-soft">
+      <div class="fw-semibold mb-1">🏫 Paket Institusi Sekolah</div>
+      <p class="small text-muted mb-2">Rp300.000/tahun untuk minimal 5 guru — cocok untuk TK/PAUD satu yayasan.</p>
+      <button class="btn btn-outline-toska btn-sm w-100" onclick="showToast('Permintaan penawaran institusi terkirim, tim kami akan menghubungi.')">Ajukan Paket Institusi</button>
+    </div>
+
+    <div class="card-soft">
+      <div class="fw-semibold mb-1">Data & Sinkronisasi</div>
+      <p class="small text-muted mb-2">Data anak & laporan tersinkron ke cloud saat online. Mode offline tetap menyimpan sementara di perangkat.</p>
+      <div class="d-flex justify-content-between small">
+        <span class="text-muted">Status koneksi</span>
+        <span id="connStatus" class="fw-semibold">🟢 Online</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app-shell -->
+
+<!-- ===== BOTTOM NAV ===== -->
+<div class="bottom-nav">
+  <button class="nav-item active" data-target="dashboard" onclick="goTo('dashboard')"><span>🏠</span><span class="nav-label">Beranda</span></button>
+  <button class="nav-item" data-target="planning" onclick="goTo('planning')"><span>🗓️</span><span class="nav-label">Rencana</span></button>
+  <button class="nav-item" data-target="worksheet" onclick="goTo('worksheet')"><span>🎨</span><span class="nav-label">Worksheet</span></button>
+  <button class="nav-item" data-target="children" onclick="goTo('children')"><span>📝</span><span class="nav-label">Anak</span></button>
+  <button class="nav-item" data-target="premium" onclick="goTo('premium')"><span>👤</span><span class="nav-label">Profil</span></button>
+</div>
+
+<div class="toast-mini" id="toastMini"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+/* ===========================================================
+   TEMANGURUTK — inline "AI"-assisted PWA logic
+   Rule-based NLP parser mensimulasikan pemrosesan bahasa alami
+   untuk perintah suara guru TK/PAUD.
+=========================================================== */
+
+const DB_KEY = 'tgtk_db_v1';
+let db = JSON.parse(localStorage.getItem(DB_KEY) || 'null') || {
+  teacherName: 'Bu Guru',
+  premium: false,
+  plans: [],
+  worksheets: [],
+  wsCountToday: 0,
+  wsCountDate: new Date().toDateString(),
+  children: [],
+  reminders: [],
+  marketTemplates: [
+    {title:'Paket Mewarnai Hewan Ternak', price:8000, author:'Bu Sri, TK Solo', icon:'🐄'},
+    {title:'Flashcard Angka 1-20', price:5000, author:'Bu Yuni, PAUD Karanganyar', icon:'🔢'},
+    {title:'Tracing Huruf Hijaiyah', price:10000, author:'Bu Dewi, TKIT Sukoharjo', icon:'📖'},
+  ]
+};
+function save(){ localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+
+// reset daily worksheet quota
+if(db.wsCountDate !== new Date().toDateString()){
+  db.wsCountDate = new Date().toDateString();
+  db.wsCountToday = 0;
+  save();
+}
+
+let selectedAspects = new Set();
+
+/* ---------- Navigation ---------- */
+function goTo(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.target===name));
+  if(name==='children') renderChildSelect();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showToast(msg){
+  const t = document.getElementById('toastMini');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+/* ---------- Simulated NLP command parser ---------- */
+function parseCommand(text){
+  text = text.trim();
+  const lower = text.toLowerCase();
+  const durasiMatch = lower.match(/(\d{1,3})\s*menit/);
+  const durasi = durasiMatch ? parseInt(durasiMatch[1]) : null;
+
+  let tema = null;
+  const temaMatch = lower.match(/tema\s+([a-zA-Zà-ÿ\s]+?)(?:,|\.|$| \d)/);
+  if(temaMatch) tema = temaMatch[1].trim();
+
+  if(/worksheet|lembar kerja|mewarnai|tracing|berhitung|flashcard/.test(lower)){
+    let jenis = 'mewarnai';
+    if(/tracing/.test(lower)) jenis='tracing';
+    else if(/berhitung|hitung/.test(lower)) jenis='berhitung';
+    else if(/flashcard/.test(lower)) jenis='flashcard';
+    else if(/mewarnai/.test(lower)) jenis='mewarnai';
+    return {intent:'worksheet', jenis, tema: tema || extractLastNoun(lower)};
+  }
+  if(/perkembangan|laporan anak|catatan anak/.test(lower)){
+    return {intent:'note'};
+  }
+  if(/ingatkan|pengingat|reminder|jam/.test(lower) && /\d{1,2}([:.]\d{2})?/.test(lower)){
+    const jamMatch = lower.match(/(\d{1,2})[:.](\d{2})/);
+    return {intent:'reminder', time: jamMatch ? `${jamMatch[1].padStart(2,'0')}:${jamMatch[2]}` : null, title: text};
+  }
+  // default: rencana pembelajaran
+  return {intent:'plan', tema: tema || extractLastNoun(lower), durasi: durasi || 30, jenis:'harian'};
+}
+function extractLastNoun(lower){
+  const words = lower.replace(/[^a-z\s]/g,'').split(/\s+/).filter(Boolean);
+  const stop = new Set(['buat','buatkan','tolong','aktivitas','rencana','tema','menit','untuk','dong','ya','mingguan','semester','worksheet','lembar','kerja']);
+  const filtered = words.filter(w=>!stop.has(w));
+  return filtered.length ? filtered[filtered.length-1] : 'umum';
+}
+
+function handleVoiceCommand(text){
+  if(!text) return;
+  const cmd = parseCommand(text);
+  showToast('Memproses perintah AI...');
+  setTimeout(()=>{
+    if(cmd.intent==='plan'){
+      goTo('planning');
+      document.getElementById('planTema').value = capitalize(cmd.tema);
+      document.getElementById('planDurasi').value = cmd.durasi;
+      generatePlanFromForm();
+    } else if(cmd.intent==='worksheet'){
+      goTo('worksheet');
+      document.getElementById('wsType').value = cmd.jenis;
+      document.getElementById('wsTema').value = capitalize(cmd.tema);
+      generateWorksheet();
+    } else if(cmd.intent==='note'){
+      goTo('children');
+      showToast('Pilih anak untuk membuat catatan perkembangan');
+    } else if(cmd.intent==='reminder'){
+      goTo('reminder');
+      if(cmd.time) document.getElementById('remTime').value = cmd.time;
+      document.getElementById('remTitle').value = cmd.title;
+      showToast('Lengkapi & simpan pengingat');
+    }
+  }, 500);
+}
+function capitalize(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
+
+/* ---------- Voice input wiring ---------- */
+const voiceInput = document.getElementById('voiceInput');
+const voiceSend = document.getElementById('voiceSend');
+const micBtn = document.getElementById('micBtn');
+voiceSend.addEventListener('click', ()=>{ handleVoiceCommand(voiceInput.value); voiceInput.value=''; });
+voiceInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ handleVoiceCommand(voiceInput.value); voiceInput.value=''; }});
+
+let recognition = null;
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+if(SR){
+  recognition = new SR();
+  recognition.lang = 'id-ID';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+  recognition.onresult = (e)=>{
+    const text = e.results[0][0].transcript;
+    voiceInput.value = text;
+    handleVoiceCommand(text);
+  };
+  recognition.onend = ()=> micBtn.classList.remove('listening');
+  recognition.onerror = ()=>{ micBtn.classList.remove('listening'); showToast('Tidak dapat menangkap suara, coba lagi'); };
+}
+micBtn.addEventListener('click', ()=>{
+  if(!recognition){ showToast('Perintah suara tidak didukung di perangkat ini, gunakan teks'); return; }
+  micBtn.classList.add('listening');
+  showToast('Mendengarkan... silakan bicara');
+  try{ recognition.start(); }catch(e){}
+});
+
+/* ===========================================================
+   SMART PLANNING
+=========================================================== */
+const TEMA_BANK = {
+  binatang:{emoji:'🐘', kosakata:['gajah','kucing','ayam','ikan'], gerak:'menirukan gerakan hewan berjalan'},
+  buah:{emoji:'🍎', kosakata:['apel','pisang','jeruk','mangga'], gerak:'mengelompokkan buah berdasarkan warna'},
+  keluarga:{emoji:'👨‍👩‍👧', kosakata:['ayah','ibu','kakak','adik'], gerak:'bermain peran anggota keluarga'},
+  kendaraan:{emoji:'🚗', kosakata:['mobil','sepeda','kereta','pesawat'], gerak:'menirukan suara & gerak kendaraan'},
+  cuaca:{emoji:'🌦️', kosakata:['hujan','panas','angin','mendung'], gerak:'gerak dan lagu sesuai cuaca'},
+  tanaman:{emoji:'🌱', kosakata:['akar','batang','daun','bunga'], gerak:'menanam biji dalam pot kecil'},
+};
+function getTemaData(tema){
+  const key = Object.keys(TEMA_BANK).find(k=> tema.toLowerCase().includes(k));
+  return TEMA_BANK[key] || {emoji:'✨', kosakata:[tema,'warna','bentuk','angka'], gerak:'eksplorasi bebas sesuai tema'};
+}
+
+function generatePlanFromForm(){
+  const tema = document.getElementById('planTema').value.trim() || 'Umum';
+  const durasi = parseInt(document.getElementById('planDurasi').value) || 30;
+  const jenis = document.getElementById('planJenis').value;
+  const plan = buildPlan(tema, durasi, jenis);
+  db.plans.unshift(plan);
+  save();
+  renderPlanResult(plan);
+  renderPlanHistory();
+  renderDashboard();
+  showToast('Rencana berhasil dibuat AI ✨');
+}
+
+function buildPlan(tema, durasi, jenis){
+  const t = getTemaData(tema);
+  const id = 'plan_'+Date.now();
+  if(jenis==='harian'){
+    const seg1 = Math.round(durasi*0.2), seg3 = Math.round(durasi*0.2), seg2 = durasi-seg1-seg3;
+    return {id, jenis, tema, durasi, created: new Date().toISOString(), steps:[
+      {t:seg1, label:'Pembukaan', desc:`Salam, doa, dan bernyanyi bertema ${tema}.`},
+      {t:seg2, label:'Inti', desc:`${capitalize(t.gerak)}. Mengenal kosakata: ${t.kosakata.join(', ')}.`},
+      {t:seg3, label:'Penutup', desc:`Recall kegiatan, evaluasi sederhana, dan doa penutup.`},
+    ]};
+  }
+  if(jenis==='mingguan'){
+    const hari = ['Senin','Selasa','Rabu','Kamis','Jumat'];
+    const fokus = ['Mengenal '+tema,'Motorik halus: mewarnai '+tema,'Bercerita tentang '+tema,'Berhitung objek '+tema,'Proyek karya '+tema];
+    return {id, jenis, tema, durasi, created:new Date().toISOString(), steps: hari.map((h,i)=>({t:durasi,label:h,desc:fokus[i]}))};
+  }
+  // semester
+  const bulan = ['Bulan 1','Bulan 2','Bulan 3','Bulan 4','Bulan 5','Bulan 6'];
+  const fokusSem = ['Pengenalan tema '+tema,'Eksplorasi sensorik '+tema,'Kognitif & berhitung '+tema,'Bahasa & bercerita '+tema,'Sosial-emosional lewat '+tema,'Proyek puncak tema '+tema];
+  return {id, jenis, tema, durasi, created:new Date().toISOString(), steps: bulan.map((b,i)=>({t:'-',label:b,desc:fokusSem[i]}))};
+}
+
+function renderPlanResult(plan){
+  const wrap = document.getElementById('planResultWrap');
+  wrap.innerHTML = `
+    <div class="card-soft">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="fw-bold">${getTemaData(plan.tema).emoji} Tema: ${capitalize(plan.tema)}</div>
+        <span class="chip">${plan.jenis==='harian'?'Harian':plan.jenis==='mingguan'?'Mingguan':'Semester'}</span>
+      </div>
+      ${plan.steps.map(s=>`
+        <div class="d-flex gap-2 mb-2">
+          <div class="chip orange" style="min-width:60px;text-align:center;">${s.t!=='-'?s.t+' mnt':'—'}</div>
+          <div class="small"><b>${s.label}</b><br><span class="text-muted">${s.desc}</span></div>
+        </div>`).join('')}
+      <button class="btn btn-outline-toska btn-sm w-100 mt-1" onclick="showToast('Rencana disimpan & siap dicetak')">📄 Simpan sebagai PDF</button>
+    </div>`;
+}
+
+function renderPlanHistory(){
+  const wrap = document.getElementById('planHistory');
+  if(!db.plans.length){ wrap.innerHTML = '<p class="text-muted small">Belum ada riwayat.</p>'; return; }
+  wrap.innerHTML = db.plans.slice(0,6).map(p=>`
+    <div class="card-soft py-2 px-3 d-flex justify-content-between align-items-center">
+      <div class="small"><b>${capitalize(p.tema)}</b> · ${p.jenis} <br><span class="text-muted">${new Date(p.created).toLocaleDateString('id-ID')}</span></div>
+      <button class="btn btn-sm btn-outline-toska" onclick='renderPlanResult(${JSON.stringify(p)})'>Lihat</button>
+    </div>`).join('');
+}
+
+/* ===========================================================
+   WORKSHEET GENERATOR (SVG based)
+=========================================================== */
+function generateWorksheet(){
+  const jenis = document.getElementById('wsType').value;
+  const tema = document.getElementById('wsTema').value.trim() || 'umum';
+
+  if(!db.premium && db.wsCountToday >= 1){
+    document.getElementById('wsResultWrap').innerHTML = `
+      <div class="card-soft text-center">
+        <div style="font-size:2rem;">🔒</div>
+        <div class="fw-bold mb-1">Kuota gratis harian habis</div>
+        <p class="small text-muted">Kamu sudah membuat 1 worksheet gratis hari ini. Upgrade Premium untuk worksheet unlimited & HD tanpa watermark.</p>
+        <button class="btn btn-orange w-100" onclick="goTo('premium')">Upgrade Premium — Rp20.000/bln</button>
+      </div>`;
+    return;
+  }
+
+  const svg = buildWorksheetSVG(jenis, tema);
+  db.wsCountToday++;
+  db.worksheets.unshift({jenis, tema, created:new Date().toISOString()});
+  save();
+  renderWsQuota();
+  renderDashboard();
+
+  document.getElementById('wsResultWrap').innerHTML = `
+    <div class="card-soft">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="fw-bold">${capitalize(jenis)} · ${capitalize(tema)}</div>
+        ${!db.premium ? '<span class="chip orange">Gratis</span>' : '<span class="chip">HD Premium</span>'}
+      </div>
+      <div class="ws-preview">
+        ${svg}
+        ${!db.premium ? '<div class="watermark"><span>TEMANGURUTK</span></div>' : ''}
+      </div>
+      <div class="d-flex gap-2 mt-2">
+        <button class="btn btn-outline-toska btn-sm flex-fill" onclick="showToast('Worksheet diunduh ke perangkat')">⬇️ Unduh</button>
+        <button class="btn btn-toska btn-sm flex-fill" onclick="showToast('Tersimpan di Riwayat Worksheet')">💾 Simpan</button>
+      </div>
+    </div>`;
+  showToast('Worksheet berhasil dibuat AI 🎨');
+}
+
+function renderWsQuota(){
+  const el = document.getElementById('wsQuotaText');
+  el.textContent = db.premium ? 'Status: Premium — worksheet unlimited & HD.' : `Kuota gratis hari ini: ${Math.max(0,1-db.wsCountToday)}/1`;
+}
+
+function buildWorksheetSVG(jenis, tema){
+  const t = getTemaData(tema);
+  if(jenis==='mewarnai'){
+    return `<svg viewBox="0 0 240 160" width="100%">
+      <rect width="240" height="160" fill="#fff"/>
+      <text x="120" y="22" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#0B7A75">Mewarnai: ${capitalize(tema)}</text>
+      <circle cx="70" cy="90" r="34" fill="none" stroke="#193B39" stroke-width="2.5"/>
+      <path d="M120 60 L155 60 L155 120 L120 120 Z" fill="none" stroke="#193B39" stroke-width="2.5"/>
+      <polygon points="190,60 210,120 170,120" fill="none" stroke="#193B39" stroke-width="2.5"/>
+      <text x="70" y="140" text-anchor="middle" font-size="26">${t.emoji}</text>
+    </svg>`;
+  }
+  if(jenis==='tracing'){
+    const huruf = tema.charAt(0).toUpperCase() || 'A';
+    return `<svg viewBox="0 0 240 160" width="100%">
+      <rect width="240" height="160" fill="#fff"/>
+      <text x="120" y="22" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#0B7A75">Tracing: ${capitalize(tema)}</text>
+      <text x="35" y="115" font-size="90" font-family="'Baloo 2',sans-serif" fill="none" stroke="#193B39" stroke-width="2" stroke-dasharray="6,5">${huruf}</text>
+      <text x="140" y="115" font-size="90" font-family="'Baloo 2',sans-serif" fill="none" stroke="#193B39" stroke-width="2" stroke-dasharray="6,5">${huruf.toLowerCase()}</text>
+    </svg>`;
+  }
+  if(jenis==='berhitung'){
+    let items='';
+    for(let i=0;i<5;i++) items += `<text x="${30+i*40}" y="90" font-size="26">${t.emoji}</text>`;
+    return `<svg viewBox="0 0 240 160" width="100%">
+      <rect width="240" height="160" fill="#fff"/>
+      <text x="120" y="22" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#0B7A75">Berhitung: ${capitalize(tema)}</text>
+      ${items}
+      <text x="120" y="135" text-anchor="middle" font-size="13" fill="#4C6664">Hitung jumlah gambar, tulis angkanya di kotak</text>
+      <rect x="105" y="140" width="30" height="16" rx="4" fill="none" stroke="#FF7A33" stroke-width="2"/>
+    </svg>`;
+  }
+  // flashcard
+  const kata = t.kosakata[0] || tema;
+  return `<svg viewBox="0 0 240 160" width="100%">
+    <rect width="240" height="160" fill="#fff"/>
+    <rect x="20" y="14" width="200" height="132" rx="14" fill="#E4F5F3" stroke="#0B7A75" stroke-width="2"/>
+    <text x="120" y="80" text-anchor="middle" font-size="48">${t.emoji}</text>
+    <text x="120" y="120" text-anchor="middle" font-size="16" font-family="'Baloo 2',sans-serif" fill="#0B7A75">${capitalize(kata)}</text>
+  </svg>`;
+}
+
+/* ===========================================================
+   CHILDREN & NOTES
+=========================================================== */
+function addChild(){
+  const name = document.getElementById('childName').value.trim();
+  const age = document.getElementById('childAge').value.trim();
+  if(!name){ showToast('Isi nama anak terlebih dahulu'); return; }
+  db.children.unshift({id:'c_'+Date.now(), name, age});
+  save();
+  document.getElementById('childName').value='';
+  document.getElementById('childAge').value='';
+  renderChildList(); renderChildSelect(); renderDashboard();
+  showToast('Data anak ditambahkan');
+}
+function renderChildList(){
+  const wrap = document.getElementById('childList');
+  if(!db.children.length){ wrap.innerHTML='<p class="text-muted small mb-0">Belum ada data anak.</p>'; return; }
+  wrap.innerHTML = db.children.map(c=>`
+    <div class="child-item">
+      <div class="avatar">${c.name.charAt(0).toUpperCase()}</div>
+      <div class="flex-grow-1"><div class="fw-semibold small">${c.name}</div><div class="text-muted" style="font-size:.72rem;">${c.age||'-'}</div></div>
+      <button class="btn btn-sm text-danger" onclick="removeChild('${c.id}')">✕</button>
+    </div>`).join('');
+}
+function removeChild(id){
+  db.children = db.children.filter(c=>c.id!==id);
+  save(); renderChildList(); renderChildSelect(); renderDashboard();
+}
+function renderChildSelect(){
+  const sel = document.getElementById('noteChildSelect');
+  sel.innerHTML = db.children.length ? db.children.map(c=>`<option value="${c.id}">${c.name}</option>`).join('') : '<option>Belum ada anak</option>';
+}
+function toggleAspect(el, aspect){
+  el.classList.toggle('opacity-50');
+  if(selectedAspects.has(aspect)) selectedAspects.delete(aspect); else selectedAspects.add(aspect);
+}
+const NOTE_TEMPLATES = {
+  motorik:['sudah mampu memegang krayon dengan baik dan mewarnai di dalam garis','menunjukkan koordinasi tangan-mata yang berkembang saat menggunting','mampu melompat dan berlari dengan keseimbangan yang baik'],
+  sosial:['mulai mau berbagi mainan dengan teman sebaya','menunjukkan sikap antre dan menunggu giliran dengan baik','aktif mengajak teman bermain bersama'],
+  komunikasi:['mampu menceritakan kembali kegiatan hari ini dengan kalimat sederhana','menjawab pertanyaan guru dengan percaya diri','memperkaya kosakata baru dari tema pembelajaran'],
+};
+function generateChildNote(){
+  const childId = document.getElementById('noteChildSelect').value;
+  const child = db.children.find(c=>c.id===childId);
+  if(!child){ showToast('Tambahkan data anak terlebih dahulu'); return; }
+  const aspects = selectedAspects.size ? [...selectedAspects] : ['motorik','sosial','komunikasi'];
+  const kalimat = aspects.map(a=>{
+    const bank = NOTE_TEMPLATES[a];
+    return bank[Math.floor(Math.random()*bank.length)];
+  });
+  const note = `${child.name} ${kalimat.join('; ')}. Perlu pendampingan lanjutan agar perkembangan semakin optimal.`;
+  document.getElementById('noteResultWrap').innerHTML = `
+    <div class="card-soft">
+      <div class="fw-bold mb-2">📝 Catatan Perkembangan — ${child.name}</div>
+      <p class="small mb-2">${note}</p>
+      <div class="mb-2">${aspects.map(a=>`<span class="chip">${capitalize(a)}</span>`).join('')}</div>
+      <button class="btn btn-outline-toska btn-sm w-100" onclick="showToast('Catatan disimpan ke rapor anak')">💾 Simpan ke Rapor</button>
+    </div>`;
+  showToast('Catatan perkembangan dibuat AI');
+}
+
+/* ===========================================================
+   SMART REMINDER
+=========================================================== */
+function addReminder(){
+  const title = document.getElementById('remTitle').value.trim();
+  const time = document.getElementById('remTime').value;
+  if(!title || !time){ showToast('Lengkapi judul & jam pengingat'); return; }
+  db.reminders.push({id:'r_'+Date.now(), title, time, notified:false});
+  db.reminders.sort((a,b)=> a.time.localeCompare(b.time));
+  save();
+  document.getElementById('remTitle').value='';
+  document.getElementById('remTime').value='';
+  renderReminders();
+  if('Notification' in window && Notification.permission==='default'){ Notification.requestPermission(); }
+  showToast('Pengingat ditambahkan');
+}
+function removeReminder(id){ db.reminders = db.reminders.filter(r=>r.id!==id); save(); renderReminders(); }
+function renderReminders(){
+  const wrap = document.getElementById('reminderList');
+  if(!db.reminders.length){ wrap.innerHTML='<p class="text-muted small">Belum ada pengingat.</p>'; }
+  else{
+    wrap.innerHTML = db.reminders.map(r=>`
+      <div class="reminder-item">
+        <div class="reminder-time">${r.time}</div>
+        <div class="flex-grow-1 small fw-semibold">${r.title}</div>
+        <button class="btn btn-sm text-danger" onclick="removeReminder('${r.id}')">✕</button>
+      </div>`).join('');
+  }
+  renderDashReminders();
+}
+function renderDashReminders(){
+  const wrap = document.getElementById('dashReminderList');
+  const upcoming = db.reminders.slice(0,3);
+  wrap.innerHTML = upcoming.length ? upcoming.map(r=>`
+    <div class="reminder-item"><div class="reminder-time">${r.time}</div><div class="small fw-semibold">${r.title}</div></div>
+  `).join('') : '<p class="text-muted small">Belum ada pengingat aktif.</p>';
+}
+function checkReminders(){
+  if(!('Notification' in window) || Notification.permission!=='granted') return;
+  const now = new Date();
+  db.reminders.forEach(r=>{
+    const [h,m] = r.time.split(':').map(Number);
+    const remDate = new Date(); remDate.setHours(h,m,0,0);
+    const diffMin = (remDate - now)/60000;
+    if(diffMin > 4.5 && diffMin < 5.5 && !r.notified){
+      new Notification('⏰ TemanGuruTK', {body:`${r.title} dimulai 5 menit lagi`});
+      r.notified = true; save();
+    }
+  });
+}
+setInterval(checkReminders, 30000);
+
+/* ===========================================================
+   MARKETPLACE
+=========================================================== */
+function renderMarket(){
+  const wrap = document.getElementById('marketGrid');
+  wrap.innerHTML = db.marketTemplates.map((m,i)=>`
+    <div class="market-card">
+      <div class="market-thumb">${m.icon||'🧩'}</div>
+      <div class="market-body">
+        <div class="fw-semibold small">${m.title}</div>
+        <div class="text-muted" style="font-size:.72rem;">oleh ${m.author}</div>
+        <div class="d-flex justify-content-between align-items-center mt-2">
+          <span class="price">Rp${m.price.toLocaleString('id-ID')}</span>
+          <button class="btn btn-sm btn-orange" onclick="buyTemplate(${i})">Beli</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+function buyTemplate(i){
+  const m = db.marketTemplates[i];
+  const komisi = Math.round(m.price*0.15);
+  showToast(`Dibeli! Rp${komisi.toLocaleString('id-ID')} komisi platform (15%)`);
+}
+function addMarketTemplate(){
+  const title = document.getElementById('marketTitle').value.trim();
+  const price = parseInt(document.getElementById('marketPrice').value);
+  if(!title || !price){ showToast('Lengkapi judul & harga template'); return; }
+  db.marketTemplates.unshift({title, price, author: db.teacherName+' (Kamu)', icon:'🧩'});
+  save();
+  document.getElementById('marketTitle').value='';
+  document.getElementById('marketPrice').value='';
+  renderMarket();
+  showToast('Template diunggah ke marketplace');
+}
+
+/* ===========================================================
+   PREMIUM & PROFILE
+=========================================================== */
+function upgradePremium(){
+  db.premium = true; save();
+  document.getElementById('premiumStatus').textContent = 'Premium ⭐';
+  renderWsQuota();
+  showToast('Selamat! Kamu sekarang Premium 🎉');
+}
+function saveTeacherName(){
+  const name = document.getElementById('teacherNameInput').value.trim();
+  if(!name) return;
+  db.teacherName = name; save();
+  document.getElementById('teacherName').textContent = name;
+  showToast('Nama disimpan');
+}
+
+/* ===========================================================
+   DASHBOARD RENDER
+=========================================================== */
+function renderDashboard(){
+  document.getElementById('statPlans').textContent = db.plans.length;
+  document.getElementById('statWs').textContent = `${db.premium?'∞':Math.min(db.wsCountToday,1)}/${db.premium?'∞':1}`;
+  document.getElementById('statChildren').textContent = db.children.length;
+  const recent = document.getElementById('recentPlans');
+  if(db.plans.length){
+    recent.innerHTML = db.plans.slice(0,3).map(p=>`
+      <div class="card-soft py-2 px-3 small"><b>${getTemaData(p.tema).emoji} ${capitalize(p.tema)}</b> — ${p.jenis}, ${new Date(p.created).toLocaleDateString('id-ID')}</div>
+    `).join('');
+  }
+  renderDashReminders();
+}
+
+/* ===========================================================
+   INIT
+=========================================================== */
+document.getElementById('teacherName').textContent = db.teacherName;
+document.getElementById('teacherNameInput').value = db.teacherName;
+document.getElementById('premiumStatus').textContent = db.premium ? 'Premium ⭐' : 'Gratis';
+renderWsQuota();
+renderChildList();
+renderChildSelect();
+renderReminders();
+renderMarket();
+renderDashboard();
+renderPlanHistory();
+
+function updateConnStatus(){
+  document.getElementById('connStatus').textContent = navigator.onLine ? '🟢 Online' : '🟠 Offline (data lokal)';
+}
+window.addEventListener('online', updateConnStatus);
+window.addEventListener('offline', updateConnStatus);
+updateConnStatus();
+
+/* ===========================================================
+   PWA: Manifest + Service Worker (dibangun inline, single-file)
+=========================================================== */
+const iconSVG = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230B7A75'/><path d='M20 6 L44 6 L48 14 L16 14 Z' fill='%23FF7A33'/><rect x='14' y='14' width='36' height='4' rx='2' fill='%23FF7A33'/><path d='M32 20c-7.7 0-14 6.3-14 14 0 5.6 3.3 10.4 8 12.6V50h12v-3.4c4.7-2.2 8-7 8-12.6 0-7.7-6.3-14-14-14z' fill='white'/><rect x='27' y='50' width='10' height='4' rx='2' fill='%23FF7A33'/></svg>`;
+const iconDataUri = 'data:image/svg+xml,' + iconSVG.replace(/\n/g,'').replace(/#/g,'%23');
+
+const manifest = {
+  name: "TemanGuruTK — Asisten AI Guru TK/PAUD",
+  short_name: "TemanGuruTK",
+  description: "Platform AI untuk membantu guru TK/PAUD menyusun pembelajaran, mengelola administrasi, dan bekerja lebih efisien lewat perintah suara.",
+  start_url: ".",
+  display: "standalone",
+  background_color: "#FBF8F2",
+  theme_color: "#0B7A75",
+  orientation: "portrait",
+  icons: [
+    {src: iconDataUri, sizes:"64x64", type:"image/svg+xml", purpose:"any"},
+    {src: iconDataUri, sizes:"192x192", type:"image/svg+xml", purpose:"any maskable"},
+    {src: iconDataUri, sizes:"512x512", type:"image/svg+xml", purpose:"any maskable"},
+  ]
+};
+const manifestBlob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+const manifestURL = URL.createObjectURL(manifestBlob);
+const manifestLink = document.createElement('link');
+manifestLink.rel = 'manifest';
+manifestLink.href = manifestURL;
+document.head.appendChild(manifestLink);
+
+const swSource = `
+const CACHE_NAME = 'temangurutk-cache-v1';
+self.addEventListener('install', e => { self.skipWaiting(); });
+self.addEventListener('activate', e => { self.clients.claim(); });
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request).then(cached => {
+      if (cached) return cached;
+      return fetch(event.request).then(res => {
+        const resClone = res.clone();
+        caches.open(CACHE_NAME).then(cache => { try{ cache.put(event.request, resClone); }catch(e){} });
+        return res;
+      }).catch(() => cached);
+    })
+  );
+});
+`;
+if('serviceWorker' in navigator){
+  try{
+    const swBlob = new Blob([swSource], {type:'application/javascript'});
+    const swURL = URL.createObjectURL(swBlob);
+    navigator.serviceWorker.register(swURL).then(()=>{
+      console.log('Service worker terdaftar — mode offline aktif');
+    }).catch(err=> console.log('SW gagal (browser mungkin membatasi blob SW):', err));
+  }catch(e){ console.log('SW tidak dapat dijalankan pada mode ini.'); }
+}
+
+/* Install prompt handling */
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e)=>{
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installStrip').style.display = 'flex';
+});
+document.getElementById('installBtn').addEventListener('click', async ()=>{
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById('installStrip').style.display = 'none';
+});
+</script>
+</body>
+</html>
