@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>TemanGuruTK — Asisten AI Guru TK/PAUD</title>
-<meta name="theme-color" content="#0B7A75">
+<meta name="theme-color" content="#00A99D">
 <meta name="description" content="Platform AI untuk membantu guru TK/PAUD menyusun pembelajaran, mengelola administrasi, dan bekerja lebih efisien lewat perintah suara.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,11 +13,11 @@
 
 <style>
 :root{
-  --toska:#0B7A75;
-  --toska-dark:#0A5F5B;
-  --toska-light:#E4F5F3;
-  --orange:#FF7A33;
-  --orange-dark:#E4611D;
+  --toska:#00A99D;
+  --toska-dark:#00857C;
+  --toska-light:#E1F6F3;
+  --orange:#F7941D;
+  --orange-dark:#DD7A05;
   --cream:#FBF8F2;
   --ink:#193B39;
   --ink-soft:#4C6664;
@@ -173,13 +173,13 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
   <div class="topbar">
     <div class="brand-row">
       <svg class="logo-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M20 6 L44 6 L48 14 L16 14 Z" fill="#FF7A33"/>
-        <rect x="14" y="14" width="36" height="4" rx="2" fill="#FF7A33"/>
+        <path d="M20 6 L44 6 L48 14 L16 14 Z" fill="#F7941D"/>
+        <rect x="14" y="14" width="36" height="4" rx="2" fill="#F7941D"/>
         <circle cx="32" cy="34" r="15" fill="#fff" opacity=".14"/>
         <path d="M32 20c-7.7 0-14 6.3-14 14 0 5.6 3.3 10.4 8 12.6V50h12v-3.4c4.7-2.2 8-7 8-12.6 0-7.7-6.3-14-14-14z" fill="#fff"/>
-        <rect x="27" y="50" width="10" height="4" rx="2" fill="#FF7A33"/>
-        <rect x="28.5" y="55" width="7" height="3" rx="1.5" fill="#FF7A33"/>
-        <path d="M32 6 L32 0M18 12 L13 8M46 12 L51 8" stroke="#FF7A33" stroke-width="2.4" stroke-linecap="round"/>
+        <rect x="27" y="50" width="10" height="4" rx="2" fill="#F7941D"/>
+        <rect x="28.5" y="55" width="7" height="3" rx="1.5" fill="#F7941D"/>
+        <path d="M32 6 L32 0M18 12 L13 8M46 12 L51 8" stroke="#F7941D" stroke-width="2.4" stroke-linecap="round"/>
       </svg>
       <div>
         <div class="brand">TemanGuruTK<small>Asisten AI untuk Guru TK & PAUD</small></div>
@@ -414,7 +414,7 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
         <li>Tanpa watermark</li>
         <li>Prioritas pemrosesan suara AI</li>
       </ul>
-      <button class="btn btn-light btn-sm fw-bold" style="border-radius:10px;color:var(--orange-dark);" onclick="upgradePremium()">Upgrade Sekarang</button>
+      <button class="btn btn-light btn-sm fw-bold" style="border-radius:10px;color:var(--orange-dark);" onclick="openPaymentModal()">Upgrade Sekarang</button>
     </div>
 
     <div class="card-soft">
@@ -445,6 +445,72 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
 </div>
 
 <div class="toast-mini" id="toastMini"></div>
+
+<!-- ===== PAYMENT / TRANSACTION MODAL ===== -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
+    <div class="modal-content" style="border-radius:20px;border:none;overflow:hidden;">
+
+      <!-- STEP 1: Ringkasan & metode pembayaran -->
+      <div id="payStep1">
+        <div class="modal-header border-0" style="background:linear-gradient(135deg,var(--orange),var(--orange-dark));color:#fff;">
+          <h6 class="modal-title fw-bold mb-0">💳 Transaksi Upgrade Premium</h6>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span class="small text-muted">Paket</span>
+            <span class="fw-semibold small">Premium Bulanan</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-3 pb-3" style="border-bottom:1px dashed #E5DFD2;">
+            <span class="small text-muted">Total Tagihan</span>
+            <span class="fw-bold" style="color:var(--orange-dark);font-family:'Baloo 2';font-size:1.15rem;">Rp20.000</span>
+          </div>
+          <label class="form-label">Pilih Metode Pembayaran</label>
+          <div class="d-flex flex-column gap-2 mb-3" id="payMethodList">
+            <label class="d-flex align-items-center gap-2 p-2 border rounded-3" style="cursor:pointer;">
+              <input type="radio" name="payMethod" value="QRIS" checked> <span class="small fw-semibold flex-grow-1">QRIS</span> <span>🔳</span>
+            </label>
+            <label class="d-flex align-items-center gap-2 p-2 border rounded-3" style="cursor:pointer;">
+              <input type="radio" name="payMethod" value="Transfer Bank"> <span class="small fw-semibold flex-grow-1">Transfer Bank</span> <span>🏦</span>
+            </label>
+            <label class="d-flex align-items-center gap-2 p-2 border rounded-3" style="cursor:pointer;">
+              <input type="radio" name="payMethod" value="E-Wallet"> <span class="small fw-semibold flex-grow-1">E-Wallet (OVO/DANA/GoPay)</span> <span>👛</span>
+            </label>
+          </div>
+          <button class="btn btn-orange w-100" onclick="goToPayStep2()">Lanjutkan Pembayaran</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Proses pembayaran -->
+      <div id="payStep2" style="display:none;">
+        <div class="modal-header border-0" style="background:linear-gradient(135deg,var(--toska),var(--toska-dark));color:#fff;">
+          <h6 class="modal-title fw-bold mb-0">⏳ Memproses Transaksi</h6>
+        </div>
+        <div class="modal-body text-center py-4">
+          <div id="payMethodIcon" style="font-size:2.4rem;" class="mb-2">🔳</div>
+          <p class="small text-muted mb-1">Menyelesaikan pembayaran via <b id="payMethodName">QRIS</b></p>
+          <p class="small text-muted mb-3">ID Transaksi: <span id="payTrxId" class="fw-semibold"></span></p>
+          <div class="progress" style="height:8px;border-radius:6px;">
+            <div class="progress-bar" id="payProgressBar" style="width:0%;background:var(--toska);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3: Berhasil -->
+      <div id="payStep3" style="display:none;">
+        <div class="modal-body text-center py-4">
+          <div style="font-size:2.6rem;">✅</div>
+          <div class="fw-bold mt-2 mb-1" style="font-family:'Baloo 2';">Pembayaran Berhasil</div>
+          <p class="small text-muted mb-1">ID Transaksi: <span id="payTrxIdDone" class="fw-semibold"></span></p>
+          <p class="small text-muted mb-3">Akun kamu telah beralih ke <b>Premium ⭐</b></p>
+          <button class="btn btn-toska w-100" data-bs-dismiss="modal">Selesai</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -721,7 +787,7 @@ function buildWorksheetSVG(jenis, tema){
   if(jenis==='mewarnai'){
     return `<svg viewBox="0 0 240 160" width="100%">
       <rect width="240" height="160" fill="#fff"/>
-      <text x="120" y="22" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#0B7A75">Mewarnai: ${capitalize(tema)}</text>
+      <text x="120" y="22" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#00A99D">Mewarnai: ${capitalize(tema)}</text>
       <circle cx="70" cy="90" r="34" fill="none" stroke="#193B39" stroke-width="2.5"/>
       <path d="M120 60 L155 60 L155 120 L120 120 Z" fill="none" stroke="#193B39" stroke-width="2.5"/>
       <polygon points="190,60 210,120 170,120" fill="none" stroke="#193B39" stroke-width="2.5"/>
@@ -732,7 +798,7 @@ function buildWorksheetSVG(jenis, tema){
     const huruf = tema.charAt(0).toUpperCase() || 'A';
     return `<svg viewBox="0 0 240 160" width="100%">
       <rect width="240" height="160" fill="#fff"/>
-      <text x="120" y="22" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#0B7A75">Tracing: ${capitalize(tema)}</text>
+      <text x="120" y="22" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#00A99D">Tracing: ${capitalize(tema)}</text>
       <text x="35" y="115" font-size="90" font-family="'Baloo 2',sans-serif" fill="none" stroke="#193B39" stroke-width="2" stroke-dasharray="6,5">${huruf}</text>
       <text x="140" y="115" font-size="90" font-family="'Baloo 2',sans-serif" fill="none" stroke="#193B39" stroke-width="2" stroke-dasharray="6,5">${huruf.toLowerCase()}</text>
     </svg>`;
@@ -742,19 +808,19 @@ function buildWorksheetSVG(jenis, tema){
     for(let i=0;i<5;i++) items += `<text x="${30+i*40}" y="90" font-size="26">${t.emoji}</text>`;
     return `<svg viewBox="0 0 240 160" width="100%">
       <rect width="240" height="160" fill="#fff"/>
-      <text x="120" y="22" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#0B7A75">Berhitung: ${capitalize(tema)}</text>
+      <text x="120" y="22" text-anchor="middle" font-size="14" font-family="sans-serif" fill="#00A99D">Berhitung: ${capitalize(tema)}</text>
       ${items}
       <text x="120" y="135" text-anchor="middle" font-size="13" fill="#4C6664">Hitung jumlah gambar, tulis angkanya di kotak</text>
-      <rect x="105" y="140" width="30" height="16" rx="4" fill="none" stroke="#FF7A33" stroke-width="2"/>
+      <rect x="105" y="140" width="30" height="16" rx="4" fill="none" stroke="#F7941D" stroke-width="2"/>
     </svg>`;
   }
   // flashcard
   const kata = t.kosakata[0] || tema;
   return `<svg viewBox="0 0 240 160" width="100%">
     <rect width="240" height="160" fill="#fff"/>
-    <rect x="20" y="14" width="200" height="132" rx="14" fill="#E4F5F3" stroke="#0B7A75" stroke-width="2"/>
+    <rect x="20" y="14" width="200" height="132" rx="14" fill="#E1F6F3" stroke="#00A99D" stroke-width="2"/>
     <text x="120" y="80" text-anchor="middle" font-size="48">${t.emoji}</text>
-    <text x="120" y="120" text-anchor="middle" font-size="16" font-family="'Baloo 2',sans-serif" fill="#0B7A75">${capitalize(kata)}</text>
+    <text x="120" y="120" text-anchor="middle" font-size="16" font-family="'Baloo 2',sans-serif" fill="#00A99D">${capitalize(kata)}</text>
   </svg>`;
 }
 
@@ -909,11 +975,53 @@ function addMarketTemplate(){
 /* ===========================================================
    PREMIUM & PROFILE
 =========================================================== */
-function upgradePremium(){
-  db.premium = true; save();
+let paymentModalInstance;
+function openPaymentModal(){
+  if(db.premium){ showToast('Kamu sudah berlangganan Premium'); return; }
+  document.getElementById('payStep1').style.display = 'block';
+  document.getElementById('payStep2').style.display = 'none';
+  document.getElementById('payStep3').style.display = 'none';
+  if(!paymentModalInstance){ paymentModalInstance = new bootstrap.Modal(document.getElementById('paymentModal')); }
+  paymentModalInstance.show();
+}
+
+function goToPayStep2(){
+  const method = document.querySelector('input[name="payMethod"]:checked').value;
+  const icons = {'QRIS':'🔳','Transfer Bank':'🏦','E-Wallet (OVO/DANA/GoPay)':'👛','E-Wallet':'👛'};
+  document.getElementById('payMethodName').textContent = method;
+  document.getElementById('payMethodIcon').textContent = icons[method] || '💳';
+  const trxId = 'TGTK-' + Date.now().toString().slice(-8);
+  document.getElementById('payTrxId').textContent = trxId;
+  document.getElementById('payTrxIdDone').textContent = trxId;
+
+  document.getElementById('payStep1').style.display = 'none';
+  document.getElementById('payStep2').style.display = 'block';
+
+  // simulasi verifikasi transaksi (menunggu pembayaran dikonfirmasi)
+  const bar = document.getElementById('payProgressBar');
+  let pct = 0;
+  bar.style.width = '0%';
+  const timer = setInterval(()=>{
+    pct += 20;
+    bar.style.width = pct + '%';
+    if(pct >= 100){
+      clearInterval(timer);
+      finishPayment(trxId, method);
+    }
+  }, 350);
+}
+
+function finishPayment(trxId, method){
+  // status berubah ke premium HANYA setelah transaksi dinyatakan berhasil
+  db.premium = true;
+  db.premiumTrx = {id: trxId, method, date: new Date().toISOString(), amount: 20000};
+  save();
   document.getElementById('premiumStatus').textContent = 'Premium ⭐';
   renderWsQuota();
-  showToast('Selamat! Kamu sekarang Premium 🎉');
+
+  document.getElementById('payStep2').style.display = 'none';
+  document.getElementById('payStep3').style.display = 'block';
+  showToast('Transaksi berhasil, akun beralih ke Premium 🎉');
 }
 function saveTeacherName(){
   const name = document.getElementById('teacherNameInput').value.trim();
@@ -963,7 +1071,7 @@ updateConnStatus();
 /* ===========================================================
    PWA: Manifest + Service Worker (dibangun inline, single-file)
 =========================================================== */
-const iconSVG = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230B7A75'/><path d='M20 6 L44 6 L48 14 L16 14 Z' fill='%23FF7A33'/><rect x='14' y='14' width='36' height='4' rx='2' fill='%23FF7A33'/><path d='M32 20c-7.7 0-14 6.3-14 14 0 5.6 3.3 10.4 8 12.6V50h12v-3.4c4.7-2.2 8-7 8-12.6 0-7.7-6.3-14-14-14z' fill='white'/><rect x='27' y='50' width='10' height='4' rx='2' fill='%23FF7A33'/></svg>`;
+const iconSVG = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%2300A99D'/><path d='M20 6 L44 6 L48 14 L16 14 Z' fill='%23F7941D'/><rect x='14' y='14' width='36' height='4' rx='2' fill='%23F7941D'/><path d='M32 20c-7.7 0-14 6.3-14 14 0 5.6 3.3 10.4 8 12.6V50h12v-3.4c4.7-2.2 8-7 8-12.6 0-7.7-6.3-14-14-14z' fill='white'/><rect x='27' y='50' width='10' height='4' rx='2' fill='%23F7941D'/></svg>`;
 const iconDataUri = 'data:image/svg+xml,' + iconSVG.replace(/\n/g,'').replace(/#/g,'%23');
 
 const manifest = {
@@ -973,7 +1081,7 @@ const manifest = {
   start_url: ".",
   display: "standalone",
   background_color: "#FBF8F2",
-  theme_color: "#0B7A75",
+  theme_color: "#00A99D",
   orientation: "portrait",
   icons: [
     {src: iconDataUri, sizes:"64x64", type:"image/svg+xml", purpose:"any"},
