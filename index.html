@@ -40,21 +40,13 @@ h1,h2,h3,h4,.brand,.nav-label,.btn{font-family:'Baloo 2',sans-serif;}
   background:linear-gradient(135deg,var(--toska) 0%,var(--toska-dark) 100%);
   color:#fff;padding:18px 20px 26px;border-radius:0 0 26px 26px;position:relative;overflow:hidden;
 }
-.topbar::after{
-  content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;
-  background:rgba(255,122,51,.18);
-}
-.topbar::before{
-  content:"";position:absolute;left:-30px;bottom:-60px;width:120px;height:120px;border-radius:50%;
-  background:rgba(255,255,255,.06);
-}
+.topbar::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,122,51,.18);}
+.topbar::before{content:"";position:absolute;left:-30px;bottom:-60px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.06);}
 .brand-row{display:flex;align-items:center;gap:10px;position:relative;z-index:1;}
 .brand{font-weight:700;font-size:1.15rem;letter-spacing:.2px;}
 .brand small{display:block;font-family:'Inter';font-weight:400;font-size:.68rem;opacity:.85;}
 .greet{position:relative;z-index:1;margin-top:14px;font-size:.92rem;opacity:.92;}
 .greet b{font-family:'Baloo 2';font-weight:700;}
-
-/* ===== logo mark ===== */
 .logo-mark{width:40px;height:40px;flex:0 0 auto;}
 
 /* ===== Sections ===== */
@@ -154,7 +146,7 @@ h1,h2,h3,h4,.brand,.nav-label,.btn{font-family:'Baloo 2',sans-serif;}
 
 .toast-mini{
   position:fixed;left:50%;top:16px;transform:translateX(-50%);background:var(--ink);color:#fff;
-  padding:10px 18px;border-radius:30px;font-size:.82rem;z-index:200;opacity:0;transition:.3s;pointer-events:none;
+  padding:10px 18px;border-radius:30px;font-size:.82rem;z-index:2000;opacity:0;transition:.3s;pointer-events:none;max-width:92vw;text-align:center;
 }
 .toast-mini.show{opacity:1;top:24px;}
 
@@ -163,6 +155,37 @@ h1,h2,h3,h4,.brand,.nav-label,.btn{font-family:'Baloo 2',sans-serif;}
 label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
 
 .install-strip{background:var(--toska-light);border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:.8rem;color:var(--toska-dark);}
+
+/* ===== Kartu harga paket ===== */
+.price-card{background:linear-gradient(180deg,var(--toska-light) 0%,#FFFFFF 100%);border:1.5px solid #CFE8E4;border-radius:22px;padding:16px 16px 0;margin-bottom:20px;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(0,133,124,.10);}
+.price-card.featured{border:2px solid var(--orange);background:linear-gradient(180deg,#FFF1DE 0%,#FFFFFF 100%);}
+.price-card::after{content:"";display:block;height:12px;margin:14px -16px 0;background:var(--toska-dark);}
+.price-card.featured::after{background:var(--orange);}
+.price-card.is-active{border-color:var(--toska);box-shadow:0 0 0 3px rgba(0,169,157,.25),0 4px 16px rgba(0,133,124,.15);}
+.price-card.is-active::after{background:var(--toska);}
+.price-badge{position:absolute;top:10px;right:12px;background:var(--orange);color:#fff;font-size:.68rem;font-weight:700;padding:3px 10px;border-radius:12px;font-family:'Baloo 2';z-index:2;}
+.price-badge.active{background:var(--toska);left:12px;right:auto;}
+.price-head{background:linear-gradient(135deg,var(--toska) 0%,var(--toska-dark) 100%);color:#fff;border-radius:0 0 26px 26px;padding:22px 16px 20px;text-align:center;margin:-16px auto 16px;width:50%;position:relative;overflow:hidden;}
+.price-head::after{content:"";position:absolute;right:-24px;bottom:-30px;width:90px;height:90px;border-radius:50%;background:rgba(247,148,29,.25);}
+.price-card.featured .price-head{background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 100%);}
+.price-card.featured .price-head::after{background:rgba(255,255,255,.18);}
+.price-amount{font-family:'Baloo 2';font-weight:800;font-size:2.4rem;line-height:1.05;position:relative;z-index:1;}
+.price-period{font-family:'Baloo 2';font-weight:600;font-size:.9rem;opacity:.95;margin-top:4px;position:relative;z-index:1;}
+.price-list{list-style:none;padding:0;margin:0 0 14px;font-size:.9rem;font-weight:600;font-family:'Baloo 2';color:var(--ink);}
+.price-list li{padding:6px 0 6px 32px;position:relative;}
+.price-list li::before{content:"✔";position:absolute;left:4px;top:7px;width:20px;height:20px;border-radius:50%;background:var(--toska);color:#fff;font-size:.62rem;display:flex;align-items:center;justify-content:center;}
+.price-card.featured .price-list li::before{background:var(--orange);}
+.price-list li.limited::before{content:"✕";background:#C9B79C;}
+.btn-price{background:var(--orange);border:none;color:#fff;font-weight:600;border-radius:30px;padding:10px 38px;display:block;margin:0 auto;}
+.btn-price:hover{color:#fff;background:var(--orange-dark);}
+.btn-price.is-current{background:var(--toska);color:#fff;opacity:1;}
+.btn-price:disabled{background:#B9C9C7;color:#fff;opacity:1;}
+.btn-price.is-current:disabled{background:var(--toska);}
+
+.trial-banner{
+  background:#FFF1DE;border:1px solid #FFD9A8;border-radius:16px;padding:12px 14px;margin-bottom:16px;font-size:.82rem;color:var(--orange-dark);
+  display:flex;align-items:center;gap:10px;
+}
 
 /* ===================================================
    SPLASH SCREEN
@@ -240,7 +263,7 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
 .notif-item:last-child{border-bottom:none;}
 .notif-icon{width:36px;height:36px;border-radius:50%;background:var(--toska-light);display:flex;align-items:center;justify-content:center;font-size:1rem;flex:0 0 auto;}
 
-/* ===== Real-time QR ===== */
+/* ===== QR ===== */
 #qrCanvasWrap{display:inline-flex;padding:10px;background:#fff;border-radius:14px;border:1px solid #EAE3D6;}
 #qrCanvasWrap canvas{display:block;}
 
@@ -255,10 +278,6 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
 .guest-badge{
   display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.4);
   border-radius:20px;padding:2px 10px;font-size:.68rem;font-weight:600;margin-top:4px;
-}
-.trial-banner{
-  background:#FFF1DE;border:1px solid #FFD9A8;border-radius:16px;padding:12px 14px;margin-bottom:16px;font-size:.82rem;color:var(--orange-dark);
-  display:flex;align-items:center;gap:10px;
 }
 </style>
 </head>
@@ -360,7 +379,7 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
     </div>
   </div>
 
-  <!-- ===== VOICE BAR (always visible, floats over topbar) ===== -->
+  <!-- ===== VOICE BAR ===== -->
   <div class="voice-bar">
     <button class="mic-btn" id="micBtn" title="Tekan dan ucapkan perintah">🎤</button>
     <input type="text" class="voice-input" id="voiceInput" placeholder='Coba: "Buat aktivitas tema binatang, 20 menit"'>
@@ -396,7 +415,7 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
 
     <div class="stat-row">
       <div class="stat-pill"><div class="num" id="statPlans">0</div><div class="lbl">Rencana dibuat</div></div>
-      <div class="stat-pill"><div class="num" id="statWs">0/1</div><div class="lbl">Worksheet hari ini</div></div>
+      <div class="stat-pill"><div class="num" id="statWs">0/3</div><div class="lbl">Worksheet hari ini</div></div>
       <div class="stat-pill"><div class="num" id="statChildren">0</div><div class="lbl">Anak tercatat</div></div>
     </div>
 
@@ -408,11 +427,11 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
       <div class="quick-item" onclick="goTo('reminder')"><span class="quick-icon">⏰</span>Pengingat</div>
     </div>
 
-    <div class="premium-banner">
+    <div class="premium-banner" id="dashPremiumBanner">
       <div class="d-flex justify-content-between align-items-start position-relative">
         <div>
           <div style="font-family:'Baloo 2';font-weight:700;">Upgrade ke Premium</div>
-          <div style="font-size:.8rem;opacity:.95;max-width:220px;">Worksheet unlimited, kualitas HD, tanpa watermark — Rp10.000/bulan.</div>
+          <div style="font-size:.8rem;opacity:.95;max-width:220px;">Worksheet unlimited, HD, tanpa watermark — mulai Rp20.000/bulan.</div>
         </div>
         <div style="font-size:2rem;">⭐</div>
       </div>
@@ -446,8 +465,8 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
           <label class="form-label">Jenis Rencana</label>
           <select class="form-select form-select-sm" id="planJenis">
             <option value="harian">Aktivitas Harian</option>
-            <option value="mingguan">Rencana Mingguan (5 hari)</option>
-            <option value="semester">Rencana Per Semester</option>
+            <option value="mingguan">Rencana Mingguan (5 hari) 🔒 Premium</option>
+            <option value="semester">Rencana Per Semester 🔒 Premium</option>
           </select>
         </div>
       </div>
@@ -509,6 +528,7 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
         </div>
       </div>
       <button class="btn btn-toska w-100 mt-3" onclick="addChild()">+ Tambah Anak</button>
+      <div class="form-text mt-1" id="childQuotaText"></div>
     </div>
 
     <div class="card-soft" id="childListWrap">
@@ -572,9 +592,8 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
   <!-- SCREEN: PREMIUM / PROFILE -->
   <!-- ============================================================ -->
   <div class="screen" id="screen-premium">
-    <div class="section-title"><span class="dot"></span>Paket & Profil</div>
+    <div class="section-title"><span class="dot"></span>Profil</div>
 
-    <!-- Kartu status akun (tamu vs terdaftar) -->
     <div class="card-soft" id="accountStatusCard"></div>
 
     <div class="card-soft d-flex align-items-center gap-3">
@@ -586,23 +605,56 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
       <button class="btn btn-sm btn-toska" onclick="saveTeacherName()">Simpan</button>
     </div>
 
-    <div class="card-soft">
-      <div class="fw-semibold mb-2">🆓 Paket Gratis</div>
-      <ul class="small text-muted ps-3 mb-2">
-        <li>1 worksheet/hari dengan watermark</li>
-        <li>Perencanaan cerdas via suara tanpa batas</li>
-        <li>Catatan & pengingat dasar</li>
+    <div class="section-title mt-3"><span class="dot"></span>Pilih Paket Yang Sesuai</div>
+
+    <!-- PAKET GRATIS -->
+    <div class="price-card" id="cardFree">
+      <span class="price-badge active" id="badgeFree">Aktif</span>
+      <div class="price-head">
+        <div class="price-amount">Rp0</div>
+      </div>
+      <ul class="price-list">
+        <li>3 Lembar Worksheet/Hari</li>
+        <li>Ada Watermark</li>
+        <li>Resolusi SD</li>
+        <li>Perencanaan Dasar</li>
+        <li class="limited">Catatan Anak Terbatas</li>
       </ul>
+      <button class="btn btn-price mb-1" id="btnFree" disabled>Paket Saat Ini</button>
     </div>
 
-    <div class="premium-banner">
-      <div style="font-family:'Baloo 2';font-weight:700;">⭐ Premium — Rp10.000/bulan</div>
-      <ul class="small ps-3 mb-2 mt-2" style="opacity:.95;">
-        <li>Worksheet unlimited & kualitas HD</li>
-        <li>Tanpa watermark</li>
-        <li>Prioritas pemrosesan suara AI</li>
+    <!-- PAKET 1 BULAN -->
+    <div class="price-card featured" id="cardMonthly">
+      <span class="price-badge active" id="badgeMonthly" style="display:none;"></span>
+      <div class="price-head">
+        <div class="price-amount">Rp20k</div>
+        <div class="price-period">1 Month Membership</div>
+      </div>
+      <ul class="price-list">
+        <li>Unlimited</li>
+        <li>Tanpa Watermark</li>
+        <li>Resolusi HD</li>
+        <li>Perencanaan Lengkap</li>
+        <li>Catatan Anak Unlimited</li>
       </ul>
-      <button class="btn btn-light btn-sm fw-bold" style="border-radius:10px;color:var(--orange-dark);" onclick="openPaymentModal({title:'💳 Upgrade Premium', item:'Premium Bulanan', amount:10000, onSuccess:onPremiumPaid})">Upgrade Sekarang</button>
+      <button class="btn btn-price mb-1" id="btnMonthly" onclick="buyPremium('monthly')">Pilih</button>
+    </div>
+
+    <!-- PAKET 1 TAHUN -->
+    <div class="price-card featured" id="cardYearly">
+      <span class="price-badge" id="badgeYearly">Hemat 79%</span>
+      <div class="price-head">
+        <div class="price-amount">Rp50k</div>
+        <div class="price-period">1 Years Membership</div>
+      </div>
+      <ul class="price-list">
+        <li>Unlimited</li>
+        <li>Tanpa Watermark</li>
+        <li>Resolusi HD</li>
+        <li>Perencanaan Lengkap</li>
+        <li>Catatan Anak Unlimited</li>
+      </ul>
+      <button class="btn btn-price mb-1" id="btnYearly" onclick="buyPremium('yearly')">Pilih</button>
     </div>
 
     <div class="card-soft">
@@ -634,7 +686,7 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
 
 <div class="toast-mini" id="toastMini"></div>
 
-<!-- ===== AUTH MODAL (Masuk / Daftar) ===== -->
+<!-- ===== AUTH MODAL ===== -->
 <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
     <div class="modal-content" style="border-radius:20px;border:none;overflow:hidden;">
@@ -644,7 +696,7 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
       </div>
       <div class="modal-body">
         <div id="authTrialNotice" class="alert alert-light border small py-2 px-3 mb-3" style="border-radius:12px;background:#FFF1DE;display:none;">
-          ✨ Kamu sudah memakai <b>2x percobaan gratis</b> membuat konten dengan AI sebagai tamu. Daftar atau masuk untuk melanjutkan tanpa batas percobaan.
+          ✨ Kamu sudah memakai <b>2x percobaan gratis</b> membuat konten dengan AI sebagai tamu. Daftar atau masuk untuk melanjutkan.
         </div>
 
         <ul class="nav nav-pills nav-justified mb-3" style="background:#F3EFE4;border-radius:12px;padding:4px;">
@@ -656,7 +708,6 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
           </li>
         </ul>
 
-        <!-- FORM MASUK -->
         <div id="authFormLogin">
           <label class="form-label">Email</label>
           <input type="email" class="form-control mb-2" id="loginEmail" placeholder="nama@email.com">
@@ -666,7 +717,6 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
           <button class="btn btn-toska w-100" onclick="loginUser()">Masuk</button>
         </div>
 
-        <!-- FORM DAFTAR -->
         <div id="authFormRegister" style="display:none;">
           <label class="form-label">Nama Lengkap</label>
           <input type="text" class="form-control mb-2" id="regName" placeholder="cth: Siti Aminah, S.Pd">
@@ -696,50 +746,31 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
   </div>
 </div>
 
-<!-- ===== PAYMENT / TRANSACTION MODAL ===== -->
+<!-- ===== PAYMENT MODAL (langsung QRIS) ===== -->
 <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
     <div class="modal-content" style="border-radius:20px;border:none;overflow:hidden;">
 
-      <!-- STEP 1: Ringkasan & metode pembayaran -->
-      <div id="payStep1">
-        <div class="modal-header border-0" style="background:linear-gradient(135deg,var(--orange),var(--orange-dark));color:#fff;">
-          <h6 class="modal-title fw-bold mb-0" id="payModalTitle">💳 Transaksi</h6>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <div class="d-flex justify-content-between align-items-center mb-2">
-            <span class="small text-muted">Item</span>
-            <span class="fw-semibold small" id="payItemName">Premium Bulanan</span>
-          </div>
-          <div class="d-flex justify-content-between align-items-center mb-3 pb-3" style="border-bottom:1px dashed #E5DFD2;">
-            <span class="small text-muted">Total Tagihan</span>
-            <span class="fw-bold" style="color:var(--orange-dark);font-family:'Baloo 2';font-size:1.15rem;" id="payItemAmount">Rp10.000</span>
-          </div>
-          <label class="form-label">Pilih Metode Pembayaran</label>
-          <div class="d-flex flex-column gap-2 mb-3" id="payMethodList">
-            <label class="d-flex align-items-center gap-2 p-2 border rounded-3" style="cursor:pointer;">
-              <input type="radio" name="payMethod" value="QRIS" checked> <span class="small fw-semibold flex-grow-1">QRIS</span> <span>🔳</span>
-            </label>
-            <label class="d-flex align-items-center gap-2 p-2 border rounded-3" style="cursor:pointer;">
-              <input type="radio" name="payMethod" value="E-Wallet"> <span class="small fw-semibold flex-grow-1">E-Wallet (ShopeePay/DANA)</span> <span>👛</span>
-            </label>
-          </div>
-          <button class="btn btn-orange w-100" onclick="goToPayStep2()">Lanjutkan Pembayaran</button>
-        </div>
-      </div>
-
-      <!-- STEP 2: Proses pembayaran -->
-      <div id="payStep2" style="display:none;">
+      <!-- STEP 2: QRIS -->
+      <div id="payStep2">
         <div class="modal-header border-0" style="background:linear-gradient(135deg,var(--toska),var(--toska-dark));color:#fff;">
-          <h6 class="modal-title fw-bold mb-0">⏳ Menunggu Pembayaran</h6>
+          <h6 class="modal-title fw-bold mb-0" id="payModalTitle">💳 Bayar dengan QRIS</h6>
           <button type="button" class="btn-close btn-close-white" onclick="cancelPayment()"></button>
         </div>
         <div class="modal-body text-center py-4">
 
-          <div id="payQrWrap" style="display:none;">
+          <div class="d-flex justify-content-between align-items-center mb-1 px-1">
+            <span class="small text-muted">Item</span>
+            <span class="fw-semibold small" id="payItemName">Premium</span>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mb-3 pb-3 px-1" style="border-bottom:1px dashed #E5DFD2;">
+            <span class="small text-muted">Total Tagihan</span>
+            <span class="fw-bold" style="color:var(--orange-dark);font-family:'Baloo 2';font-size:1.15rem;" id="payAmountStep2">Rp0</span>
+          </div>
+
+          <div id="payQrWrap">
             <div id="qrCanvasWrap" style="position:relative;">
-              <canvas id="qrCanvas" width="188" height="188"></canvas>
+              <img src="gambar/qr.jpeg" alt="QRIS" style="width:188px; height:188px; object-fit:contain;">
               <img id="qrImageStatic" style="display:none;width:188px;height:188px;object-fit:contain;" alt="QRIS Pembayaran">
               <div id="qrExpiredOverlay" style="display:none;position:absolute;inset:10px;background:rgba(255,255,255,.94);border-radius:8px;align-items:center;justify-content:center;flex-direction:column;">
                 <div style="font-size:1.6rem;">⌛</div>
@@ -749,20 +780,11 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
             </div>
             <p class="small text-muted mt-2 mb-1">Scan QRIS dengan aplikasi e-wallet / m-banking mana pun</p>
             <p class="small text-warning mb-1" id="qrImageNominalNote" style="display:none;">⚠️ Ini QR statis — pastikan masukkan nominal <b id="qrImageNominalValue"></b> secara manual saat scan.</p>
-            <div class="d-flex justify-content-center gap-2 mb-1" style="font-size:1.1rem;">
-              <span title="ShopeePay">🧡</span><span title="DANA">🔵</span>
-            </div>
             <button class="btn btn-sm btn-outline-toska mt-1" onclick="copyQrisPayload()">📋 Salin Kode QRIS</button>
           </div>
 
-          <div id="payNonQrWrap" style="display:none;">
-            <div id="payMethodIcon" style="font-size:2.4rem;" class="mb-2">🏦</div>
-            <p class="small text-muted mb-0">Selesaikan pembayaran via <b id="payMethodName">E-Wallet</b></p>
-            <div class="card-soft text-start small mt-2" style="background:var(--toska-light);border:none;" id="payVaBox"></div>
-          </div>
-
           <p class="small text-muted mt-3 mb-1">ID Transaksi: <span id="payTrxId" class="fw-semibold"></span></p>
-          <p class="small text-muted mb-3">Total: <span class="fw-semibold" id="payAmountStep2">Rp10.000</span> &middot; berlaku <span id="qrCountdown" class="fw-semibold">05:00</span></p>
+          <p class="small text-muted mb-3">Berlaku <span id="qrCountdown" class="fw-semibold">05:00</span></p>
 
           <div class="d-flex align-items-center justify-content-center gap-2 mb-3" id="payWaitingIndicator">
             <span class="wait-dot"></span><span class="wait-dot"></span><span class="wait-dot"></span>
@@ -770,11 +792,11 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
           </div>
 
           <div class="alert alert-light border small text-start py-2 px-3 mb-3" id="payDemoInfoBox" style="border-radius:12px;background:#FBF8F2;">
-            ℹ️ Status akan berubah <b>otomatis</b> setelah pembayaran benar-benar diterima oleh sistem. Belum ada transaksi masuk = belum berhasil.
+            ℹ️ Status akan berubah <b>otomatis</b> setelah pembayaran benar-benar diterima oleh sistem.
           </div>
 
           <button class="btn btn-toska w-100" id="payConfirmBtn" onclick="confirmPaymentReceived()">✅ Saya Sudah Membayar — Cek Status</button>
-          <div class="form-text mt-1" id="payDemoHint">*Mode simulasi: pada versi produksi, status ini diperbarui otomatis lewat webhook payment gateway (mis. Midtrans/Xendit), bukan diklik manual.</div>
+          <div class="form-text mt-1" id="payDemoHint">*Mode simulasi: pada versi produksi, status diperbarui otomatis lewat webhook payment gateway (mis. Midtrans/Xendit), bukan diklik manual.</div>
         </div>
       </div>
 
@@ -798,14 +820,14 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
 <script>
 /* ===========================================================
    TEMANGURUTK — inline "AI"-assisted PWA logic
-   Rule-based NLP parser mensimulasikan pemrosesan bahasa alami
-   untuk perintah suara guru TK/PAUD.
 =========================================================== */
 
 const DB_KEY = 'tgtk_db_v1';
 let db = JSON.parse(localStorage.getItem(DB_KEY) || 'null') || {
   teacherName: 'Bu Guru',
   premium: false,
+  premiumUntil: null,
+  premiumPlan: null,
   plans: [],
   worksheets: [],
   wsCountToday: 0,
@@ -817,32 +839,52 @@ let db = JSON.parse(localStorage.getItem(DB_KEY) || 'null') || {
     {title:'Flashcard Angka 1-20', price:5000, author:'Bu Yuni, PAUD Karanganyar', icon:'🔢'},
     {title:'Tracing Huruf Hijaiyah', price:10000, author:'Bu Dewi, TKIT Sukoharjo', icon:'📖'},
   ],
-  /* ---- Autentikasi & batas percobaan AI harian ---- */
-  users: [],              // daftar akun terdaftar (demo, disimpan lokal)
+  users: [],
   auth: {
     loggedIn: false,
-    currentUser: null,     // {name, email}
-    guestTrialCount: 0,    // pemakaian AI tamu HARI INI
+    currentUser: null,
+    guestTrialCount: 0,
     guestTrialDate: new Date().toDateString(),
-    userTrialCount: 0,     // pemakaian AI akun (belum premium) HARI INI
+    userTrialCount: 0,
     userTrialDate: new Date().toDateString()
   }
 };
 function save(){ localStorage.setItem(DB_KEY, JSON.stringify(db)); }
-// Migrasi aman: kalau ada data lama (skema sebelum kuota harian) di localStorage,
-// field yang belum ada diisi nilai default TANPA menimpa field yang sudah valid.
-// (Sebelumnya pakai `db.auth || {...}` — kalau db.auth SUDAH ada tapi field baru
-// belum ada, defaultnya tidak pernah terisi → NaN/undefined di tampilan.)
+
 db.auth = Object.assign({
   loggedIn:false, currentUser:null,
   guestTrialCount:0, guestTrialDate:new Date().toDateString(),
   userTrialCount:0, userTrialDate:new Date().toDateString()
 }, db.auth || {});
 db.users = db.users || [];
-const GUEST_TRIAL_LIMIT = 2;  // percobaan AI gratis/hari untuk TAMU (belum daftar/masuk)
-const USER_TRIAL_LIMIT  = 5;  // percobaan AI gratis/hari untuk akun yang SUDAH LOGIN tapi belum Premium
+db.premiumUntil = db.premiumUntil || null;
+db.premiumPlan = db.premiumPlan || null;
 
-/* Reset otomatis kalau hari sudah berganti (dipanggil di awal & tiap kali gerbang AI dicek) */
+const GUEST_TRIAL_LIMIT = 2;   // percobaan AI/hari untuk TAMU
+const USER_TRIAL_LIMIT  = 5;   // percobaan AI/hari untuk akun login non-premium
+const FREE_WS_LIMIT     = 3;   // worksheet gratis per hari
+const FREE_CHILD_LIMIT  = 5;   // batas data anak paket gratis
+
+/* ===== Daftar paket Premium ===== */
+const PLANS = {
+  monthly:{ label:'1 Month Membership', item:'Premium 1 Bulan', price:20000, days:30 },
+  yearly: { label:'1 Years Membership', item:'Premium 1 Tahun', price:50000, days:365 }
+};
+
+/* PREMIUM AKTIF hanya jika: (1) sudah LOGIN, dan (2) sudah MEMBAYAR atas email akun yang sama */
+function isPremium(){
+  return !!(db.premium && db.auth && db.auth.loggedIn && db.auth.currentUser &&
+            db.premiumEmail && db.premiumEmail === db.auth.currentUser.email);
+}
+
+/* Premium otomatis berakhir kalau masa berlakunya habis */
+function checkPremiumExpiry(){
+  if(db.premium && db.premiumUntil && Date.now() > db.premiumUntil){
+    db.premium = false; db.premiumPlan = null; db.premiumUntil = null; db.premiumEmail = null; save();
+  }
+}
+checkPremiumExpiry();
+
 function resetDailyTrialsIfNeeded(){
   const today = new Date().toDateString();
   if(db.auth.guestTrialDate !== today){ db.auth.guestTrialDate = today; db.auth.guestTrialCount = 0; }
@@ -851,18 +893,24 @@ function resetDailyTrialsIfNeeded(){
 resetDailyTrialsIfNeeded();
 
 /* ===========================================================
-   KONFIGURASI PEMBAYARAN — ganti nilai ini saat backend sudah siap
+   KONFIGURASI PEMBAYARAN
    =========================================================== */
 const PAYMENT_CONFIG = {
-  // Set TRUE setelah backend (lihat contoh backend-contoh-midtrans.js) sudah
-  // di-deploy, supaya app memakai QRIS & status transaksi ASLI dari server.
+  // Set TRUE setelah backend (Midtrans/Xendit) siap, supaya QRIS & status asli dari server.
   backendEnabled: false,
-  // Ganti dengan URL backend kamu, contoh: 'https://api.temangurutk.com'
   apiBase: 'https://ganti-dengan-backend-kamu.com',
   pollIntervalMs: 3000
 };
 
-// reset daily worksheet quota
+/* ===========================================================
+  
+const QRIS_CONFIG = {
+  mode: 'image',             // pakai FOTO QRIS milikmu
+  staticImageSrc: 'gambar/qr.jpeg' // taruh foto QRIS satu folder dengan index.html, namai qris.jpg
+                             // (atau isi URL / data:image/png;base64,...)
+};
+
+// reset kuota worksheet harian
 if(db.wsCountDate !== new Date().toDateString()){
   db.wsCountDate = new Date().toDateString();
   db.wsCountToday = 0;
@@ -877,6 +925,7 @@ function goTo(name){
   document.getElementById('screen-'+name).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.target===name));
   if(name==='children') renderChildSelect();
+  if(name==='premium') refreshPremiumUI();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -884,7 +933,7 @@ function showToast(msg){
   const t = document.getElementById('toastMini');
   t.textContent = msg; t.classList.add('show');
   clearTimeout(window._toastTimer);
-  window._toastTimer = setTimeout(()=>t.classList.remove('show'), 2400);
+  window._toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
 }
 
 /* ---------- Simulated NLP command parser ---------- */
@@ -913,7 +962,6 @@ function parseCommand(text){
     const jamMatch = lower.match(/(\d{1,2})[:.](\d{2})/);
     return {intent:'reminder', time: jamMatch ? `${jamMatch[1].padStart(2,'0')}:${jamMatch[2]}` : null, title: text};
   }
-  // default: rencana pembelajaran
   return {intent:'plan', tema: tema || extractLastNoun(lower), durasi: durasi || 30, jenis:'harian'};
 }
 function extractLastNoun(lower){
@@ -932,6 +980,7 @@ function handleVoiceCommand(text){
       goTo('planning');
       document.getElementById('planTema').value = capitalize(cmd.tema);
       document.getElementById('planDurasi').value = cmd.durasi;
+      document.getElementById('planJenis').value = 'harian';
       generatePlanFromForm();
     } else if(cmd.intent==='worksheet'){
       goTo('worksheet');
@@ -1011,10 +1060,19 @@ function getTemaData(tema){
 }
 
 function generatePlanFromForm(){
+  checkPremiumExpiry();
   if(!canUseAI()) return;
   const tema = document.getElementById('planTema').value.trim() || 'Umum';
   const durasi = parseInt(document.getElementById('planDurasi').value) || 30;
   const jenis = document.getElementById('planJenis').value;
+
+  // Paket gratis hanya boleh rencana harian ("Perencanaan Dasar")
+  if(!isPremium() && jenis !== 'harian'){
+    showToast('Rencana mingguan & semester khusus Premium ⭐');
+    goTo('premium');
+    return;
+  }
+
   const plan = buildPlan(tema, durasi, jenis);
   db.plans.unshift(plan);
   save();
@@ -1052,7 +1110,6 @@ function buildPlan(tema, durasi, jenis){
       alat:t.alat.slice(0, 2).concat(['Lembar kerja pendukung'])
     }))};
   }
-  // semester
   const bulan = ['Bulan 1','Bulan 2','Bulan 3','Bulan 4','Bulan 5','Bulan 6'];
   const fokusSem = ['Pengenalan tema '+tema,'Eksplorasi sensorik '+tema,'Kognitif & berhitung '+tema,'Bahasa & bercerita '+tema,'Sosial-emosional lewat '+tema,'Proyek puncak tema '+tema];
   return {id, jenis, tema, durasi, tujuan, created:new Date().toISOString(), steps: bulan.map((b,i)=>({
@@ -1143,17 +1200,18 @@ function renderPlanHistory(){
    WORKSHEET GENERATOR (SVG based)
 =========================================================== */
 function generateWorksheet(){
+  checkPremiumExpiry();
   if(!canUseAI()) return;
   const jenis = document.getElementById('wsType').value;
   const tema = document.getElementById('wsTema').value.trim() || 'umum';
 
-  if(!db.premium && db.wsCountToday >= 1){
+  if(!isPremium() && db.wsCountToday >= FREE_WS_LIMIT){
     document.getElementById('wsResultWrap').innerHTML = `
       <div class="card-soft text-center">
         <div style="font-size:2rem;">🔒</div>
         <div class="fw-bold mb-1">Kuota gratis harian habis</div>
-        <p class="small text-muted">Kamu sudah membuat 1 worksheet gratis hari ini. Upgrade Premium untuk worksheet unlimited & HD tanpa watermark.</p>
-        <button class="btn btn-orange w-100" onclick="goTo('premium')">Upgrade Premium — Rp10.000/bln</button>
+        <p class="small text-muted">Kamu sudah membuat ${FREE_WS_LIMIT} worksheet gratis hari ini. Upgrade Premium untuk worksheet unlimited, HD, tanpa watermark.</p>
+        <button class="btn btn-orange w-100" onclick="goTo('premium')">Lihat Paket Premium</button>
       </div>`;
     return;
   }
@@ -1174,24 +1232,21 @@ function generateWorksheet(){
     <div class="card-soft">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <div class="fw-bold">${capitalize(jenis)} · ${capitalize(tema)}</div>
-        ${!db.premium ? '<span class="chip orange">Gratis</span>' : '<span class="chip">HD Premium</span>'}
+        ${!isPremium() ? '<span class="chip orange">Gratis · SD</span>' : '<span class="chip">HD Premium</span>'}
       </div>
       <div class="ws-preview">
         ${svg}
-        ${!db.premium ? '<div class="watermark"><span>TEMANGURUTK</span></div>' : ''}
+        ${!isPremium() ? '<div class="watermark"><span>TEMANGURUTK</span></div>' : ''}
       </div>
       <div class="d-flex gap-2 mt-2">
         <button class="btn btn-outline-toska btn-sm flex-fill" onclick="printWorksheet('${wsId}')">🖨️ Cetak</button>
         <button class="btn btn-toska btn-sm flex-fill" id="wsDownloadBtn-${wsId}" onclick="downloadWorksheet('${wsId}')">⬇️ Unduh PNG</button>
       </div>
-      <div class="form-text mt-1">${!db.premium ? 'Versi gratis diunduh/dicetak dengan watermark. Upgrade Premium untuk bebas watermark & kualitas HD.' : 'Tersimpan otomatis di riwayat worksheet kamu.'}</div>
+      <div class="form-text mt-1">${!isPremium() ? 'Versi gratis: resolusi SD dengan watermark. Upgrade Premium untuk HD & bebas watermark.' : 'Tersimpan otomatis di riwayat worksheet kamu.'}</div>
     </div>`;
   showToast('Worksheet berhasil dibuat AI 🎨');
 }
 
-/* Menyisipkan watermark diagonal LANGSUNG ke dalam file SVG (bukan hanya
-   lapisan tampilan di layar) supaya versi cetak/unduh gratis tetap konsisten
-   dengan watermark yang terlihat di preview. */
 function addWatermarkToSvg(svgString){
   const wmLayer = `
     <g opacity="0.13">
@@ -1206,7 +1261,7 @@ function addWatermarkToSvg(svgString){
 function printWorksheet(id){
   const data = window._wsCache ? window._wsCache[id] : null;
   if(!data) return;
-  const svgFinal = db.premium ? data.svg : addWatermarkToSvg(data.svg);
+  const svgFinal = isPremium() ? data.svg : addWatermarkToSvg(data.svg);
   const win = window.open('', '_blank');
   win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Worksheet - ${capitalize(data.jenis)} ${capitalize(data.tema)}</title>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
@@ -1223,8 +1278,7 @@ function printWorksheet(id){
   setTimeout(()=> win.print(), 500);
 }
 
-/* Unduh worksheet sebagai file PNG siap cetak (bukan sekadar tombol dekoratif) —
-   SVG dirender ke <canvas> beresolusi tinggi (3x) lalu diunduh sebagai gambar. */
+/* Unduh PNG: gratis = resolusi SD (1.5x) + watermark, Premium = HD (4x) tanpa watermark */
 function downloadWorksheet(id){
   const data = window._wsCache ? window._wsCache[id] : null;
   if(!data) return;
@@ -1232,12 +1286,12 @@ function downloadWorksheet(id){
   const originalLabel = btn ? btn.textContent : null;
   if(btn){ btn.disabled = true; btn.textContent = '⏳ Menyiapkan...'; }
 
-  const svgFinal = db.premium ? data.svg : addWatermarkToSvg(data.svg);
+  const svgFinal = isPremium() ? data.svg : addWatermarkToSvg(data.svg);
   const svgBlob = new Blob([svgFinal], {type:'image/svg+xml;charset=utf-8'});
   const url = URL.createObjectURL(svgBlob);
   const img = new Image();
   img.onload = function(){
-    const scale = db.premium ? 4 : 2.5;
+    const scale = isPremium() ? 4 : 1.5;
     const canvas = document.createElement('canvas');
     canvas.width = 300*scale; canvas.height = 420*scale;
     const ctx = canvas.getContext('2d');
@@ -1265,19 +1319,19 @@ function downloadWorksheet(id){
 
 function renderWsQuota(){
   const el = document.getElementById('wsQuotaText');
-  el.textContent = db.premium ? 'Status: Premium — worksheet unlimited & HD.' : `Kuota gratis hari ini: ${Math.max(0,1-db.wsCountToday)}/1`;
+  el.textContent = isPremium()
+    ? 'Status: Premium — worksheet unlimited & HD.'
+    : `Kuota gratis hari ini: ${Math.max(0,FREE_WS_LIMIT-db.wsCountToday)}/${FREE_WS_LIMIT}`;
 }
 
 /* ===========================================================
-   Template A4 siap cetak: header bertajuk, kolom nama/tanggal,
-   bingkai dekoratif, dan footer brand — dipakai semua jenis worksheet
+   Template A4 worksheet
 =========================================================== */
 function wsFrame(jenisLabel, jenisIcon, tema, innerContent, footNote){
   return `<svg viewBox="0 0 300 420" xmlns="http://www.w3.org/2000/svg" font-family="'Baloo 2','Segoe UI',sans-serif">
     <rect width="300" height="420" fill="#FFFFFF"/>
     <rect x="6" y="6" width="288" height="408" rx="16" fill="none" stroke="#F7941D" stroke-width="1.6" stroke-dasharray="3,4"/>
 
-    <path d="M10 46 Q150 20 290 46 L290 6 Q150 -6 10 6 Z" fill="#00A99D" opacity="0" />
     <rect x="14" y="14" width="272" height="46" rx="12" fill="#00A99D"/>
     <circle cx="34" cy="37" r="14" fill="#F7941D"/>
     <text x="34" y="42" text-anchor="middle" font-size="14">${jenisIcon}</text>
@@ -1299,8 +1353,6 @@ function wsFrame(jenisLabel, jenisIcon, tema, innerContent, footNote){
   </svg>`;
 }
 
-/* Ilustrasi garis-tepi (line art) per tema untuk lembar mewarnai —
-   digambar dari path/bentuk dasar agar mudah diwarnai anak */
 function mewarnaiArt(temaKey){
   const arts = {
     binatang:`
@@ -1368,9 +1420,6 @@ function buildWorksheetSVG(jenis, tema){
 
   if(jenis==='tracing'){
     const huruf = (tema.charAt(0) || 'A').toUpperCase();
-    const rows = [0,1,2].map(i=> `
-      <text x="${40+i*90}" y="90" font-size="52" text-anchor="middle" font-family="'Baloo 2',sans-serif"
-        fill="none" stroke="#193B39" stroke-width="1.6" stroke-dasharray="4,3">${huruf}${huruf.toLowerCase()}</text>`).join('');
     const content = `
       <text x="150" y="18" text-anchor="middle" font-size="10.5" fill="#4C6664">Ikuti garis putus-putus untuk melatih menulis huruf ${huruf}</text>
       <text x="150" y="70" text-anchor="middle" font-size="110" font-family="'Baloo 2',sans-serif" fill="none" stroke="#00A99D" stroke-width="2" stroke-dasharray="5,4">${huruf}</text>
@@ -1386,7 +1435,7 @@ function buildWorksheetSVG(jenis, tema){
 
   if(jenis==='berhitung'){
     const usedNums = new Set();
-    while(usedNums.size < 3){ usedNums.add(2 + Math.floor(Math.random()*7)); } // 2..8, tanpa duplikat
+    while(usedNums.size < 3){ usedNums.add(2 + Math.floor(Math.random()*7)); }
     const soal = [...usedNums].sort((a,b)=>a-b);
     const rows = soal.map((n,idx)=>{
       let items='';
@@ -1407,7 +1456,6 @@ function buildWorksheetSVG(jenis, tema){
     return wsFrame('Lembar Berhitung', '🔢', tema, content);
   }
 
-  // flashcard — 2 kartu per lembar, siap digunting
   const kata1 = capitalize(t.kosakata[0] || tema);
   const kata2 = capitalize(t.kosakata[1] || tema);
   const content = `
@@ -1429,9 +1477,15 @@ function buildWorksheetSVG(jenis, tema){
    CHILDREN & NOTES
 =========================================================== */
 function addChild(){
+  checkPremiumExpiry();
   const name = document.getElementById('childName').value.trim();
   const age = document.getElementById('childAge').value.trim();
   if(!name){ showToast('Isi nama anak terlebih dahulu'); return; }
+  if(!isPremium() && db.children.length >= FREE_CHILD_LIMIT){
+    showToast(`Paket gratis maksimal ${FREE_CHILD_LIMIT} anak. Upgrade Premium untuk unlimited.`);
+    goTo('premium');
+    return;
+  }
   db.children.unshift({id:'c_'+Date.now(), name, age});
   save();
   document.getElementById('childName').value='';
@@ -1441,6 +1495,8 @@ function addChild(){
 }
 function renderChildList(){
   const wrap = document.getElementById('childList');
+  const q = document.getElementById('childQuotaText');
+  if(q) q.textContent = isPremium() ? 'Premium — catatan anak unlimited.' : `Paket gratis: ${db.children.length}/${FREE_CHILD_LIMIT} anak tercatat.`;
   if(!db.children.length){ wrap.innerHTML='<p class="text-muted small mb-0">Belum ada data anak.</p>'; return; }
   wrap.innerHTML = db.children.map(c=>`
     <div class="child-item">
@@ -1597,84 +1653,64 @@ function addMarketTemplate(){
 }
 
 /* ===========================================================
-   PREMIUM & PROFILE
+   PEMBAYARAN — LANGSUNG QRIS
 =========================================================== */
 let paymentModalInstance, notifModalInstance;
-let qrCountdownTimer, payCheckTimeout;
+let qrCountdownTimer, payCheckTimeout, payPollInterval;
 let currentPayment = null; // {title, item, amount, onSuccess}
 
-function openPaymentModal(opts){
-  if(opts.item === 'Premium Bulanan' && db.premium){ showToast('Kamu sudah berlangganan Premium'); return; }
-  currentPayment = opts;
-  document.getElementById('payModalTitle').textContent = opts.title || '💳 Transaksi';
-  document.getElementById('payItemName').textContent = opts.item;
-  document.getElementById('payItemAmount').textContent = 'Rp' + opts.amount.toLocaleString('id-ID');
-  document.getElementById('payAmountStep2').textContent = 'Rp' + opts.amount.toLocaleString('id-ID');
-
-  const btn = document.getElementById('payConfirmBtn');
-  btn.onclick = confirmPaymentReceived;
-  document.getElementById('payWaitingIndicator').style.display = 'flex';
-
-  document.getElementById('payStep1').style.display = 'block';
-  document.getElementById('payStep2').style.display = 'none';
-  document.getElementById('payStep3').style.display = 'none';
-  if(!paymentModalInstance){ paymentModalInstance = new bootstrap.Modal(document.getElementById('paymentModal')); }
-  paymentModalInstance.show();
-}
-
-function cancelPayment(){
+function stopPaymentTimers(){
   clearInterval(qrCountdownTimer);
   clearTimeout(payCheckTimeout);
   clearInterval(payPollInterval);
+}
+
+/* Membuka modal & langsung menampilkan QRIS (tanpa pilihan metode lain) */
+function openPaymentModal(opts){
+  stopPaymentTimers();
+  currentPayment = opts;
+  document.getElementById('payModalTitle').textContent = opts.title || '💳 Bayar dengan QRIS';
+  document.getElementById('payItemName').textContent = opts.item;
+  document.getElementById('payAmountStep2').textContent = 'Rp' + opts.amount.toLocaleString('id-ID');
+  document.getElementById('payConfirmBtn').onclick = confirmPaymentReceived;
+  document.getElementById('payStep2').style.display = 'block';
+  document.getElementById('payStep3').style.display = 'none';
+  if(!paymentModalInstance){
+    const el = document.getElementById('paymentModal');
+    paymentModalInstance = new bootstrap.Modal(el);
+    el.addEventListener('hidden.bs.modal', stopPaymentTimers);
+  }
+  paymentModalInstance.show();
+  startQrisPayment();
+}
+
+function cancelPayment(){
+  stopPaymentTimers();
   if(paymentModalInstance) paymentModalInstance.hide();
   showToast('Transaksi dibatalkan');
 }
 
-async function goToPayStep2(){
-  const method = document.querySelector('input[name="payMethod"]:checked').value;
-  const isQris = method === 'QRIS';
-  const icons = {'E-Wallet':'👛'};
+async function startQrisPayment(){
   const amount = currentPayment.amount;
-
-  currentPayment.method = method;
+  currentPayment.method = 'QRIS';
   currentPayment.paid = false;
   currentPayment.expired = false;
 
-  document.getElementById('payMethodName').textContent = method === 'E-Wallet' ? 'E-Wallet (ShopeePay/DANA)' : method;
-  document.getElementById('payMethodIcon').textContent = icons[method] || '💳';
   document.getElementById('qrExpiredOverlay').style.display = 'none';
   resetWaitingState();
-
-  document.getElementById('payQrWrap').style.display = isQris ? 'block' : 'none';
-  document.getElementById('payNonQrWrap').style.display = isQris ? 'none' : 'block';
-  document.getElementById('payStep1').style.display = 'none';
-  document.getElementById('payStep2').style.display = 'block';
   document.getElementById('payStatusText').textContent = 'Membuat transaksi...';
 
-  // === Titik integrasi backend: minta QR/kode bayar ASLI dari server ===
-  const trx = await createTransactionOnServer(currentPayment.item, amount, method);
+  const trx = await createTransactionOnServer(currentPayment.item, amount, 'QRIS');
   currentPayment.trxId = trx.trxId;
   document.getElementById('payTrxId').textContent = trx.trxId;
   document.getElementById('payTrxIdDone').textContent = trx.trxId;
 
-  if(!isQris){
-    // method === 'E-Wallet' (ShopeePay / DANA)
-    const vaNumber = trx.vaNumber || ('8807' + Date.now().toString().slice(-10));
-    const vaBox = document.getElementById('payVaBox');
-    vaBox.innerHTML = `<div class="d-flex justify-content-between"><span>Kode Bayar</span><b>${vaNumber}</b></div>
-      <div class="text-muted mt-1" style="font-size:.72rem;">Buka aplikasi ShopeePay atau DANA Anda → Bayar dengan kode ini.</div>`;
-  }
-
-  if(isQris) renderQRIS(trx.trxId, amount, trx.qrPayload);
+  renderQRIS(trx.trxId, amount, trx.qrPayload);
   startQrCountdown();
   toggleWaitingMode();
   if(PAYMENT_CONFIG.backendEnabled) startStatusPolling(trx.trxId);
-  // Jika backend TIDAK aktif: tidak ada proses otomatis apa pun di sini —
-  // status hanya berubah lewat klik konfirmasi manual (mode demo/sandbox).
 }
 
-/* Menyesuaikan tampilan step2 tergantung mode: backend aktif (otomatis,
-   real webhook) vs demo (manual, jujur menunggu tanpa auto-berhasil). */
 function toggleWaitingMode(){
   const btn = document.getElementById('payConfirmBtn');
   const hint = document.getElementById('payDemoHint');
@@ -1687,7 +1723,7 @@ function toggleWaitingMode(){
   } else {
     btn.style.display = 'block';
     if(hint) hint.style.display = 'block';
-    if(infoBox) infoBox.innerHTML = 'ℹ️ Status akan berubah <b>otomatis</b> setelah pembayaran benar-benar diterima oleh sistem. Belum ada transaksi masuk = belum berhasil.';
+    if(infoBox) infoBox.innerHTML = 'ℹ️ Mode simulasi: tanpa backend, status belum bisa dicek otomatis ke bank.';
   }
 }
 
@@ -1699,8 +1735,6 @@ function resetWaitingState(){
   btn.textContent = '✅ Saya Sudah Membayar — Cek Status';
 }
 
-/* Countdown masa berlaku kode bayar/QR — real-time berjalan mundur mengikuti jam sistem.
-   Jika waktu habis TANPA transaksi masuk, status otomatis gagal/expired (tidak pernah "berhasil" sendiri). */
 function startQrCountdown(){
   let secondsLeft = 300;
   clearInterval(qrCountdownTimer);
@@ -1712,61 +1746,48 @@ function startQrCountdown(){
     countdownEl.textContent = formatCountdown(Math.max(secondsLeft,0));
     if(secondsLeft <= 60) countdownEl.classList.add('text-danger');
     if(secondsLeft<=0){
-      clearInterval(qrCountdownTimer);
-      clearTimeout(payCheckTimeout);
-      clearInterval(payPollInterval);
+      stopPaymentTimers();
       currentPayment.expired = true;
       document.getElementById('payWaitingIndicator').style.display = 'none';
       document.getElementById('payStatusText').textContent = 'Waktu pembayaran habis, transaksi tidak ditemukan.';
       document.getElementById('payConfirmBtn').disabled = true;
       document.getElementById('payConfirmBtn').textContent = '❌ Kedaluwarsa — Buat Ulang';
-      document.getElementById('payConfirmBtn').onclick = ()=> goToPayStep2();
-      if(document.getElementById('payQrWrap').style.display !== 'none'){
-        document.getElementById('qrExpiredOverlay').style.display = 'flex';
-      }
+      document.getElementById('payConfirmBtn').onclick = ()=> startQrisPayment();
+      document.getElementById('qrExpiredOverlay').style.display = 'flex';
     }
   },1000);
 }
 
 function refreshQris(){
   document.getElementById('qrExpiredOverlay').style.display = 'none';
-  document.getElementById('payConfirmBtn').onclick = ()=> confirmPaymentReceived();
-  goToPayStep2();
+  document.getElementById('payConfirmBtn').onclick = confirmPaymentReceived;
+  startQrisPayment();
   showToast('QR diperbarui');
 }
 
 /* ===========================================================
-   TITIK INTEGRASI BACKEND PEMBAYARAN
-   Tiga fungsi di bawah ini adalah SATU-SATUNYA tempat yang perlu diubah
-   untuk menyambungkan ke payment gateway sungguhan (Midtrans/Xendit/dll).
-   Lihat contoh backend: backend-contoh-midtrans.js
+   TITIK INTEGRASI BACKEND PEMBAYARAN (Midtrans/Xendit/dll)
 =========================================================== */
-
-/* 1) Minta backend membuat transaksi + QRIS dinamis yang ASLI.
-   Kalau backend belum aktif, jatuh ke mode demo (QR lokal, tanpa server). */
 async function createTransactionOnServer(item, amount, method){
   if(PAYMENT_CONFIG.backendEnabled){
     try{
       const res = await fetch(`${PAYMENT_CONFIG.apiBase}/api/create-transaction`, {
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ item, amount, method })
+        body: JSON.stringify({ item, amount, method, email: db.auth.currentUser ? db.auth.currentUser.email : null })
       });
       if(!res.ok) throw new Error('Gagal membuat transaksi di server');
       const data = await res.json();
-      // Backend diharapkan mengembalikan: { trxId, qrPayload, vaNumber }
-      return { trxId: data.trxId, qrPayload: data.qrPayload, vaNumber: data.vaNumber };
+      return { trxId: data.trxId, qrPayload: data.qrPayload };
     } catch(err){
       console.error('createTransactionOnServer gagal, fallback ke demo:', err);
       showToast('Gagal terhubung ke server pembayaran, memakai mode demo');
     }
   }
-  // --- MODE DEMO (tanpa backend) ---
   const trxId = 'TGTK-' + Date.now().toString().slice(-8);
-  return { trxId, qrPayload: buildQrisPayload(trxId, amount), vaNumber: null };
+  return { trxId, qrPayload: buildQrisPayload(trxId, amount) };
 }
 
-/* 2) Tanyakan status transaksi ke backend (dipanggil berulang oleh polling). */
 async function fetchTransactionStatus(trxId){
   if(PAYMENT_CONFIG.backendEnabled){
     const res = await fetch(`${PAYMENT_CONFIG.apiBase}/api/transaction-status/${trxId}`);
@@ -1774,25 +1795,20 @@ async function fetchTransactionStatus(trxId){
     const data = await res.json();
     return data.status; // 'pending' | 'paid' | 'expired' | 'failed'
   }
-  return 'pending'; // mode demo: status hanya berubah lewat konfirmasi manual
+  return 'pending';
 }
 
-/* 3) Polling otomatis — dipakai HANYA saat backend aktif. Ini pengganti
-   tombol "Saya Sudah Membayar", karena status datang dari webhook asli. */
-let payPollInterval;
 function startStatusPolling(trxId){
   clearInterval(payPollInterval);
   payPollInterval = setInterval(async ()=>{
     try{
       const status = await fetchTransactionStatus(trxId);
       if(status === 'paid'){
-        clearInterval(payPollInterval);
-        clearInterval(qrCountdownTimer);
+        stopPaymentTimers();
         document.getElementById('payStatusText').textContent = 'Transaksi ditemukan & terverifikasi ✅';
         finishPayment(trxId, currentPayment.method);
       } else if(status === 'expired' || status === 'failed'){
-        clearInterval(payPollInterval);
-        clearInterval(qrCountdownTimer);
+        stopPaymentTimers();
         document.getElementById('payStatusText').textContent = 'Transaksi gagal/kedaluwarsa.';
         document.getElementById('qrExpiredOverlay').style.display = 'flex';
       }
@@ -1800,9 +1816,7 @@ function startStatusPolling(trxId){
   }, PAYMENT_CONFIG.pollIntervalMs);
 }
 
-/* Konfirmasi manual — HANYA dipakai pada MODE DEMO (backendEnabled:false).
-   Saat backend aktif, fungsi ini tidak pernah dipanggil karena tombolnya
-   disembunyikan (lihat toggleWaitingMode) dan status datang dari polling asli. */
+/* Konfirmasi manual — HANYA untuk MODE DEMO (backendEnabled:false) */
 function confirmPaymentReceived(){
   if(currentPayment.expired){ showToast('Kode pembayaran sudah kedaluwarsa'); return; }
   const btn = document.getElementById('payConfirmBtn');
@@ -1826,25 +1840,7 @@ function formatCountdown(s){
   return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
 }
 
-/* ===========================================================
-   KONFIGURASI TAMPILAN QRIS
-   Ganti QRIS_CONFIG.mode jadi 'image' untuk memakai GAMBAR QRIS milik kamu
-   sendiri (misalnya hasil unduhan dari aplikasi bank/e-wallet), alih-alih
-   QR yang digambar otomatis dari kode. Lihat panduan lengkap di jawaban chat.
-=========================================================== */
-const QRIS_CONFIG = {
-  // 'auto'  = QR digambar otomatis dari kode/payload (qrcode.js) — bawaan sekarang
-  // 'image' = pakai GAMBAR QRIS statis milik kamu sendiri
-  mode: 'image',
-  // Isi salah satu di bawah ini kalau mode = 'image':
-  // 1) URL gambar yang sudah kamu upload/hosting, contoh: 'https://domainkamu.com/qris-saya.png'
-  // 2) atau data:image/png;base64,....  (supaya gambar ikut tersimpan di dalam satu file HTML ini)
-  staticImageSrc: ''
-};
-
-/* Render QRIS realtime. Mode 'auto': digambar ke canvas dari payload/kode
-   (dari backend kalau ada, atau payload demo). Mode 'image': menampilkan
-   GAMBAR QRIS statis milik kamu (QRIS_CONFIG.staticImageSrc) apa adanya. */
+/* Render QRIS: mode 'image' = gambar QRIS milikmu, mode 'auto' / src kosong = QR demo */
 function renderQRIS(trxId, amount, qrPayload){
   const canvas = document.getElementById('qrCanvas');
   const img = document.getElementById('qrImageStatic');
@@ -1852,14 +1848,18 @@ function renderQRIS(trxId, amount, qrPayload){
   if(QRIS_CONFIG.mode === 'image' && QRIS_CONFIG.staticImageSrc){
     canvas.style.display = 'none';
     img.style.display = 'block';
+    img.onerror = function(){
+      img.style.display='none';
+      document.getElementById('qrImageNominalNote').innerHTML = '⚠️ Foto QRIS (<b>'+QRIS_CONFIG.staticImageSrc+'</b>) tidak ditemukan. Letakkan file foto QRIS di folder yang sama dengan index.html.';
+    };
     img.src = QRIS_CONFIG.staticImageSrc;
-    canvas.dataset.payload = ''; // tidak ada payload teks untuk mode gambar statis
-    document.getElementById('qrImageNominalNote').style.display = 'block';
-    document.getElementById('qrImageNominalValue').textContent = 'Rp' + amount.toLocaleString('id-ID');
+    canvas.dataset.payload = '';
+    const note = document.getElementById('qrImageNominalNote');
+    note.style.display = 'block';
+    note.innerHTML = '⚠️ Scan QRIS lalu masukkan nominal <b>Rp' + amount.toLocaleString('id-ID') + '</b> secara manual.';
     return;
   }
 
-  // --- mode 'auto' (bawaan) ---
   document.getElementById('qrImageNominalNote').style.display = 'none';
   canvas.style.display = 'block';
   img.style.display = 'none';
@@ -1872,9 +1872,7 @@ function renderQRIS(trxId, amount, qrPayload){
   }
   canvas.dataset.payload = payload;
 }
-/* Payload demo mengikuti struktur tag EMVCo QRIS (merchant, kota, nominal, ID
-   transaksi, timestamp realtime). Untuk produksi, payload ASLI & tertandatangani
-   harus dibuat oleh server PSP (Midtrans/Xendit), BUKAN di frontend seperti ini. */
+/* Payload DEMO (tidak bisa dibayar). Produksi: payload asli dibuat server PSP. */
 function buildQrisPayload(trxId, amount){
   const amt = amount.toFixed ? amount.toFixed(2) : `${amount}.00`;
   return `00020101021226610014ID.CO.QRIS.WWW0215ID20232112345670303UMI5204581253033605802ID5913TEMANGURUTK6007SURAKARTA6105571126304${trxId}5406${amt}62200716${Date.now()}6304`;
@@ -1904,14 +1902,81 @@ function finishPayment(trxId, method){
   refreshNotifDot();
 }
 
-function onPremiumPaid(trx){
+/* ===========================================================
+   PREMIUM (1 bulan / 1 tahun)
+=========================================================== */
+function buyPremium(key){
+  // Alur: LOGIN dulu -> BAYAR (QRIS) -> baru Premium aktif
+  if(!db.auth.loggedIn || !db.auth.currentUser){
+    openAuthModal('register');
+    showToast('Masuk / daftar dulu, lalu lanjutkan pembayaran Premium');
+    return;
+  }
+  const p = PLANS[key];
+  openPaymentModal({
+    title:'💳 Upgrade Premium',
+    item:p.item,
+    amount:p.price,
+    planKey:key,
+    successMessage:`Akun kamu telah beralih ke <b>Premium ⭐ (${p.label})</b>`,
+    onSuccess:(trx)=> onPremiumPaid(trx, key)
+  });
+}
+
+function onPremiumPaid(trx, planKey){
+  const p = PLANS[planKey];
+  // Jika masih Premium, masa aktif diperpanjang (bukan ditimpa)
+  const base = (db.premium && db.premiumEmail===(db.auth.currentUser&&db.auth.currentUser.email) && db.premiumUntil && db.premiumUntil > Date.now()) ? db.premiumUntil : Date.now();
+  db.premiumUntil = base + p.days*24*60*60*1000;
   db.premium = true;
+  db.premiumEmail = db.auth.currentUser.email;
+  db.premiumPlan = planKey;
   db.premiumTrx = trx;
   save();
-  document.getElementById('premiumStatus').textContent = 'Premium ⭐';
+  refreshPremiumUI();
   renderWsQuota();
+  renderChildList();
+  renderDashboard();
   updateAuthUI();
-  showToast('Transaksi berhasil, akun beralih ke Premium 🎉');
+  showToast('Pembayaran berhasil, akun beralih ke Premium 🎉');
+}
+
+function refreshPremiumUI(){
+  checkPremiumExpiry();
+  const el = document.getElementById('premiumStatus');
+  if(isPremium()){
+    const sampai = db.premiumUntil ? ' s/d ' + new Date(db.premiumUntil).toLocaleDateString('id-ID') : '';
+    el.textContent = 'Premium ⭐' + sampai;
+  } else {
+    el.textContent = 'Gratis';
+  }
+  // ===== status kartu paket =====
+  const prem = isPremium();
+  const until = db.premiumUntil ? new Date(db.premiumUntil).toLocaleDateString('id-ID') : '';
+  const setBtn = (id, current, label)=>{
+    const b = document.getElementById(id);
+    b.disabled = current;
+    b.classList.toggle('is-current', current);
+    b.textContent = current ? '✓ Paket Saat Ini' : label;
+  };
+  const plan = prem ? db.premiumPlan : 'free';
+  setBtn('btnFree',    plan==='free',    'Paket Gratis');
+  setBtn('btnMonthly', plan==='monthly', prem ? 'Perpanjang' : 'Pilih');
+  setBtn('btnYearly',  plan==='yearly',  prem ? 'Perpanjang' : 'Pilih');
+  // paket aktif tetap bisa diperpanjang
+  if(plan==='monthly'){ const b=document.getElementById('btnMonthly'); b.disabled=false; b.textContent='✓ Aktif s/d '+until+' · Perpanjang'; }
+  if(plan==='yearly'){ const b=document.getElementById('btnYearly'); b.disabled=false; b.textContent='✓ Aktif s/d '+until+' · Perpanjang'; }
+  document.getElementById('btnFree').disabled = true;
+  document.getElementById('badgeFree').style.display = plan==='free' ? 'block' : 'none';
+  const bm = document.getElementById('badgeMonthly');
+  bm.style.display = plan==='monthly' ? 'block' : 'none'; bm.textContent = 'Aktif';
+  const by = document.getElementById('badgeYearly');
+  if(plan==='yearly'){ by.textContent='Aktif'; by.classList.add('active'); } else { by.textContent='Hemat 79%'; by.classList.remove('active'); }
+  document.getElementById('cardFree').classList.toggle('is-active', plan==='free');
+  document.getElementById('cardMonthly').classList.toggle('is-active', plan==='monthly');
+  document.getElementById('cardYearly').classList.toggle('is-active', plan==='yearly');
+  const banner = document.getElementById('dashPremiumBanner');
+  if(banner) banner.style.display = isPremium() ? 'none' : 'block';
 }
 
 function saveTeacherName(){
@@ -1924,47 +1989,39 @@ function saveTeacherName(){
 }
 
 /* ===========================================================
-   AUTENTIKASI & GERBANG PERCOBAAN AI (berbasis HARIAN, reset tiap hari)
-   - Tamu (belum daftar/masuk): 2x percobaan AI GRATIS per hari.
-     Lebih dari itu → wajib Daftar/Masuk.
-   - Sudah login (belum Premium): 5x percobaan AI GRATIS per hari.
-     Lebih dari itu → wajib Upgrade Premium.
-   - Sudah Premium: tanpa batas.
+   AUTENTIKASI & GERBANG PERCOBAAN AI (harian)
+   Tamu: 2x/hari | Login non-premium: 5x/hari | Premium: tanpa batas
 =========================================================== */
 let authModalInstance;
 let authTabMode = 'login';
 
-/* Gerbang utama: dipanggil di AWAL setiap fungsi yang membuat konten AI.
-   Mengembalikan true jika aksi boleh dilanjutkan, false jika diblokir. */
 function canUseAI(){
   resetDailyTrialsIfNeeded();
+  checkPremiumExpiry();
+
+  if(isPremium()) return true;   // Premium = sudah login + sudah membayar
 
   if(db.auth.loggedIn){
-    if(db.premium) return true;                              // Premium → tanpa batas
-    if(db.auth.userTrialCount < USER_TRIAL_LIMIT) return true; // jatah 5x/hari belum habis
+    if(db.auth.userTrialCount < USER_TRIAL_LIMIT) return true;
     promptUpgradeForDailyLimit();
     return false;
   }
-
-  // Belum login (tamu)
-  if(db.auth.guestTrialCount < GUEST_TRIAL_LIMIT) return true; // jatah 2x/hari belum habis
+  if(db.auth.guestTrialCount < GUEST_TRIAL_LIMIT) return true;
   openAuthModal('register');
   showToast('Percobaan gratis hari ini sudah habis. Daftar untuk melanjutkan.');
   return false;
 }
 
-/* Ditampilkan saat akun yang SUDAH LOGIN (tapi belum Premium) melebihi 5x/hari */
 function promptUpgradeForDailyLimit(){
   showToast(`Kamu sudah memakai ${USER_TRIAL_LIMIT}x pembuatan AI hari ini. Upgrade Premium untuk akses tanpa batas.`);
   goTo('premium');
 }
 
-/* Menambah hitungan percobaan HARI INI — hanya dipanggil SETELAH
-   sebuah konten AI berhasil dibuat. */
 function consumeGuestTrial(){
   resetDailyTrialsIfNeeded();
+  if(isPremium()) return;
   if(db.auth.loggedIn){
-    if(!db.premium && db.auth.userTrialCount < USER_TRIAL_LIMIT){
+    if(!isPremium() && db.auth.userTrialCount < USER_TRIAL_LIMIT){
       db.auth.userTrialCount++;
       save();
       updateAuthUI();
@@ -1999,9 +2056,7 @@ function switchAuthTab(mode){
 
 function isValidEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
 
-/* Demo lokal (tanpa server sungguhan): akun & kata sandi disimpan di
-   localStorage perangkat ini saja. JANGAN dipakai apa adanya untuk produksi —
-   lihat panduan backend di jawaban chat untuk versi yang aman & realtime. */
+/* DEMO lokal: akun disimpan di localStorage. Untuk produksi pakai server/auth sungguhan. */
 function registerUser(){
   const name = document.getElementById('regName').value.trim();
   const email = document.getElementById('regEmail').value.trim().toLowerCase();
@@ -2021,6 +2076,8 @@ function registerUser(){
   save();
 
   authModalInstance.hide();
+  document.getElementById('teacherName').textContent = name;
+  document.getElementById('teacherNameInput').value = name;
   updateAuthUI();
   showToast(`Selamat datang, ${name}! Akun berhasil dibuat 🎉`);
 }
@@ -2041,6 +2098,8 @@ function loginUser(){
   save();
 
   authModalInstance.hide();
+  document.getElementById('teacherName').textContent = user.name;
+  document.getElementById('teacherNameInput').value = user.name;
   updateAuthUI();
   showToast(`Selamat datang kembali, ${user.name}! 👋`);
 }
@@ -2048,21 +2107,20 @@ function loginUser(){
 function logoutUser(){
   db.auth.loggedIn = false;
   db.auth.currentUser = null;
-  // guestTrialCount TETAP tersimpan supaya tidak bisa "reset" jatah percobaan hanya dengan logout
   save();
   updateAuthUI();
   showToast('Kamu telah keluar dari akun');
 }
 
-/* Menyegarkan seluruh elemen UI yang bergantung pada status login & kuota harian */
 function updateAuthUI(){
   resetDailyTrialsIfNeeded();
+  if(typeof refreshPremiumUI==='function') refreshPremiumUI();
   const badge = document.getElementById('authBadge');
   const trialBanner = document.getElementById('trialBanner');
   const accountCard = document.getElementById('accountStatusCard');
 
   if(db.auth.loggedIn && db.auth.currentUser){
-    if(db.premium){
+    if(isPremium()){
       badge.textContent = '⭐ ' + db.auth.currentUser.name.split(' ')[0] + ' · Premium';
       trialBanner.style.display = 'none';
       accountCard.innerHTML = `
@@ -2137,11 +2195,7 @@ function initSplashAndOnboarding(){
     setTimeout(()=>{
       splash.style.display = 'none';
       const onboarded = localStorage.getItem(ONB_KEY);
-      if(onboarded){
-        document.getElementById('onboardingScreen').style.display = 'none';
-      } else {
-        document.getElementById('onboardingScreen').style.display = 'flex';
-      }
+      document.getElementById('onboardingScreen').style.display = onboarded ? 'none' : 'flex';
     }, 350);
   }, 2200);
 }
@@ -2162,12 +2216,8 @@ function updateOnbUI(){
   }
 }
 function onbNext(){
-  if(onbIndex < onbTotal-1){
-    onbIndex++;
-    updateOnbUI();
-  } else {
-    finishOnboarding();
-  }
+  if(onbIndex < onbTotal-1){ onbIndex++; updateOnbUI(); }
+  else { finishOnboarding(); }
 }
 function finishOnboarding(){
   localStorage.setItem(ONB_KEY, '1');
@@ -2180,7 +2230,8 @@ function finishOnboarding(){
 function buildNotifList(){
   const items = [];
   db.reminders.slice(0,3).forEach(r=> items.push({icon:'⏰', title:`Pengingat: ${r.title}`, desc:`Dijadwalkan pukul ${r.time}`}));
-  if(!db.premium) items.push({icon:'⭐', title:'Coba Premium', desc:'Worksheet unlimited & HD tanpa watermark, Rp10.000/bulan.'});
+  if(!isPremium()) items.push({icon:'⭐', title:'Coba Premium', desc:'Unlimited, HD, tanpa watermark mulai Rp20.000/bulan.'});
+  else if(db.premiumUntil) items.push({icon:'⭐', title:'Premium aktif', desc:'Berlaku sampai ' + new Date(db.premiumUntil).toLocaleDateString('id-ID') + '.'});
   if(db.plans.length) items.push({icon:'🗓️', title:'Rencana tersimpan', desc:`${db.plans.length} rencana pembelajaran telah dibuat.`});
   if(!items.length) items.push({icon:'📭', title:'Belum ada notifikasi', desc:'Aktivitasmu akan muncul di sini.'});
   return items;
@@ -2197,14 +2248,13 @@ function openNotifPanel(){
   notifModalInstance.show();
 }
 function refreshNotifDot(){
-  const has = db.reminders.length > 0 || !db.premium;
+  const has = db.reminders.length > 0 || !isPremium();
   document.getElementById('notifDot').classList.toggle('show', has);
 }
 
-
 function renderDashboard(){
   document.getElementById('statPlans').textContent = db.plans.length;
-  document.getElementById('statWs').textContent = `${db.premium?'∞':Math.min(db.wsCountToday,1)}/${db.premium?'∞':1}`;
+  document.getElementById('statWs').textContent = isPremium() ? '∞' : `${Math.min(db.wsCountToday,FREE_WS_LIMIT)}/${FREE_WS_LIMIT}`;
   document.getElementById('statChildren').textContent = db.children.length;
   const recent = document.getElementById('recentPlans');
   if(db.plans.length){
@@ -2220,7 +2270,7 @@ function renderDashboard(){
 =========================================================== */
 document.getElementById('teacherName').textContent = db.teacherName;
 document.getElementById('teacherNameInput').value = db.teacherName;
-document.getElementById('premiumStatus').textContent = db.premium ? 'Premium ⭐' : 'Gratis';
+refreshPremiumUI();
 renderWsQuota();
 renderChildList();
 renderChildSelect();
@@ -2242,7 +2292,7 @@ refreshNotifDot();
 updateAuthUI();
 
 /* ===========================================================
-   PWA: Manifest + Service Worker (dibangun inline, single-file)
+   PWA: Manifest + Service Worker (inline, single-file)
 =========================================================== */
 const iconSVG = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%2300A99D'/><path d='M20 6 L44 6 L48 14 L16 14 Z' fill='%23F7941D'/><rect x='14' y='14' width='36' height='4' rx='2' fill='%23F7941D'/><path d='M32 20c-7.7 0-14 6.3-14 14 0 5.6 3.3 10.4 8 12.6V50h12v-3.4c4.7-2.2 8-7 8-12.6 0-7.7-6.3-14-14-14z' fill='white'/><rect x='27' y='50' width='10' height='4' rx='2' fill='%23F7941D'/></svg>`;
 const iconDataUri = 'data:image/svg+xml,' + iconSVG.replace(/\n/g,'').replace(/#/g,'%23');
@@ -2296,7 +2346,6 @@ if('serviceWorker' in navigator){
   }catch(e){ console.log('SW tidak dapat dijalankan pada mode ini.'); }
 }
 
-/* Install prompt handling */
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt', (e)=>{
   e.preventDefault();
