@@ -131,12 +131,6 @@ h1,h2,h3,h4,.brand,.nav-label,.btn{font-family:'Baloo 2',sans-serif;}
 .reminder-item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #EAE3D6;border-radius:14px;padding:10px 12px;margin-bottom:8px;}
 .reminder-time{background:var(--toska);color:#fff;border-radius:10px;padding:6px 10px;font-weight:700;font-size:.8rem;font-family:'Baloo 2';min-width:56px;text-align:center;}
 
-/* ===== market card ===== */
-.market-card{background:#fff;border:1px solid #EAE3D6;border-radius:16px;overflow:hidden;margin-bottom:12px;}
-.market-thumb{height:100px;background:linear-gradient(135deg,var(--toska-light),#fff);display:flex;align-items:center;justify-content:center;font-size:2.1rem;}
-.market-body{padding:10px 12px;}
-.price{color:var(--orange-dark);font-weight:700;font-family:'Baloo 2';}
-
 /* premium banner */
 .premium-banner{
   background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 100%);
@@ -524,10 +518,6 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
     </div>
 
     <div id="wsResultWrap"></div>
-
-    <div class="section-title"><span class="dot"></span>Marketplace Template Lokal</div>
-    <p class="small text-muted">Beli template soal siap pakai dari sesama guru & creator lokal, atau jual template kamu sendiri (komisi platform 15%).</p>
-    <button class="btn btn-outline-toska btn-sm w-100 mb-2" onclick="goTo('marketplace')">Buka Marketplace →</button>
   </div>
 
   <!-- ============================================================ -->
@@ -593,21 +583,6 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
   </div>
 
   <!-- ============================================================ -->
-  <!-- SCREEN: MARKETPLACE -->
-  <!-- ============================================================ -->
-  <div class="screen" id="screen-marketplace">
-    <div class="section-title"><span class="dot"></span>Marketplace Template</div>
-    <p class="small text-muted">Template dari creator lokal Solo Raya. Komisi platform 15% otomatis terpotong saat penjualan.</p>
-    <div id="marketGrid"></div>
-    <div class="card-soft">
-      <div class="fw-semibold small mb-2">Jual Template Kamu</div>
-      <input type="text" class="form-control form-control-sm mb-2" id="marketTitle" placeholder="Judul template">
-      <input type="number" class="form-control form-control-sm mb-2" id="marketPrice" placeholder="Harga (Rp)">
-      <button class="btn btn-outline-toska w-100" onclick="addMarketTemplate()">+ Upload Template</button>
-    </div>
-  </div>
-
-  <!-- ============================================================ -->
   <!-- SCREEN: PREMIUM / PROFILE -->
   <!-- ============================================================ -->
   <div class="screen" id="screen-premium">
@@ -634,7 +609,7 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
       </div>
       <ul class="price-list">
         <li>3 Lembar Soal/Hari</li>
-        <li>Ada Watermark</li>
+        <li>Terbatas</li>
         <li>Resolusi SD</li>
         <li>Perencanaan Dasar</li>
         <li class="limited">Catatan Anak Terbatas</li>
@@ -651,8 +626,8 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
       </div>
       <ul class="price-list">
         <li>Unlimited</li>
-        <li>Tanpa Watermark</li>
         <li>Resolusi HD</li>
+        <li>Buat Soal Unlimited</li>
         <li>Perencanaan Lengkap</li>
         <li>Catatan Anak Unlimited</li>
       </ul>
@@ -668,8 +643,8 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
       </div>
       <ul class="price-list">
         <li>Unlimited</li>
-        <li>Tanpa Watermark</li>
         <li>Resolusi HD</li>
+        <li>Buat Soal Unlimited</li>
         <li>Perencanaan Lengkap</li>
         <li>Catatan Anak Unlimited</li>
       </ul>
@@ -847,11 +822,6 @@ let db = JSON.parse(localStorage.getItem(DB_KEY) || 'null') || {
   wsCountDate: new Date().toDateString(),
   children: [],
   reminders: [],
-  marketTemplates: [
-    {title:'Paket Mewarnai Hewan Ternak', price:8000, author:'Bu Sri, TK Solo', icon:'🐄'},
-    {title:'Flashcard Angka 1-20', price:5000, author:'Bu Yuni, PAUD Karanganyar', icon:'🔢'},
-    {title:'Tracing Huruf Hijaiyah', price:10000, author:'Bu Dewi, TKIT Sukoharjo', icon:'📖'},
-  ],
   users: [],
   auth: {
     loggedIn: false,
@@ -899,6 +869,7 @@ function isPremium(){
   return true;
 }
 
+
 /* Premium otomatis berakhir kalau masa berlakunya habis */
 function checkPremiumExpiry(){
   if(db.premium && db.premiumUntil && Date.now() > db.premiumUntil){
@@ -931,7 +902,8 @@ const PAYMENT_CONFIG = {
 =========================================================== */
 const QRIS_CONFIG = {
   mode: 'image',             // pakai FOTO QRIS milikmu
-  staticImageSrc: 'gambar/qr.jpeg' 
+  staticImageSrc: 'qris.jpg' // taruh foto QRIS satu folder dengan index.html, namai qris.jpg
+                             // (atau isi URL / data:image/png;base64,...)
 };
 
 // reset kuota worksheet harian
@@ -1695,61 +1667,6 @@ function checkReminders(){
 setInterval(checkReminders, 30000);
 
 /* ===========================================================
-   MARKETPLACE
-=========================================================== */
-function renderMarket(){
-  const wrap = document.getElementById('marketGrid');
-  db.purchasedTemplates = db.purchasedTemplates || [];
-  wrap.innerHTML = db.marketTemplates.map((m,i)=>{
-    const owned = db.purchasedTemplates.includes(i);
-    return `
-    <div class="market-card">
-      <div class="market-thumb">${m.icon||'🧩'}</div>
-      <div class="market-body">
-        <div class="fw-semibold small">${m.title}</div>
-        <div class="text-muted" style="font-size:.72rem;">oleh ${m.author}</div>
-        <div class="d-flex justify-content-between align-items-center mt-2">
-          <span class="price">Rp${m.price.toLocaleString('id-ID')}</span>
-          ${owned
-            ? `<button class="btn btn-sm btn-outline-toska" disabled>✓ Dimiliki</button>`
-            : `<button class="btn btn-sm btn-orange" onclick="buyTemplate(${i})">Beli</button>`}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-function buyTemplate(i){
-  const m = db.marketTemplates[i];
-  openPaymentModal({
-    title: '🧩 Beli Template',
-    item: m.title,
-    amount: m.price,
-    successMessage: `Template <b>${m.title}</b> siap diunduh di koleksi kamu.`,
-    onSuccess: ()=> onTemplatePurchased(i, m)
-  });
-}
-function onTemplatePurchased(i, m){
-  db.purchasedTemplates = db.purchasedTemplates || [];
-  if(!db.purchasedTemplates.includes(i)) db.purchasedTemplates.push(i);
-  save();
-  const komisi = Math.round(m.price*0.15);
-  const diterimaPenjual = m.price - komisi;
-  renderMarket();
-  showToast(`Pembelian berhasil! Penjual menerima Rp${diterimaPenjual.toLocaleString('id-ID')} (komisi platform 15%: Rp${komisi.toLocaleString('id-ID')})`);
-}
-function addMarketTemplate(){
-  const title = document.getElementById('marketTitle').value.trim();
-  const price = parseInt(document.getElementById('marketPrice').value);
-  if(!title || !price){ showToast('Lengkapi judul & harga template'); return; }
-  db.marketTemplates.unshift({title, price, author: db.teacherName+' (Kamu)', icon:'🧩'});
-  save();
-  document.getElementById('marketTitle').value='';
-  document.getElementById('marketPrice').value='';
-  renderMarket();
-  showToast('Template diunggah ke marketplace');
-}
-
-/* ===========================================================
    PEMBAYARAN — LANGSUNG QRIS
 =========================================================== */
 let paymentModalInstance, notifModalInstance;
@@ -2372,7 +2289,6 @@ renderWsQuota();
 renderChildList();
 renderChildSelect();
 renderReminders();
-renderMarket();
 renderDashboard();
 renderPlanHistory();
 
