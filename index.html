@@ -886,8 +886,17 @@ const PLANS = {
 
 /* PREMIUM AKTIF hanya jika: (1) sudah LOGIN, dan (2) sudah MEMBAYAR atas email akun yang sama */
 function isPremium(){
-  return !!(db.premium && db.auth && db.auth.loggedIn && db.auth.currentUser &&
-            db.premiumEmail && db.premiumEmail === db.auth.currentUser.email);
+  if(!db.auth || !db.auth.loggedIn || !db.auth.currentUser) return false;
+  const user = db.users.find(u => u.email === db.auth.currentUser.email);
+  if(!user) return false;
+  if(!user.premium) return false;
+  if(user.premiumUntil && Date.now() > user.premiumUntil){
+    user.premium = false;
+    user.premiumPlan = null;
+    save();
+    return false;
+  }
+  return true;
 }
 
 /* Premium otomatis berakhir kalau masa berlakunya habis */
