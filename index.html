@@ -6,151 +6,71 @@
 <title>TemanGuruTK — Asisten AI Guru TK/PAUD</title>
 <meta name="theme-color" content="#00A99D">
 <meta name="description" content="Platform AI untuk membantu guru TK/PAUD menyusun pembelajaran, mengelola administrasi, dan bekerja lebih efisien lewat perintah suara.">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
 <style>
-:root{
-  --toska:#00A99D;
-  --toska-dark:#00857C;
-  --toska-light:#E1F6F3;
-  --orange:#F7941D;
-  --orange-dark:#DD7A05;
-  --cream:#FBF8F2;
-  --ink:#193B39;
-  --ink-soft:#4C6664;
-  --radius:18px;
-  font-size:16px;
-}
+:root{--toska:#00A99D;--toska-dark:#00857C;--toska-light:#E1F6F3;--orange:#F7941D;--orange-dark:#DD7A05;--cream:#FBF8F2;--ink:#193B39;--ink-soft:#4C6664;--radius:18px;font-size:16px;}
 *{-webkit-tap-highlight-color:transparent;}
-body{
-  background:var(--cream);
-  color:var(--ink);
-  font-family:'Inter',sans-serif;
-  padding-bottom:86px;
-  overscroll-behavior-y:none;
-}
+body{background:var(--cream);color:var(--ink);font-family:'Inter',sans-serif;padding-bottom:86px;overscroll-behavior-y:none;}
 h1,h2,h3,h4,.brand,.nav-label,.btn{font-family:'Baloo 2',sans-serif;}
 .app-shell{max-width:480px;margin:0 auto;min-height:100vh;background:var(--cream);position:relative;box-shadow:0 0 40px rgba(11,95,91,.08);}
-
-/* ===== Topbar ===== */
-.topbar{
-  background:linear-gradient(135deg,var(--toska) 0%,var(--toska-dark) 100%);
-  color:#fff;padding:18px 20px 26px;border-radius:0 0 26px 26px;position:relative;overflow:hidden;
-}
+.topbar{background:linear-gradient(135deg,var(--toska) 0%,var(--toska-dark) 100%);color:#fff;padding:18px 20px 26px;border-radius:0 0 26px 26px;position:relative;overflow:hidden;}
 .topbar::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,122,51,.18);}
 .topbar::before{content:"";position:absolute;left:-30px;bottom:-60px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.06);}
 .brand-row{display:flex;align-items:center;gap:10px;position:relative;z-index:1;}
-.brand{font-weight:700;font-size:1.15rem;letter-spacing:.2px;}
-.brand small{display:block;font-family:'Inter';font-weight:400;font-size:.68rem;opacity:.85;}
-.greet{position:relative;z-index:1;margin-top:14px;font-size:.92rem;opacity:.92;}
-.greet b{font-family:'Baloo 2';font-weight:700;}
-.logo-mark{width:40px;height:40px;flex:0 0 auto;}
-
-/* ===== Sections ===== */
 .screen{display:none;padding:16px 16px 8px;animation:fadeIn .25s ease;}
 .screen.active{display:block;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-
 .section-title{font-weight:700;font-size:1.05rem;margin:6px 0 12px;display:flex;align-items:center;gap:8px;}
 .section-title .dot{width:8px;height:8px;border-radius:50%;background:var(--orange);}
-
-.card-soft{
-  background:#fff;border:1px solid #EAE3D6;border-radius:var(--radius);padding:16px;margin-bottom:14px;
-  box-shadow:0 3px 14px rgba(25,59,57,.04);
-}
-
-/* ===== Voice command bar ===== */
-.voice-bar{
-  background:#fff;border:1.5px solid var(--toska-light);border-radius:22px;padding:10px 12px;
-  display:flex;align-items:center;gap:10px;margin:-15px 16px 16px;position:relative;z-index:2;
-  box-shadow:0 8px 24px rgba(11,95,91,.12);
-}
-.mic-btn{
-  width:46px;height:46px;border-radius:50%;border:none;flex:0 0 auto;
-  background:linear-gradient(135deg,var(--orange),var(--orange-dark));color:#fff;
-  display:flex;align-items:center;justify-content:center;font-size:1.2rem;
-  box-shadow:0 4px 12px rgba(255,122,51,.35);transition:transform .15s;
-}
+.card-soft{background:#fff;border:1px solid #EAE3D6;border-radius:var(--radius);padding:16px;margin-bottom:14px;box-shadow:0 3px 14px rgba(25,59,57,.04);}
+.voice-bar{background:#fff;border:1.5px solid var(--toska-light);border-radius:22px;padding:10px 12px;display:flex;align-items:center;gap:10px;margin:-15px 16px 16px;position:relative;z-index:2;box-shadow:0 8px 24px rgba(11,95,91,.12);}
+.mic-btn{width:46px;height:46px;border-radius:50%;border:none;flex:0 0 auto;background:linear-gradient(135deg,var(--orange),var(--orange-dark));color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.2rem;box-shadow:0 4px 12px rgba(255,122,51,.35);transition:transform .15s;}
 .mic-btn:active{transform:scale(.92);}
 .mic-btn.listening{animation:pulse 1.1s infinite;}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,122,51,.5)}70%{box-shadow:0 0 0 14px rgba(255,122,51,0)}100%{box-shadow:0 0 0 0 rgba(255,122,51,0)}}
 .voice-input{border:none;outline:none;flex:1;font-size:.92rem;background:transparent;color:var(--ink);}
 .voice-input::placeholder{color:#9CB3B1;}
 .voice-send{border:none;background:var(--toska);color:#fff;width:38px;height:38px;border-radius:50%;flex:0 0 auto;font-size:.9rem;}
-
-/* ===== Quick actions ===== */
 .quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
 .quick-item{background:#fff;border:1px solid #EAE3D6;border-radius:16px;padding:12px 4px;text-align:center;font-size:.72rem;color:var(--ink-soft);font-weight:600;cursor:pointer;transition:.15s;}
 .quick-item:active{transform:scale(.95);background:var(--toska-light);}
 .quick-icon{font-size:1.35rem;display:block;margin-bottom:4px;}
-
-/* ===== stat pills ===== */
 .stat-row{display:flex;gap:10px;margin-bottom:16px;}
 .stat-pill{flex:1;background:#fff;border-radius:16px;padding:12px;border:1px solid #EAE3D6;}
 .stat-pill .num{font-family:'Baloo 2';font-weight:800;font-size:1.3rem;color:var(--toska-dark);}
 .stat-pill .lbl{font-size:.68rem;color:var(--ink-soft);font-weight:600;}
-
-/* ===== chips ===== */
 .chip{display:inline-block;background:var(--toska-light);color:var(--toska-dark);font-size:.72rem;font-weight:600;padding:4px 10px;border-radius:20px;margin:2px 4px 2px 0;}
 .chip.orange{background:#FFEADD;color:var(--orange-dark);}
-
-/* ===== buttons ===== */
 .btn-toska{background:var(--toska);border:none;color:#fff;font-weight:600;border-radius:12px;padding:10px 18px;}
 .btn-toska:hover{background:var(--toska-dark);color:#fff;}
 .btn-orange{background:var(--orange);border:none;color:#fff;font-weight:600;border-radius:12px;padding:10px 18px;}
 .btn-orange:hover{background:var(--orange-dark);color:#fff;}
 .btn-outline-toska{border:1.5px solid var(--toska);color:var(--toska-dark);background:#fff;font-weight:600;border-radius:12px;}
 .btn-outline-toska:hover{background:var(--toska-light);}
-
-/* ===== worksheet preview ===== */
 .ws-preview{background:#fff;border:2px dashed #CFE3E1;border-radius:16px;padding:14px;text-align:center;position:relative;}
 .ws-preview svg{max-width:100%;height:auto;}
 .watermark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
 .watermark span{transform:rotate(-22deg);font-size:1.4rem;color:rgba(11,122,117,.16);font-weight:800;letter-spacing:2px;}
-
-/* ===== bottom nav ===== */
-.bottom-nav{
-  position:fixed;left:50%;transform:translateX(-50%);bottom:0;max-width:480px;width:100%;
-  background:#fff;border-top:1px solid #EAE3D6;display:flex;justify-content:space-around;
-  padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:50;
-}
+.bottom-nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;max-width:480px;width:100%;background:#fff;border-top:1px solid #EAE3D6;display:flex;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:50;}
 .nav-item{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:2px;color:#9CB3B1;font-size:1.05rem;padding:4px 8px;flex:1;}
 .nav-item .nav-label{font-size:.62rem;font-weight:600;}
 .nav-item.active{color:var(--toska);}
 .nav-item.active .nav-label{color:var(--toska-dark);}
-
-/* ===== list items ===== */
 .child-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #F0EBE0;}
 .child-item:last-child{border-bottom:none;}
 .avatar{width:42px;height:42px;border-radius:50%;background:var(--toska-light);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--toska-dark);flex:0 0 auto;}
-
-/* ===== reminder item ===== */
 .reminder-item{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #EAE3D6;border-radius:14px;padding:10px 12px;margin-bottom:8px;}
 .reminder-time{background:var(--toska);color:#fff;border-radius:10px;padding:6px 10px;font-weight:700;font-size:.8rem;font-family:'Baloo 2';min-width:56px;text-align:center;}
-
-/* premium banner */
-.premium-banner{
-  background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 100%);
-  border-radius:18px;padding:16px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden;
-}
+.premium-banner{background:linear-gradient(135deg,var(--orange) 0%,var(--orange-dark) 100%);border-radius:18px;padding:16px;color:#fff;margin-bottom:16px;position:relative;overflow:hidden;}
 .premium-banner::after{content:"";position:absolute;right:-20px;bottom:-30px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.12);}
-
-.toast-mini{
-  position:fixed;left:50%;top:16px;transform:translateX(-50%);background:var(--ink);color:#fff;
-  padding:10px 18px;border-radius:30px;font-size:.82rem;z-index:2000;opacity:0;transition:.3s;pointer-events:none;max-width:92vw;text-align:center;
-}
+.toast-mini{position:fixed;left:50%;top:16px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:30px;font-size:.82rem;z-index:2000;opacity:0;transition:.3s;pointer-events:none;max-width:92vw;text-align:center;}
 .toast-mini.show{opacity:1;top:24px;}
-
 .form-control,.form-select{border-radius:12px;border-color:#DCE7E5;font-size:.9rem;}
 .form-control:focus,.form-select:focus{border-color:var(--toska);box-shadow:0 0 0 3px rgba(11,122,117,.12);}
 label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
-
 .install-strip{background:var(--toska-light);border-radius:14px;padding:10px 12px;display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:.8rem;color:var(--toska-dark);}
-
-/* ===== Kartu harga paket ===== */
 .price-card{background:linear-gradient(180deg,var(--toska-light) 0%,#FFFFFF 100%);border:1.5px solid #CFE8E4;border-radius:22px;padding:16px 16px 0;margin-bottom:20px;position:relative;overflow:hidden;box-shadow:0 4px 16px rgba(0,133,124,.10);}
 .price-card.featured{border:2px solid var(--orange);background:linear-gradient(180deg,#FFF1DE 0%,#FFFFFF 100%);}
 .price-card::after{content:"";display:block;height:12px;margin:14px -16px 0;background:var(--toska-dark);}
@@ -175,23 +95,9 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
 .btn-price.is-current{background:var(--toska);color:#fff;opacity:1;}
 .btn-price:disabled{background:#B9C9C7;color:#fff;opacity:1;}
 .btn-price.is-current:disabled{background:var(--toska);}
-
-.trial-banner{
-  background:#FFF1DE;border:1px solid #FFD9A8;border-radius:16px;padding:12px 14px;margin-bottom:16px;font-size:.82rem;color:var(--orange-dark);
-  display:flex;align-items:center;gap:10px;
-}
-
-/* ===================================================
-   SPLASH SCREEN
-=================================================== */
-#splashScreen{
-  position:fixed;inset:0;z-index:500;max-width:480px;margin:0 auto;
-  background:linear-gradient(160deg,var(--toska) 0%,var(--toska-dark) 100%);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  color:#fff;text-align:center;padding:20px;overflow:hidden;
-}
-#splashScreen::after{content:"";position:absolute;right:-50px;top:-50px;width:200px;height:200px;border-radius:50%;background:rgba(247,148,29,.16);}
-#splashScreen::before{content:"";position:absolute;left:-60px;bottom:-70px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06);}
+.trial-banner{background:#FFF1DE;border:1px solid #FFD9A8;border-radius:16px;padding:12px 14px;margin-bottom:16px;font-size:.82rem;color:var(--orange-dark);display:flex;align-items:center;gap:10px;}
+.trial-banner.ok{background:var(--toska-light);border-color:#BFE6E2;color:var(--toska-dark);}
+#splashScreen{position:fixed;inset:0;z-index:500;max-width:480px;margin:0 auto;background:linear-gradient(160deg,var(--toska) 0%,var(--toska-dark) 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;text-align:center;padding:20px;overflow:hidden;}
 .splash-logo{width:96px;height:96px;margin-bottom:18px;animation:splashPop .6s ease;position:relative;z-index:1;}
 @keyframes splashPop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
 .splash-title{font-family:'Baloo 2';font-weight:800;font-size:1.5rem;margin-bottom:6px;position:relative;z-index:1;}
@@ -199,14 +105,7 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
 .splash-loader{margin-top:34px;width:130px;height:6px;border-radius:6px;background:rgba(255,255,255,.25);overflow:hidden;position:relative;z-index:1;}
 .splash-loader-bar{height:100%;width:40%;border-radius:6px;background:var(--orange);animation:loaderSlide 1.1s ease-in-out infinite;}
 @keyframes loaderSlide{0%{transform:translateX(-100%)}100%{transform:translateX(340%)}}
-
-/* ===================================================
-   ONBOARDING
-=================================================== */
-#onboardingScreen{
-  position:fixed;inset:0;z-index:400;max-width:480px;margin:0 auto;background:var(--cream);
-  display:none;flex-direction:column;
-}
+#onboardingScreen{position:fixed;inset:0;z-index:400;max-width:480px;margin:0 auto;background:var(--cream);display:none;flex-direction:column;}
 .onb-topbar{display:flex;justify-content:flex-end;padding:16px 20px 0;}
 .onb-skip{background:none;border:none;color:var(--ink-soft);font-weight:600;font-size:.85rem;}
 .onb-track{flex:1;overflow:hidden;position:relative;}
@@ -220,66 +119,36 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
 .onb-dot{width:8px;height:8px;border-radius:50%;background:#D9E4E2;transition:.25s;}
 .onb-dot.active{width:22px;border-radius:5px;background:var(--orange);}
 .onb-next-row{display:flex;justify-content:flex-end;}
-
-/* ===== New topbar (avatar + greeting + notif) ===== */
-.topbar-avatar{
-  width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.55);
-  display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex:0 0 auto;cursor:pointer;
-}
+.topbar-avatar{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex:0 0 auto;cursor:pointer;}
 .hello-text{font-family:'Baloo 2';font-weight:600;font-size:1.02rem;}
 .hello-text b{font-weight:700;}
 .hello-sub{font-size:.76rem;opacity:.85;margin-top:1px;}
-.notif-btn{
-  position:relative;background:rgba(255,255,255,.18);border:none;color:#fff;width:40px;height:40px;border-radius:50%;
-  font-size:1.05rem;display:flex;align-items:center;justify-content:center;
-}
-.notif-dot{
-  position:absolute;top:6px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--orange);
-  border:1.5px solid var(--toska-dark);display:none;
-}
+.notif-btn{position:relative;background:rgba(255,255,255,.18);border:none;color:#fff;width:40px;height:40px;border-radius:50%;font-size:1.05rem;display:flex;align-items:center;justify-content:center;}
+.notif-dot{position:absolute;top:6px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--orange);border:1.5px solid var(--toska-dark);display:none;}
 .notif-dot.show{display:block;}
-
-/* ===== Hero card ===== */
-.hero-card{
-  background:linear-gradient(135deg,var(--toska) 0%,var(--toska-dark) 100%);
-  border-radius:20px;padding:18px;color:#fff;margin:0 0 18px;position:relative;overflow:hidden;
-  box-shadow:0 10px 26px rgba(0,133,124,.28);
-}
+.hero-card{background:linear-gradient(135deg,var(--toska) 0%,var(--toska-dark) 100%);border-radius:20px;padding:18px;color:#fff;margin:0 0 18px;position:relative;overflow:hidden;box-shadow:0 10px 26px rgba(0,133,124,.28);}
 .hero-card::after{content:"";position:absolute;right:-30px;bottom:-40px;width:130px;height:130px;border-radius:50%;background:rgba(247,148,29,.22);}
-.hero-card::before{content:"";position:absolute;left:60%;top:-30px;width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.08);}
 .hero-title{font-family:'Baloo 2';font-weight:700;font-size:1.08rem;position:relative;z-index:1;margin-bottom:4px;}
 .hero-sub{font-size:.82rem;opacity:.92;position:relative;z-index:1;max-width:230px;}
 .hero-icon{position:absolute;right:14px;top:14px;font-size:2.1rem;opacity:.9;z-index:1;}
 .hero-btn{position:relative;z-index:1;margin-top:12px;}
-
-/* ===== Notification panel ===== */
 .notif-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #F0EBE0;}
 .notif-item:last-child{border-bottom:none;}
 .notif-icon{width:36px;height:36px;border-radius:50%;background:var(--toska-light);display:flex;align-items:center;justify-content:center;font-size:1rem;flex:0 0 auto;}
-
-/* ===== QR ===== */
 #qrCanvasWrap{display:inline-flex;padding:10px;background:#fff;border-radius:14px;border:1px solid #EAE3D6;}
 #qrCanvasWrap canvas{display:block;}
-
 .wait-dot{width:6px;height:6px;border-radius:50%;background:var(--toska);animation:waitBlink 1.2s infinite ease-in-out;}
 .wait-dot:nth-child(2){animation-delay:.2s;}
 .wait-dot:nth-child(3){animation-delay:.4s;}
 @keyframes waitBlink{0%,80%,100%{opacity:.25;transform:scale(.8);}40%{opacity:1;transform:scale(1);}}
-
-/* ===== Auth tabs & guest badge ===== */
-#authTabLoginBtn, #authTabRegisterBtn{color:var(--ink-soft);background:transparent;transition:.15s;}
-#authTabLoginBtn.auth-tab-active, #authTabRegisterBtn.auth-tab-active{background:var(--toska);color:#fff;}
-.guest-badge{
-  display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.4);
-  border-radius:20px;padding:2px 10px;font-size:.68rem;font-weight:600;margin-top:4px;
-}
+#authTabLoginBtn,#authTabRegisterBtn{color:var(--ink-soft);background:transparent;transition:.15s;}
+#authTabLoginBtn.auth-tab-active,#authTabRegisterBtn.auth-tab-active{background:var(--toska);color:#fff;}
+.guest-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 10px;font-size:.68rem;font-weight:600;margin-top:4px;}
 </style>
 </head>
 <body>
 
-<!-- ============================================================ -->
-<!-- SPLASH SCREEN -->
-<!-- ============================================================ -->
+<!-- SPLASH -->
 <div id="splashScreen">
   <svg class="splash-logo" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M20 6 L44 6 L48 14 L16 14 Z" fill="#F7941D"/>
@@ -295,13 +164,9 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
   <div class="splash-loader"><div class="splash-loader-bar"></div></div>
 </div>
 
-<!-- ============================================================ -->
 <!-- ONBOARDING -->
-<!-- ============================================================ -->
 <div id="onboardingScreen">
-  <div class="onb-topbar">
-    <button class="onb-skip" id="onbSkipBtn" onclick="finishOnboarding()">Lewati</button>
-  </div>
+  <div class="onb-topbar"><button class="onb-skip" id="onbSkipBtn" onclick="finishOnboarding()">Lewati</button></div>
   <div class="onb-track">
     <div class="onb-slides" id="onbSlides">
       <div class="onb-slide">
@@ -347,18 +212,14 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
     </div>
   </div>
   <div class="onb-bottom">
-    <div class="onb-dots" id="onbDots">
-      <span class="onb-dot active"></span><span class="onb-dot"></span><span class="onb-dot"></span>
-    </div>
-    <div class="onb-next-row">
-      <button class="btn btn-orange px-4" id="onbNextBtn" onclick="onbNext()">Lanjut</button>
-    </div>
+    <div class="onb-dots" id="onbDots"><span class="onb-dot active"></span><span class="onb-dot"></span><span class="onb-dot"></span></div>
+    <div class="onb-next-row"><button class="btn btn-orange px-4" id="onbNextBtn" onclick="onbNext()">Lanjut</button></div>
   </div>
 </div>
 
 <div class="app-shell">
 
-  <!-- ===== TOPBAR ===== -->
+  <!-- TOPBAR -->
   <div class="topbar">
     <div class="brand-row">
       <div class="topbar-avatar" onclick="goTo('premium')">👩‍🏫</div>
@@ -373,14 +234,13 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
     </div>
   </div>
 
-  <!-- ===== VOICE BAR ===== -->
+  <!-- VOICE BAR -->
   <div class="voice-bar">
     <button class="mic-btn" id="micBtn" title="Tekan dan ucapkan perintah">🎤</button>
     <input type="text" class="voice-input" id="voiceInput" placeholder='Coba: "Buat aktivitas tema binatang, 20 menit"'>
     <button class="voice-send" id="voiceSend">➤</button>
   </div>
 
-  <!-- ===== INSTALL STRIP ===== -->
   <div class="px-3">
     <div class="install-strip" id="installStrip" style="display:none;">
       📲 <div class="flex-grow-1">Install TemanGuruTK ke layar utama untuk akses offline.</div>
@@ -388,17 +248,10 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
     </div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- SCREEN: DASHBOARD -->
-  <!-- ============================================================ -->
+  <!-- DASHBOARD -->
   <div class="screen active" id="screen-dashboard">
-    <div class="trial-banner" id="trialBanner" style="display:none;">
-      <span style="font-size:1.3rem;">🔒</span>
-      <div class="flex-grow-1">
-        <b>Percobaan AI gratis kamu sudah dipakai.</b><br>Daftar/masuk untuk membuat rencana & soal tanpa batas percobaan.
-      </div>
-      <button class="btn btn-sm btn-orange" onclick="openAuthModal('register')">Daftar</button>
-    </div>
+    <div class="trial-banner" id="trialBanner" style="display:none;"></div>
+    <div id="dashExpiryNotice"></div>
 
     <div class="hero-card">
       <div class="hero-icon">💡</div>
@@ -439,22 +292,14 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
     <div id="recentPlans"><p class="text-muted small">Belum ada rencana. Coba ucapkan perintah di atas ✨</p></div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- SCREEN: SMART PLANNING -->
-  <!-- ============================================================ -->
+  <!-- PLANNING -->
   <div class="screen" id="screen-planning">
     <div class="section-title"><span class="dot"></span>Perencanaan Cerdas</div>
     <div class="card-soft">
       <p class="small text-muted mb-2">Buat rencana lewat suara/teks, atau isi form manual.</p>
       <div class="row g-2">
-        <div class="col-7">
-          <label class="form-label">Tema</label>
-          <input type="text" class="form-control form-control-sm" id="planTema" placeholder="cth: Binatang">
-        </div>
-        <div class="col-5">
-          <label class="form-label">Durasi (menit)</label>
-          <input type="number" class="form-control form-control-sm" id="planDurasi" placeholder="20" min="15" max="60">
-        </div>
+        <div class="col-7"><label class="form-label">Tema</label><input type="text" class="form-control form-control-sm" id="planTema" placeholder="cth: Binatang"></div>
+        <div class="col-5"><label class="form-label">Durasi (menit)</label><input type="number" class="form-control form-control-sm" id="planDurasi" placeholder="20" min="15" max="60"></div>
         <div class="col-12">
           <label class="form-label">Jenis Rencana</label>
           <select class="form-select form-select-sm" id="planJenis">
@@ -466,16 +311,12 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
       </div>
       <button class="btn btn-orange w-100 mt-3" onclick="generatePlanFromForm()">✨ Buatkan dengan AI</button>
     </div>
-
     <div id="planResultWrap"></div>
-
     <div class="section-title"><span class="dot"></span>Riwayat Rencana</div>
     <div id="planHistory"></div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- SCREEN: WORKSHEET -->
-  <!-- ============================================================ -->
+  <!-- WORKSHEET -->
   <div class="screen" id="screen-worksheet">
     <div class="section-title"><span class="dot"></span>Pembuatan Soal Anak TK</div>
     <div class="card-soft">
@@ -493,88 +334,59 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
             <option value="urutan">Melengkapi Urutan Angka</option>
           </select>
         </div>
-        <div class="col-6">
-          <label class="form-label">Tema</label>
-          <input type="text" class="form-control form-control-sm" id="wsTema" placeholder="cth: Buah-buahan">
-        </div>
+        <div class="col-6"><label class="form-label">Tema</label><input type="text" class="form-control form-control-sm" id="wsTema" placeholder="cth: Buah-buahan"></div>
         <div class="col-6">
           <label class="form-label">Kelompok Usia</label>
-          <select class="form-select form-select-sm" id="wsLevel">
-            <option value="A">Kelompok A (4-5 th)</option>
-            <option value="B">Kelompok B (5-6 th)</option>
-          </select>
+          <select class="form-select form-select-sm" id="wsLevel"><option value="A">Kelompok A (4-5 th)</option><option value="B">Kelompok B (5-6 th)</option></select>
         </div>
         <div class="col-12">
           <label class="form-label">Jumlah Soal per Lembar</label>
-          <select class="form-select form-select-sm" id="wsCount">
-            <option value="3">3 soal</option>
-            <option value="4">4 soal</option>
-            <option value="5" selected>5 soal</option>
-          </select>
+          <select class="form-select form-select-sm" id="wsCount"><option value="3">3 soal</option><option value="4">4 soal</option><option value="5" selected>5 soal</option></select>
         </div>
       </div>
       <button class="btn btn-orange w-100" onclick="generateWorksheet()">📝 Buat Soal dengan AI</button>
       <div class="form-text mt-2" id="wsQuotaText"></div>
     </div>
-
     <div id="wsResultWrap"></div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- SCREEN: CHILDREN / NOTES -->
-  <!-- ============================================================ -->
+  <!-- CHILDREN -->
   <div class="screen" id="screen-children">
     <div class="section-title"><span class="dot"></span>Data & Catatan Anak</div>
     <div class="card-soft">
       <div class="row g-2">
-        <div class="col-7">
-          <label class="form-label">Nama Anak</label>
-          <input type="text" class="form-control form-control-sm" id="childName" placeholder="Nama lengkap">
-        </div>
-        <div class="col-5">
-          <label class="form-label">Usia</label>
-          <input type="text" class="form-control form-control-sm" id="childAge" placeholder="cth: 5 th">
-        </div>
+        <div class="col-7"><label class="form-label">Nama Anak</label><input type="text" class="form-control form-control-sm" id="childName" placeholder="Nama lengkap"></div>
+        <div class="col-5"><label class="form-label">Usia</label><input type="text" class="form-control form-control-sm" id="childAge" placeholder="cth: 5 th"></div>
       </div>
       <button class="btn btn-toska w-100 mt-3" onclick="addChild()">+ Tambah Anak</button>
       <div class="form-text mt-1" id="childQuotaText"></div>
     </div>
-
     <div class="card-soft" id="childListWrap">
       <div class="fw-semibold small mb-1">Daftar Anak</div>
       <div id="childList"><p class="text-muted small mb-0">Belum ada data anak.</p></div>
     </div>
-
     <div class="section-title"><span class="dot"></span>Buat Catatan Perkembangan Otomatis</div>
     <div class="card-soft">
       <label class="form-label">Pilih Anak</label>
       <select class="form-select form-select-sm mb-2" id="noteChildSelect"></select>
       <label class="form-label">Aspek Perkembangan</label>
       <div class="mb-2">
-        <span class="chip" onclick="toggleAspect(this,'motorik')" data-aspect="motorik">Motorik</span>
-        <span class="chip" onclick="toggleAspect(this,'sosial')" data-aspect="sosial">Sosial</span>
-        <span class="chip orange" onclick="toggleAspect(this,'komunikasi')" data-aspect="komunikasi">Komunikasi</span>
+        <span class="chip" onclick="toggleAspect(this,'motorik')">Motorik</span>
+        <span class="chip" onclick="toggleAspect(this,'sosial')">Sosial</span>
+        <span class="chip orange" onclick="toggleAspect(this,'komunikasi')">Komunikasi</span>
       </div>
       <button class="btn btn-orange w-100" onclick="generateChildNote()">📝 Buat Catatan Otomatis</button>
     </div>
     <div id="noteResultWrap"></div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- SCREEN: REMINDER -->
-  <!-- ============================================================ -->
+  <!-- REMINDER -->
   <div class="screen" id="screen-reminder">
     <div class="section-title"><span class="dot"></span>Smart Reminder</div>
     <div class="card-soft">
       <div class="row g-2">
-        <div class="col-7">
-          <label class="form-label">Judul</label>
-          <input type="text" class="form-control form-control-sm" id="remTitle" placeholder="cth: Kelas Kelompok A">
-        </div>
-        <div class="col-5">
-          <label class="form-label">Jam</label>
-          <input type="time" class="form-control form-control-sm" id="remTime">
-        </div>
+        <div class="col-7"><label class="form-label">Judul</label><input type="text" class="form-control form-control-sm" id="remTitle" placeholder="cth: Kelas Kelompok A"></div>
+        <div class="col-5"><label class="form-label">Jam</label><input type="time" class="form-control form-control-sm" id="remTime"></div>
       </div>
       <button class="btn btn-toska w-100 mt-3" onclick="addReminder()">⏰ Tambah Pengingat</button>
       <div class="form-text mt-1">Notifikasi otomatis muncul 5 menit sebelum jadwal (izinkan notifikasi browser).</div>
@@ -582,76 +394,46 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
     <div id="reminderList"></div>
   </div>
 
-  <!-- ============================================================ -->
-  <!-- SCREEN: PREMIUM / PROFILE -->
-  <!-- ============================================================ -->
+  <!-- PROFIL / PREMIUM -->
   <div class="screen" id="screen-premium">
     <div class="section-title"><span class="dot"></span>Profil</div>
 
     <div class="card-soft" id="accountStatusCard"></div>
 
-    <div class="card-soft d-flex align-items-center gap-3">
-      <div class="avatar" style="width:52px;height:52px;font-size:1.2rem;">👩‍🏫</div>
-      <div class="flex-grow-1">
-        <input type="text" class="form-control form-control-sm mb-1" id="teacherNameInput" placeholder="Nama guru">
-        <div class="small text-muted">Status: <span id="premiumStatus" class="fw-semibold">Gratis</span></div>
-      </div>
-      <button class="btn btn-sm btn-toska" onclick="saveTeacherName()">Simpan</button>
-    </div>
+    <!-- Pemberitahuan masa aktif -->
+    <div id="premiumExpiryNotice"></div>
 
     <div class="section-title mt-3"><span class="dot"></span>Pilih Paket Yang Sesuai</div>
 
-    <!-- PAKET GRATIS -->
     <div class="price-card" id="cardFree">
       <span class="price-badge active" id="badgeFree">Aktif</span>
-      <div class="price-head">
-        <div class="price-amount">Rp0</div>
-      </div>
+      <div class="price-head"><div class="price-amount">Rp0</div></div>
       <ul class="price-list">
-        <li>3 Lembar Soal/Hari</li>
-        <li>Terbatas</li>
-        <li>Resolusi SD</li>
-        <li>Perencanaan Dasar</li>
+        <li>3 Lembar Soal/Hari</li><li>Terbatas</li><li>Resolusi SD</li><li>Perencanaan Dasar</li>
         <li class="limited">Catatan Anak Terbatas</li>
       </ul>
       <button class="btn btn-price mb-1" id="btnFree" disabled>Paket Saat Ini</button>
     </div>
 
-    <!-- PAKET 1 BULAN -->
     <div class="price-card featured" id="cardMonthly">
       <span class="price-badge active" id="badgeMonthly" style="display:none;"></span>
-      <div class="price-head">
-        <div class="price-amount">Rp20k</div>
-        <div class="price-period">1 Month Membership</div>
-      </div>
+      <div class="price-head"><div class="price-amount">Rp20k</div><div class="price-period">1 Month Membership</div></div>
       <ul class="price-list">
-        <li>Unlimited</li>
-        <li>Resolusi HD</li>
-        <li>Buat Soal Unlimited</li>
-        <li>Perencanaan Lengkap</li>
-        <li>Catatan Anak Unlimited</li>
+        <li>Unlimited</li><li>Resolusi HD</li><li>Buat Soal Unlimited</li><li>Perencanaan Lengkap</li><li>Catatan Anak Unlimited</li>
       </ul>
       <button class="btn btn-price mb-1" id="btnMonthly" onclick="buyPremium('monthly')">Pilih</button>
     </div>
 
-    <!-- PAKET 1 TAHUN -->
     <div class="price-card featured" id="cardYearly">
       <span class="price-badge" id="badgeYearly">Hemat 79%</span>
-      <div class="price-head">
-        <div class="price-amount">Rp50k</div>
-        <div class="price-period">1 Years Membership</div>
-      </div>
+      <div class="price-head"><div class="price-amount">Rp50k</div><div class="price-period">1 Years Membership</div></div>
       <ul class="price-list">
-        <li>Unlimited</li>
-        <li>Resolusi HD</li>
-        <li>Buat Soal Unlimited</li>
-        <li>Perencanaan Lengkap</li>
-        <li>Catatan Anak Unlimited</li>
+        <li>Unlimited</li><li>Resolusi HD</li><li>Buat Soal Unlimited</li><li>Perencanaan Lengkap</li><li>Catatan Anak Unlimited</li>
       </ul>
       <button class="btn btn-price mb-1" id="btnYearly" onclick="buyPremium('yearly')">Pilih</button>
     </div>
 
-        <div class="card-soft">
+    <div class="card-soft">
       <div class="fw-semibold mb-1">Data & Sinkronisasi</div>
       <p class="small text-muted mb-2">Data anak & laporan tersinkron ke cloud saat online. Mode offline tetap menyimpan sementara di perangkat.</p>
       <div class="d-flex justify-content-between small">
@@ -661,9 +443,9 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
     </div>
   </div>
 
-</div><!-- /app-shell -->
+</div>
 
-<!-- ===== BOTTOM NAV ===== -->
+<!-- BOTTOM NAV -->
 <div class="bottom-nav">
   <button class="nav-item active" data-target="dashboard" onclick="goTo('dashboard')"><span>🏠</span><span class="nav-label">Beranda</span></button>
   <button class="nav-item" data-target="planning" onclick="goTo('planning')"><span>🗓️</span><span class="nav-label">Rencana</span></button>
@@ -674,7 +456,7 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
 
 <div class="toast-mini" id="toastMini"></div>
 
-<!-- ===== AUTH MODAL ===== -->
+<!-- AUTH MODAL -->
 <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
     <div class="modal-content" style="border-radius:20px;border:none;overflow:hidden;">
@@ -686,16 +468,10 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
         <div id="authTrialNotice" class="alert alert-light border small py-2 px-3 mb-3" style="border-radius:12px;background:#FFF1DE;display:none;">
           ✨ Kamu sudah memakai <b>2x percobaan gratis</b> membuat konten dengan AI sebagai tamu. Daftar atau masuk untuk melanjutkan.
         </div>
-
         <ul class="nav nav-pills nav-justified mb-3" style="background:#F3EFE4;border-radius:12px;padding:4px;">
-          <li class="nav-item">
-            <button class="nav-link w-100 border-0" id="authTabLoginBtn" style="border-radius:9px;font-size:.85rem;font-weight:600;" onclick="switchAuthTab('login')">Masuk</button>
-          </li>
-          <li class="nav-item">
-            <button class="nav-link w-100 border-0" id="authTabRegisterBtn" style="border-radius:9px;font-size:.85rem;font-weight:600;" onclick="switchAuthTab('register')">Daftar</button>
-          </li>
+          <li class="nav-item"><button class="nav-link w-100 border-0" id="authTabLoginBtn" style="border-radius:9px;font-size:.85rem;font-weight:600;" onclick="switchAuthTab('login')">Masuk</button></li>
+          <li class="nav-item"><button class="nav-link w-100 border-0" id="authTabRegisterBtn" style="border-radius:9px;font-size:.85rem;font-weight:600;" onclick="switchAuthTab('register')">Daftar</button></li>
         </ul>
-
         <div id="authFormLogin">
           <label class="form-label">Email</label>
           <input type="email" class="form-control mb-2" id="loginEmail" placeholder="nama@email.com">
@@ -704,7 +480,6 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
           <div class="text-danger small mb-2" id="loginError"></div>
           <button class="btn btn-toska w-100" onclick="loginUser()">Masuk</button>
         </div>
-
         <div id="authFormRegister" style="display:none;">
           <label class="form-label">Nama Lengkap</label>
           <input type="text" class="form-control mb-2" id="regName" placeholder="cth: Siti Aminah, S.Pd">
@@ -721,7 +496,7 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
   </div>
 </div>
 
-<!-- ===== NOTIFICATION MODAL ===== -->
+<!-- NOTIF MODAL -->
 <div class="modal fade" id="notifModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
     <div class="modal-content" style="border-radius:20px;border:none;">
@@ -734,28 +509,23 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
   </div>
 </div>
 
-<!-- ===== PAYMENT MODAL (langsung QRIS) ===== -->
+<!-- PAYMENT MODAL -->
 <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" style="max-width:400px;">
     <div class="modal-content" style="border-radius:20px;border:none;overflow:hidden;">
-
-      <!-- STEP 2: QRIS -->
       <div id="payStep2">
         <div class="modal-header border-0" style="background:linear-gradient(135deg,var(--toska),var(--toska-dark));color:#fff;">
           <h6 class="modal-title fw-bold mb-0" id="payModalTitle">💳 Bayar dengan QRIS</h6>
           <button type="button" class="btn-close btn-close-white" onclick="cancelPayment()"></button>
         </div>
         <div class="modal-body text-center py-4">
-
           <div class="d-flex justify-content-between align-items-center mb-1 px-1">
-            <span class="small text-muted">Item</span>
-            <span class="fw-semibold small" id="payItemName">Premium</span>
+            <span class="small text-muted">Item</span><span class="fw-semibold small" id="payItemName">Premium</span>
           </div>
           <div class="d-flex justify-content-between align-items-center mb-3 pb-3 px-1" style="border-bottom:1px dashed #E5DFD2;">
             <span class="small text-muted">Total Tagihan</span>
             <span class="fw-bold" style="color:var(--orange-dark);font-family:'Baloo 2';font-size:1.15rem;" id="payAmountStep2">Rp0</span>
           </div>
-
           <div id="payQrWrap">
             <div id="qrCanvasWrap" style="position:relative;">
               <canvas id="qrCanvas" width="188" height="188"></canvas>
@@ -767,38 +537,31 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
               </div>
             </div>
             <p class="small text-muted mt-2 mb-1">Scan QRIS dengan aplikasi e-wallet / m-banking mana pun</p>
-            <p class="small text-warning mb-1" id="qrImageNominalNote" style="display:none;">⚠️ Ini QR statis — pastikan masukkan nominal <b id="qrImageNominalValue"></b> secara manual saat scan.</p>
+            <p class="small text-warning mb-1" id="qrImageNominalNote" style="display:none;"></p>
             <button class="btn btn-sm btn-outline-toska mt-1" onclick="copyQrisPayload()">📋 Salin Kode QRIS</button>
           </div>
-
           <p class="small text-muted mt-3 mb-1">ID Transaksi: <span id="payTrxId" class="fw-semibold"></span></p>
           <p class="small text-muted mb-3">Berlaku <span id="qrCountdown" class="fw-semibold">05:00</span></p>
-
           <div class="d-flex align-items-center justify-content-center gap-2 mb-3" id="payWaitingIndicator">
             <span class="wait-dot"></span><span class="wait-dot"></span><span class="wait-dot"></span>
             <span class="small text-muted ms-1" id="payStatusText">Menunggu status pembayaran dari sistem...</span>
           </div>
-
           <div class="alert alert-light border small text-start py-2 px-3 mb-3" id="payDemoInfoBox" style="border-radius:12px;background:#FBF8F2;">
             ℹ️ Status akan berubah <b>otomatis</b> setelah pembayaran benar-benar diterima oleh sistem.
           </div>
-
           <button class="btn btn-toska w-100" id="payConfirmBtn" onclick="confirmPaymentReceived()">✅ Saya Sudah Membayar — Cek Status</button>
           <div class="form-text mt-1" id="payDemoHint">*Mode simulasi: pada versi produksi, status diperbarui otomatis lewat webhook payment gateway (mis. Midtrans/Xendit), bukan diklik manual.</div>
         </div>
       </div>
-
-      <!-- STEP 3: Berhasil -->
       <div id="payStep3" style="display:none;">
         <div class="modal-body text-center py-4">
           <div style="font-size:2.6rem;">✅</div>
           <div class="fw-bold mt-2 mb-1" style="font-family:'Baloo 2';">Pembayaran Berhasil</div>
           <p class="small text-muted mb-1">ID Transaksi: <span id="payTrxIdDone" class="fw-semibold"></span></p>
-          <p class="small text-muted mb-3" id="payDoneMessage">Akun kamu telah beralih ke <b>Premium ⭐</b></p>
+          <p class="small text-muted mb-3" id="payDoneMessage"></p>
           <button class="btn btn-toska w-100" data-bs-dismiss="modal">Selesai</button>
         </div>
       </div>
-
     </div>
   </div>
 </div>
@@ -807,116 +570,88 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <script>
 /* ===========================================================
-   TEMANGURUTK — inline "AI"-assisted PWA logic
+   TEMANGURUTK — logika aplikasi
 =========================================================== */
-
 const DB_KEY = 'tgtk_db_v1';
-let db = JSON.parse(localStorage.getItem(DB_KEY) || 'null') || {
-  teacherName: 'Bu Guru',
-  premium: false,
-  premiumUntil: null,
-  premiumPlan: null,
-  plans: [],
-  worksheets: [],
-  wsCountToday: 0,
-  wsCountDate: new Date().toDateString(),
-  children: [],
-  reminders: [],
-  users: [],
-  auth: {
-    loggedIn: false,
-    currentUser: null,
-    guestTrialCount: 0,
-    guestTrialDate: new Date().toDateString(),
-    userTrialCount: 0,
-    userTrialDate: new Date().toDateString()
-  }
-};
-function save(){ localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+let db;
+try { db = JSON.parse(localStorage.getItem(DB_KEY) || 'null'); } catch(e){ db = null; }
+db = db || {};
+function save(){ try{ localStorage.setItem(DB_KEY, JSON.stringify(db)); }catch(e){} }
 
+const todayStr = new Date().toDateString();
+db.teacherName   = db.teacherName || 'Bu Guru';
+db.plans         = db.plans || [];
+db.worksheets    = db.worksheets || [];
+db.wsCountToday  = db.wsCountToday || 0;
+db.wsCountDate   = db.wsCountDate || todayStr;
+db.children      = db.children || [];
+db.reminders     = db.reminders || [];
+db.users         = db.users || [];
+db.transactions  = db.transactions || [];
 db.auth = Object.assign({
   loggedIn:false, currentUser:null,
-  guestTrialCount:0, guestTrialDate:new Date().toDateString(),
-  userTrialCount:0, userTrialDate:new Date().toDateString()
+  guestTrialCount:0, guestTrialDate:todayStr,
+  userTrialCount:0, userTrialDate:todayStr
 }, db.auth || {});
-db.users = db.users || [];
-db.premiumUntil = db.premiumUntil || null;
-db.premiumPlan = db.premiumPlan || null;
 
-/* ===========================================================
-   SEEDING: Buat 10 akun otomatis dengan email custom
-   Password pola: usernumber01 s/d usernumber10
-=========================================================== */
-if(!db.users || db.users.length === 0){
-  const hariKeDepan = (n) => Date.now() + n * 24 * 60 * 60 * 1000;
-
-  const daftarAkun = [
-    // 3 akun GRATIS
-    { nama: "Siti Aminah",   email: "nyoba@gmail.com",      premium: false, plan: null,      until: null },
-    { nama: "Dewi Lestari",  email: "semangat@gmail.com",   premium: false, plan: null,      until: null },
-    { nama: "Rina Marlina",  email: "sendiri@gmail.com",    premium: false, plan: null,      until: null },
-
-    // 4 akun PREMIUM BULANAN
-    { nama: "Fatikah Angraini",  email: "fatikahangraini@gmail.com",       premium: true,  plan: "monthly", until: hariKeDepan(30) },
-    { nama: "Sri Wahyuni",   email: "sri@gmail.com",        premium: true,  plan: "monthly", until: hariKeDepan(30) },
-    { nama: "Ratna Sari",    email: "ratna@gmail.com",      premium: true,  plan: "monthly", until: hariKeDepan(30) },
-    { nama: "Indah Permata", email: "indah@gmail.com",      premium: true,  plan: "monthly", until: hariKeDepan(30) },
-
-    // 3 akun PREMIUM TAHUNAN
-    { nama: "Maya Sari",     email: "maya@gmail.com",       premium: true,  plan: "yearly",  until: hariKeDepan(365) },
-    { nama: "Fitriani",      email: "fitri@gmail.com",      premium: true,  plan: "yearly",  until: hariKeDepan(365) },
-    { nama: "Nur Aisyah",    email: "nur@gmail.com",        premium: true,  plan: "yearly",  until: hariKeDepan(365) }
+/* ===== SEEDING 10 AKUN DEMO (aman dijalankan berulang, tidak duplikat) =====
+   Password: usernumber01 ... usernumber10 */
+(function seedAccounts(){
+  const hari = n => Date.now() + n*24*60*60*1000;
+  const daftar = [
+    {nama:"Siti Aminah",      email:"nyoba@gmail.com",            premium:false, plan:null,      until:null},
+    {nama:"Dewi Lestari",     email:"semangat@gmail.com",         premium:false, plan:null,      until:null},
+    {nama:"Rina Marlina",     email:"sendiri@gmail.com",          premium:false, plan:null,      until:null},
+    {nama:"Fatikah Angraini", email:"fatikahangraini@gmail.com",  premium:true,  plan:"monthly", until:hari(30)},
+    {nama:"Sri Wahyuni",      email:"sri@gmail.com",              premium:true,  plan:"monthly", until:hari(30)},
+    {nama:"Ratna Sari",       email:"ratna@gmail.com",            premium:true,  plan:"monthly", until:hari(30)},
+    {nama:"Indah Permata",    email:"indah@gmail.com",            premium:true,  plan:"monthly", until:hari(30)},
+    {nama:"Maya Sari",        email:"maya@gmail.com",             premium:true,  plan:"yearly",  until:hari(365)},
+    {nama:"Fitriani",         email:"fitri@gmail.com",            premium:true,  plan:"yearly",  until:hari(365)},
+    {nama:"Nur Aisyah",       email:"nur@gmail.com",              premium:true,  plan:"yearly",  until:hari(365)}
   ];
-
-  daftarAkun.forEach((akun, index) => {
-    const nomor = String(index + 1).padStart(2, '0'); // 01, 02, ..., 10
+  let added = 0;
+  daftar.forEach((a,i)=>{
+    if(db.users.some(u => u.email === a.email)) return;
     db.users.push({
-      name: akun.nama,
-      email: akun.email,               // <-- pakai email custom dari daftar
-      password: `usernumber${nomor}`,  // <-- password otomatis: usernumber01, dst.
-      premium: akun.premium,
-      premiumPlan: akun.plan,
-      premiumUntil: akun.until
+      name:a.nama, email:a.email,
+      password:'usernumber'+String(i+1).padStart(2,'0'),
+      premium:a.premium, premiumPlan:a.plan, premiumUntil:a.until
     });
+    added++;
   });
+  if(added) save();
+})();
 
-  save();
-  console.log('🎉 Seeding selesai: 10 akun demo berhasil dibuat.');
-  console.table(db.users);
-}
+const GUEST_TRIAL_LIMIT = 2;
+const USER_TRIAL_LIMIT  = 5;
+const FREE_WS_LIMIT     = 3;
+const FREE_CHILD_LIMIT  = 5;
 
-const GUEST_TRIAL_LIMIT = 2;   // percobaan AI/hari untuk TAMU
-const USER_TRIAL_LIMIT  = 5;   // percobaan AI/hari untuk akun login non-premium
-const FREE_WS_LIMIT     = 3;   // worksheet gratis per hari
-const FREE_CHILD_LIMIT  = 5;   // batas data anak paket gratis
-
-/* ===== Daftar paket Premium ===== */
 const PLANS = {
   monthly:{ label:'1 Month Membership', item:'Premium 1 Bulan', price:20000, days:30 },
   yearly: { label:'1 Years Membership', item:'Premium 1 Tahun', price:50000, days:365 }
 };
 
-/* PREMIUM AKTIF hanya jika: (1) sudah LOGIN, dan (2) sudah MEMBAYAR atas email akun yang sama */
-function isPremium(){
-  if(!db.auth || !db.auth.loggedIn || !db.auth.currentUser) return false;
-  const user = db.users.find(u => u.email === db.auth.currentUser.email);
-  if(!user) return false;
-  if(!user.premium) return false;
-  if(user.premiumUntil && Date.now() > user.premiumUntil){
-    user.premium = false;
-    user.premiumPlan = null;
-    save();
-    return false;
-  }
-  return true;
+/* ===== Helper akun & premium (semua dibaca dari data USER yang login) ===== */
+function getUserRecord(){
+  if(!db.auth.loggedIn || !db.auth.currentUser) return null;
+  return db.users.find(u => u.email === db.auth.currentUser.email) || null;
 }
+function daysLeft(ts){ return Math.max(0, Math.ceil((ts - Date.now()) / 86400000)); }
+function fmtDate(ts){ return new Date(ts).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}); }
 
-
-/* Premium otomatis berakhir kalau masa berlakunya habis */
 function checkPremiumExpiry(){
-  if(db.premium && db.premiumUntil && Date.now() > db.premiumUntil){
-    db.premium = false; db.premiumPlan = null; db.premiumUntil = null; db.premiumEmail = null; save();
+  const u = getUserRecord();
+  if(u && u.premium && u.premiumUntil && Date.now() > u.premiumUntil){
+    u.premium = false; u.premiumPlan = null; u.premiumUntil = null; save();
   }
+}
+function isPremium(){
+  const u = getUserRecord();
+  if(!u || !u.premium) return false;
+  if(u.premiumUntil && Date.now() > u.premiumUntil){ checkPremiumExpiry(); return false; }
+  return true;
 }
 checkPremiumExpiry();
 
@@ -927,37 +662,23 @@ function resetDailyTrialsIfNeeded(){
 }
 resetDailyTrialsIfNeeded();
 
-/* ===========================================================
-   KONFIGURASI PEMBAYARAN
-   =========================================================== */
+/* ===== Konfigurasi pembayaran & QRIS ===== */
 const PAYMENT_CONFIG = {
-  // Set TRUE setelah backend (Midtrans/Xendit) siap, supaya QRIS & status asli dari server.
   backendEnabled: false,
   apiBase: 'https://ganti-dengan-backend-kamu.com',
   pollIntervalMs: 3000
 };
-
-/* ===========================================================
-   KONFIGURASI QRIS
-   Pembayaran memakai FOTO QRIS tokomu. Simpan fotonya sebagai qris.jpg
-   di folder yang sama dengan index.html (atau ganti staticImageSrc).
-=========================================================== */
 const QRIS_CONFIG = {
-  mode: 'image',             // pakai FOTO QRIS milikmu
-  staticImageSrc: 'qris.jpg' // taruh foto QRIS satu folder dengan index.html, namai qris.jpg
-                             // (atau isi URL / data:image/png;base64,...)
+  mode: 'image',
+  staticImageSrc: 'qris.jpg'   // taruh foto QRIS satu folder dengan index.html
 };
 
-// reset kuota worksheet harian
-if(db.wsCountDate !== new Date().toDateString()){
-  db.wsCountDate = new Date().toDateString();
-  db.wsCountToday = 0;
-  save();
-}
+if(db.wsCountDate !== todayStr){ db.wsCountDate = todayStr; db.wsCountToday = 0; }
+save();
 
 let selectedAspects = new Set();
 
-/* ---------- Navigation ---------- */
+/* ---------- Navigasi ---------- */
 function goTo(name){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-'+name).classList.add('active');
@@ -966,7 +687,6 @@ function goTo(name){
   if(name==='premium') refreshPremiumUI();
   window.scrollTo({top:0,behavior:'smooth'});
 }
-
 function showToast(msg){
   const t = document.getElementById('toastMini');
   t.textContent = msg; t.classList.add('show');
@@ -974,13 +694,12 @@ function showToast(msg){
   window._toastTimer = setTimeout(()=>t.classList.remove('show'), 2600);
 }
 
-/* ---------- Simulated NLP command parser ---------- */
+/* ---------- Parser perintah ---------- */
 function parseCommand(text){
   text = text.trim();
   const lower = text.toLowerCase();
   const durasiMatch = lower.match(/(\d{1,3})\s*menit/);
   const durasi = durasiMatch ? parseInt(durasiMatch[1]) : null;
-
   let tema = null;
   const temaMatch = lower.match(/tema\s+([a-zA-Zà-ÿ\s]+?)(?:,|\.|$| \d)/);
   if(temaMatch) tema = temaMatch[1].trim();
@@ -996,9 +715,7 @@ function parseCommand(text){
     const level = /kelompok b|usia 6|6 tahun/.test(lower) ? 'B' : 'A';
     return {intent:'worksheet', jenis, level, tema: tema || extractLastNoun(lower)};
   }
-  if(/perkembangan|laporan anak|catatan anak/.test(lower)){
-    return {intent:'note'};
-  }
+  if(/perkembangan|laporan anak|catatan anak/.test(lower)) return {intent:'note'};
   if(/ingatkan|pengingat|reminder|jam/.test(lower) && /\d{1,2}([:.]\d{2})?/.test(lower)){
     const jamMatch = lower.match(/(\d{1,2})[:.](\d{2})/);
     return {intent:'reminder', time: jamMatch ? `${jamMatch[1].padStart(2,'0')}:${jamMatch[2]}` : null, title: text};
@@ -1011,7 +728,6 @@ function extractLastNoun(lower){
   const filtered = words.filter(w=>!stop.has(w));
   return filtered.length ? filtered[filtered.length-1] : 'umum';
 }
-
 function handleVoiceCommand(text){
   if(!text) return;
   const cmd = parseCommand(text);
@@ -1030,8 +746,7 @@ function handleVoiceCommand(text){
       document.getElementById('wsTema').value = capitalize(cmd.tema);
       generateWorksheet();
     } else if(cmd.intent==='note'){
-      goTo('children');
-      showToast('Pilih anak untuk membuat catatan perkembangan');
+      goTo('children'); showToast('Pilih anak untuk membuat catatan perkembangan');
     } else if(cmd.intent==='reminder'){
       goTo('reminder');
       if(cmd.time) document.getElementById('remTime').value = cmd.time;
@@ -1042,13 +757,12 @@ function handleVoiceCommand(text){
 }
 function capitalize(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
 
-/* ---------- Voice input wiring ---------- */
+/* ---------- Input suara ---------- */
 const voiceInput = document.getElementById('voiceInput');
 const voiceSend = document.getElementById('voiceSend');
 const micBtn = document.getElementById('micBtn');
 voiceSend.addEventListener('click', ()=>{ handleVoiceCommand(voiceInput.value); voiceInput.value=''; });
 voiceInput.addEventListener('keydown', e=>{ if(e.key==='Enter'){ handleVoiceCommand(voiceInput.value); voiceInput.value=''; }});
-
 let recognition = null;
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 if(SR){
@@ -1056,23 +770,18 @@ if(SR){
   recognition.lang = 'id-ID';
   recognition.interimResults = false;
   recognition.maxAlternatives = 1;
-  recognition.onresult = (e)=>{
-    const text = e.results[0][0].transcript;
-    voiceInput.value = text;
-    handleVoiceCommand(text);
-  };
+  recognition.onresult = e=>{ const text = e.results[0][0].transcript; voiceInput.value = text; handleVoiceCommand(text); };
   recognition.onend = ()=> micBtn.classList.remove('listening');
   recognition.onerror = ()=>{ micBtn.classList.remove('listening'); showToast('Tidak dapat menangkap suara, coba lagi'); };
 }
 micBtn.addEventListener('click', ()=>{
   if(!recognition){ showToast('Perintah suara tidak didukung di perangkat ini, gunakan teks'); return; }
-  micBtn.classList.add('listening');
-  showToast('Mendengarkan... silakan bicara');
+  micBtn.classList.add('listening'); showToast('Mendengarkan... silakan bicara');
   try{ recognition.start(); }catch(e){}
 });
 
 /* ===========================================================
-   SMART PLANNING
+   PERENCANAAN
 =========================================================== */
 const TEMA_BANK = {
   binatang:{emoji:'🐘', kosakata:['gajah','kucing','ayam','ikan'], gerak:'menirukan gerakan hewan berjalan',
@@ -1107,14 +816,11 @@ function generatePlanFromForm(){
   const tema = document.getElementById('planTema').value.trim() || 'Umum';
   const durasi = parseInt(document.getElementById('planDurasi').value) || 30;
   const jenis = document.getElementById('planJenis').value;
-
-  // Paket gratis hanya boleh rencana harian ("Perencanaan Dasar")
   if(!isPremium() && jenis !== 'harian'){
     showToast('Rencana mingguan & semester khusus Premium ⭐');
     goTo('premium');
     return;
   }
-
   const plan = buildPlan(tema, durasi, jenis);
   db.plans.unshift(plan);
   save();
@@ -1129,17 +835,15 @@ function buildPlan(tema, durasi, jenis){
   const t = getTemaData(tema);
   const id = 'plan_'+Date.now();
   const tujuan = `Anak mampu mengenal konsep dasar tema "${capitalize(tema)}" serta mengembangkan aspek motorik, bahasa, dan sosial-emosional melalui kegiatan bermain sambil belajar.`;
-
   if(jenis==='harian'){
     const seg1 = Math.round(durasi*0.2), seg3 = Math.round(durasi*0.2), seg2 = durasi-seg1-seg3;
-    return {id, jenis, tema, durasi, tujuan, created: new Date().toISOString(), steps:[
+    return {id, jenis, tema, durasi, tujuan, created:new Date().toISOString(), steps:[
       {t:seg1, label:'Pembukaan', desc:`Salam, doa, dan bernyanyi bertema ${tema}.`,
         kegiatan:['Menyapa & mengabsen anak dengan lagu pembuka', `Bernyanyi lagu bertema ${tema} bersama-sama`, 'Menyampaikan tujuan kegiatan hari ini secara sederhana'],
-        alat:['Speaker/musik pengiring', 'Kartu absen bergambar']},
-      {t:seg2, label:'Inti', desc:`${capitalize(t.gerak)}. Mengenal kosakata: ${t.kosakata.join(', ')}.`,
-        kegiatan:t.kegiatan, alat:t.alat},
+        alat:['Speaker/musik pengiring','Kartu absen bergambar']},
+      {t:seg2, label:'Inti', desc:`${capitalize(t.gerak)}. Mengenal kosakata: ${t.kosakata.join(', ')}.`, kegiatan:t.kegiatan, alat:t.alat},
       {t:seg3, label:'Penutup', desc:`Recall kegiatan, evaluasi sederhana, dan doa penutup.`,
-        kegiatan:['Tanya-jawab tentang kegiatan yang baru dilakukan', 'Memberi apresiasi/bintang untuk setiap anak', 'Doa dan salam penutup'],
+        kegiatan:['Tanya-jawab tentang kegiatan yang baru dilakukan','Memberi apresiasi/bintang untuk setiap anak','Doa dan salam penutup'],
         alat:['Stiker bintang/reward sederhana']},
     ]};
   }
@@ -1149,7 +853,7 @@ function buildPlan(tema, durasi, jenis){
     return {id, jenis, tema, durasi, tujuan, created:new Date().toISOString(), steps: hari.map((h,i)=>({
       t:durasi, label:h, desc:fokus[i],
       kegiatan:[t.kegiatan[i % t.kegiatan.length], `Diskusi & tanya-jawab seputar ${tema}`],
-      alat:t.alat.slice(0, 2).concat(['Lembar kerja pendukung'])
+      alat:t.alat.slice(0,2).concat(['Lembar kerja pendukung'])
     }))};
   }
   const bulan = ['Bulan 1','Bulan 2','Bulan 3','Bulan 4','Bulan 5','Bulan 6'];
@@ -1194,10 +898,11 @@ function renderPlanResult(plan){
 }
 
 function printPlan(id){
-  const plan = window._planCache ? window._planCache[id] : (db.plans.find(p=>p.id===id));
+  const plan = (window._planCache && window._planCache[id]) || db.plans.find(p=>p.id===id);
   if(!plan) return;
   const t = getTemaData(plan.tema);
   const win = window.open('', '_blank');
+  if(!win){ showToast('Pop-up diblokir browser, izinkan pop-up untuk mencetak'); return; }
   win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Rencana Pembelajaran - ${capitalize(plan.tema)}</title>
     <style>
       @page{ size:A4; margin:18mm; }
@@ -1223,8 +928,7 @@ function printPlan(id){
       </div>`).join('')}
     <footer>Dibuat otomatis oleh TemanGuruTK — Asisten AI untuk Guru TK/PAUD</footer>
     </body></html>`);
-  win.document.close();
-  win.focus();
+  win.document.close(); win.focus();
   setTimeout(()=> win.print(), 400);
 }
 
@@ -1234,12 +938,16 @@ function renderPlanHistory(){
   wrap.innerHTML = db.plans.slice(0,6).map(p=>`
     <div class="card-soft py-2 px-3 d-flex justify-content-between align-items-center">
       <div class="small"><b>${capitalize(p.tema)}</b> · ${p.jenis} <br><span class="text-muted">${new Date(p.created).toLocaleDateString('id-ID')}</span></div>
-      <button class="btn btn-sm btn-outline-toska" onclick='renderPlanResult(${JSON.stringify(p)})'>Lihat</button>
+      <button class="btn btn-sm btn-outline-toska" onclick="showPlanById('${p.id}')">Lihat</button>
     </div>`).join('');
+}
+function showPlanById(id){
+  const p = db.plans.find(x=>x.id===id);
+  if(p){ renderPlanResult(p); window.scrollTo({top:0,behavior:'smooth'}); }
 }
 
 /* ===========================================================
-   WORKSHEET GENERATOR (SVG based)
+   WORKSHEET
 =========================================================== */
 function generateWorksheet(){
   checkPremiumExpiry();
@@ -1259,7 +967,6 @@ function generateWorksheet(){
       </div>`;
     return;
   }
-
   const wsId = 'ws_'+Date.now();
   const res = buildSoal(jenis, tema, level, count);
   db.wsCountToday++;
@@ -1295,16 +1002,15 @@ function generateWorksheet(){
     </div>`;
   showToast('Lembar soal berhasil dibuat AI 📝');
 }
-
 function toggleKey(id){
   const el = document.getElementById('wsKey-'+id);
   if(el) el.style.display = el.style.display==='none' ? 'block' : 'none';
 }
-
 function printKey(id){
   const data = window._wsCache ? window._wsCache[id] : null;
   if(!data) return;
   const win = window.open('', '_blank');
+  if(!win){ showToast('Pop-up diblokir browser, izinkan pop-up untuk mencetak'); return; }
   win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Kunci Jawaban - ${capitalize(data.tema)}</title>
     <style>
       @page{ size:A4; margin:18mm; }
@@ -1319,11 +1025,9 @@ function printKey(id){
     <ol>${data.key.map(k=>`<li>${k}</li>`).join('')}</ol>
     <footer>Dibuat otomatis oleh TemanGuruTK</footer>
     </body></html>`);
-  win.document.close();
-  win.focus();
+  win.document.close(); win.focus();
   setTimeout(()=> win.print(), 400);
 }
-
 function addWatermarkToSvg(svgString){
   const wmLayer = `
     <g opacity="0.13">
@@ -1334,12 +1038,12 @@ function addWatermarkToSvg(svgString){
   </svg>`;
   return svgString.replace(/<\/svg>\s*$/, wmLayer);
 }
-
 function printWorksheet(id){
   const data = window._wsCache ? window._wsCache[id] : null;
   if(!data) return;
   const svgFinal = isPremium() ? data.svg : addWatermarkToSvg(data.svg);
   const win = window.open('', '_blank');
+  if(!win){ showToast('Pop-up diblokir browser, izinkan pop-up untuk mencetak'); return; }
   win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Lembar Soal - ${capitalize(data.tema)}</title>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700&display=swap" rel="stylesheet">
     <style>
@@ -1347,22 +1051,16 @@ function printWorksheet(id){
       body{ margin:0; display:flex; justify-content:center; font-family:'Segoe UI',Arial,sans-serif; }
       .sheet{ width:100%; max-width:480px; }
       svg{ width:100%; height:auto; display:block; }
-    </style></head><body>
-    <div class="sheet">${svgFinal}</div>
-    </body></html>`);
-  win.document.close();
-  win.focus();
+    </style></head><body><div class="sheet">${svgFinal}</div></body></html>`);
+  win.document.close(); win.focus();
   setTimeout(()=> win.print(), 500);
 }
-
-/* Unduh PNG: gratis = resolusi SD (1.5x) + watermark, Premium = HD (4x) tanpa watermark */
 function downloadWorksheet(id){
   const data = window._wsCache ? window._wsCache[id] : null;
   if(!data) return;
   const btn = document.getElementById('wsDownloadBtn-'+id);
   const originalLabel = btn ? btn.textContent : null;
   if(btn){ btn.disabled = true; btn.textContent = '⏳ Menyiapkan...'; }
-
   const svgFinal = isPremium() ? data.svg : addWatermarkToSvg(data.svg);
   const svgBlob = new Blob([svgFinal], {type:'image/svg+xml;charset=utf-8'});
   const url = URL.createObjectURL(svgBlob);
@@ -1372,17 +1070,14 @@ function downloadWorksheet(id){
     const canvas = document.createElement('canvas');
     canvas.width = 300*scale; canvas.height = 420*scale;
     const ctx = canvas.getContext('2d');
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0,0,canvas.width,canvas.height);
     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     URL.revokeObjectURL(url);
     canvas.toBlob(function(blob){
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
       link.download = `soal-${data.jenis}-${data.tema}.png`.toLowerCase().replace(/\s+/g,'-');
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      document.body.appendChild(link); link.click(); link.remove();
       if(btn){ btn.disabled = false; btn.textContent = originalLabel; }
       showToast('Lembar soal berhasil diunduh 📥');
     }, 'image/png');
@@ -1393,7 +1088,6 @@ function downloadWorksheet(id){
   };
   img.src = url;
 }
-
 function renderWsQuota(){
   const el = document.getElementById('wsQuotaText');
   el.textContent = isPremium()
@@ -1401,30 +1095,24 @@ function renderWsQuota(){
     : `Kuota gratis hari ini: ${Math.max(0,FREE_WS_LIMIT-db.wsCountToday)}/${FREE_WS_LIMIT}`;
 }
 
-/* ===========================================================
-   Template A4 worksheet
-=========================================================== */
+/* ===== Template A4 ===== */
 function escXml(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function wsFrame(jenisLabel, jenisIcon, tema, innerContent, footNote){
   jenisLabel = escXml(jenisLabel); tema = escXml(tema);
   return `<svg viewBox="0 0 300 420" xmlns="http://www.w3.org/2000/svg" font-family="'Baloo 2','Segoe UI',sans-serif">
     <rect width="300" height="420" fill="#FFFFFF"/>
     <rect x="6" y="6" width="288" height="408" rx="16" fill="none" stroke="#F7941D" stroke-width="1.6" stroke-dasharray="3,4"/>
-
     <rect x="14" y="14" width="272" height="46" rx="12" fill="#00A99D"/>
     <circle cx="34" cy="37" r="14" fill="#F7941D"/>
     <text x="34" y="42" text-anchor="middle" font-size="14">${jenisIcon}</text>
     <text x="56" y="32" font-size="12.5" fill="#fff" font-weight="700">${jenisLabel}</text>
     <text x="56" y="46" font-size="10.5" fill="#E1F6F3">Tema: ${capitalize(tema)}</text>
     <text x="278" y="38" text-anchor="end" font-size="8.5" fill="#E1F6F3">TemanGuruTK</text>
-
     <text x="20" y="76" font-size="9" fill="#4C6664">Nama:</text>
     <line x1="46" y1="76" x2="150" y2="76" stroke="#BFD9D7" stroke-width="1"/>
     <text x="160" y="76" font-size="9" fill="#4C6664">Tanggal:</text>
     <line x1="194" y1="76" x2="280" y2="76" stroke="#BFD9D7" stroke-width="1"/>
-
     <g transform="translate(0,84)">${innerContent}</g>
-
     <line x1="20" y1="392" x2="280" y2="392" stroke="#F0EBE0" stroke-width="1"/>
     <text x="150" y="405" text-anchor="middle" font-size="8" fill="#B9C4C2">${footNote || 'Dibuat dengan AI oleh TemanGuruTK — Asisten Guru TK/PAUD'}</text>
     <text x="24" y="405" font-size="9">⭐</text>
@@ -1432,10 +1120,6 @@ function wsFrame(jenisLabel, jenisIcon, tema, innerContent, footNote){
   </svg>`;
 }
 
-/* ===========================================================
-   PEMBUATAN SOAL ANAK TK
-   Tiap lembar berisi 3-5 soal bergambar + kunci jawaban untuk guru.
-=========================================================== */
 const SOAL_ITEMS = {
   binatang:[['🐱','kucing'],['🐟','ikan'],['🐔','ayam'],['🐘','gajah'],['🐸','katak'],['🐄','sapi'],['🐦','burung'],['🐶','anjing']],
   buah:[['🍎','apel'],['🍌','pisang'],['🍊','jeruk'],['🍇','anggur'],['🍉','semangka'],['🍓','stroberi'],['🍍','nanas'],['🥭','mangga']],
@@ -1575,7 +1259,6 @@ function buildSoal(jenis, tema, level, count){
     const map = {huruf:'huruf', warna:'warna', bentuk:'bentuk', perbandingan:'banding', urutan:'urutan'};
     types = Array(count).fill(map[jenis] || 'hitung');
   }
-
   const step = count===5 ? 58 : count===4 ? 72 : 90;
   const qs = types.map(t=> gen[t]());
   const content = qs.map((q,i)=>`<g transform="translate(0,${8+i*step})">${soalBox(i+1,q.p,q.b)}</g>`).join('');
@@ -1585,7 +1268,7 @@ function buildSoal(jenis, tema, level, count){
 }
 
 /* ===========================================================
-   CHILDREN & NOTES
+   ANAK & CATATAN
 =========================================================== */
 function addChild(){
   checkPremiumExpiry();
@@ -1639,10 +1322,7 @@ function generateChildNote(){
   const child = db.children.find(c=>c.id===childId);
   if(!child){ showToast('Tambahkan data anak terlebih dahulu'); return; }
   const aspects = selectedAspects.size ? [...selectedAspects] : ['motorik','sosial','komunikasi'];
-  const kalimat = aspects.map(a=>{
-    const bank = NOTE_TEMPLATES[a];
-    return bank[Math.floor(Math.random()*bank.length)];
-  });
+  const kalimat = aspects.map(a=>{ const bank = NOTE_TEMPLATES[a]; return bank[Math.floor(Math.random()*bank.length)]; });
   const note = `${child.name} ${kalimat.join('; ')}. Perlu pendampingan lanjutan agar perkembangan semakin optimal.`;
   document.getElementById('noteResultWrap').innerHTML = `
     <div class="card-soft">
@@ -1656,7 +1336,7 @@ function generateChildNote(){
 }
 
 /* ===========================================================
-   SMART REMINDER
+   REMINDER
 =========================================================== */
 function addReminder(){
   const title = document.getElementById('remTitle').value.trim();
@@ -1709,19 +1389,15 @@ function checkReminders(){
 setInterval(checkReminders, 30000);
 
 /* ===========================================================
-   PEMBAYARAN — LANGSUNG QRIS
+   PEMBAYARAN QRIS
 =========================================================== */
 let paymentModalInstance, notifModalInstance;
 let qrCountdownTimer, payCheckTimeout, payPollInterval;
-let currentPayment = null; // {title, item, amount, onSuccess}
+let currentPayment = null;
 
 function stopPaymentTimers(){
-  clearInterval(qrCountdownTimer);
-  clearTimeout(payCheckTimeout);
-  clearInterval(payPollInterval);
+  clearInterval(qrCountdownTimer); clearTimeout(payCheckTimeout); clearInterval(payPollInterval);
 }
-
-/* Membuka modal & langsung menampilkan QRIS (tanpa pilihan metode lain) */
 function openPaymentModal(opts){
   stopPaymentTimers();
   currentPayment = opts;
@@ -1739,34 +1415,26 @@ function openPaymentModal(opts){
   paymentModalInstance.show();
   startQrisPayment();
 }
-
 function cancelPayment(){
   stopPaymentTimers();
   if(paymentModalInstance) paymentModalInstance.hide();
   showToast('Transaksi dibatalkan');
 }
-
 async function startQrisPayment(){
   const amount = currentPayment.amount;
-  currentPayment.method = 'QRIS';
-  currentPayment.paid = false;
-  currentPayment.expired = false;
-
+  currentPayment.method = 'QRIS'; currentPayment.paid = false; currentPayment.expired = false;
   document.getElementById('qrExpiredOverlay').style.display = 'none';
   resetWaitingState();
   document.getElementById('payStatusText').textContent = 'Membuat transaksi...';
-
   const trx = await createTransactionOnServer(currentPayment.item, amount, 'QRIS');
   currentPayment.trxId = trx.trxId;
   document.getElementById('payTrxId').textContent = trx.trxId;
   document.getElementById('payTrxIdDone').textContent = trx.trxId;
-
   renderQRIS(trx.trxId, amount, trx.qrPayload);
   startQrCountdown();
   toggleWaitingMode();
   if(PAYMENT_CONFIG.backendEnabled) startStatusPolling(trx.trxId);
 }
-
 function toggleWaitingMode(){
   const btn = document.getElementById('payConfirmBtn');
   const hint = document.getElementById('payDemoHint');
@@ -1782,7 +1450,6 @@ function toggleWaitingMode(){
     if(infoBox) infoBox.innerHTML = 'ℹ️ Mode simulasi: tanpa backend, status belum bisa dicek otomatis ke bank.';
   }
 }
-
 function resetWaitingState(){
   document.getElementById('payStatusText').textContent = 'Menunggu status pembayaran dari sistem...';
   document.getElementById('payWaitingIndicator').style.display = 'flex';
@@ -1790,7 +1457,6 @@ function resetWaitingState(){
   btn.disabled = false;
   btn.textContent = '✅ Saya Sudah Membayar — Cek Status';
 }
-
 function startQrCountdown(){
   let secondsLeft = 300;
   clearInterval(qrCountdownTimer);
@@ -1806,30 +1472,25 @@ function startQrCountdown(){
       currentPayment.expired = true;
       document.getElementById('payWaitingIndicator').style.display = 'none';
       document.getElementById('payStatusText').textContent = 'Waktu pembayaran habis, transaksi tidak ditemukan.';
-      document.getElementById('payConfirmBtn').disabled = true;
-      document.getElementById('payConfirmBtn').textContent = '❌ Kedaluwarsa — Buat Ulang';
-      document.getElementById('payConfirmBtn').onclick = ()=> startQrisPayment();
+      const b = document.getElementById('payConfirmBtn');
+      b.disabled = true;
+      b.textContent = '❌ Kedaluwarsa — Buat Ulang';
+      b.onclick = ()=> startQrisPayment();
       document.getElementById('qrExpiredOverlay').style.display = 'flex';
     }
   },1000);
 }
-
 function refreshQris(){
   document.getElementById('qrExpiredOverlay').style.display = 'none';
   document.getElementById('payConfirmBtn').onclick = confirmPaymentReceived;
   startQrisPayment();
   showToast('QR diperbarui');
 }
-
-/* ===========================================================
-   TITIK INTEGRASI BACKEND PEMBAYARAN (Midtrans/Xendit/dll)
-=========================================================== */
 async function createTransactionOnServer(item, amount, method){
   if(PAYMENT_CONFIG.backendEnabled){
     try{
       const res = await fetch(`${PAYMENT_CONFIG.apiBase}/api/create-transaction`, {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
+        method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ item, amount, method, email: db.auth.currentUser ? db.auth.currentUser.email : null })
       });
       if(!res.ok) throw new Error('Gagal membuat transaksi di server');
@@ -1843,17 +1504,15 @@ async function createTransactionOnServer(item, amount, method){
   const trxId = 'TGTK-' + Date.now().toString().slice(-8);
   return { trxId, qrPayload: buildQrisPayload(trxId, amount) };
 }
-
 async function fetchTransactionStatus(trxId){
   if(PAYMENT_CONFIG.backendEnabled){
     const res = await fetch(`${PAYMENT_CONFIG.apiBase}/api/transaction-status/${trxId}`);
     if(!res.ok) throw new Error('Gagal memeriksa status transaksi');
     const data = await res.json();
-    return data.status; // 'pending' | 'paid' | 'expired' | 'failed'
+    return data.status;
   }
   return 'pending';
 }
-
 function startStatusPolling(trxId){
   clearInterval(payPollInterval);
   payPollInterval = setInterval(async ()=>{
@@ -1871,98 +1530,78 @@ function startStatusPolling(trxId){
     }catch(err){ console.error('Polling status gagal:', err); }
   }, PAYMENT_CONFIG.pollIntervalMs);
 }
-
-/* Konfirmasi manual — HANYA untuk MODE DEMO (backendEnabled:false) */
+/* Konfirmasi manual — HANYA MODE DEMO */
 function confirmPaymentReceived(){
   if(currentPayment.expired){ showToast('Kode pembayaran sudah kedaluwarsa'); return; }
   const btn = document.getElementById('payConfirmBtn');
   btn.disabled = true;
   btn.textContent = '🔄 Memeriksa status transaksi...';
   document.getElementById('payStatusText').textContent = 'Menghubungi payment gateway...';
-
   clearTimeout(payCheckTimeout);
   payCheckTimeout = setTimeout(()=>{
-    const trxId = currentPayment.trxId;
-    const method = currentPayment.method;
+    const trxId = currentPayment.trxId, method = currentPayment.method;
     currentPayment.paid = true;
     clearInterval(qrCountdownTimer);
     document.getElementById('payStatusText').textContent = 'Transaksi ditemukan & terverifikasi ✅';
     setTimeout(()=> finishPayment(trxId, method), 500);
   }, 1600);
 }
-
 function formatCountdown(s){
   const m = Math.floor(s/60), sec = s%60;
   return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
 }
-
-/* Render QRIS: mode 'image' = gambar QRIS milikmu, mode 'auto' / src kosong = QR demo */
 function renderQRIS(trxId, amount, qrPayload){
   const canvas = document.getElementById('qrCanvas');
   const img = document.getElementById('qrImageStatic');
-
+  const note = document.getElementById('qrImageNominalNote');
   if(QRIS_CONFIG.mode === 'image' && QRIS_CONFIG.staticImageSrc){
     canvas.style.display = 'none';
     img.style.display = 'block';
     img.onerror = function(){
       img.style.display='none';
-      document.getElementById('qrImageNominalNote').innerHTML = '⚠️ Foto QRIS (<b>'+QRIS_CONFIG.staticImageSrc+'</b>) tidak ditemukan. Letakkan file foto QRIS di folder yang sama dengan index.html.';
+      note.style.display = 'block';
+      note.innerHTML = '⚠️ Foto QRIS (<b>'+QRIS_CONFIG.staticImageSrc+'</b>) tidak ditemukan. Letakkan file foto QRIS di folder yang sama dengan index.html.';
     };
     img.src = QRIS_CONFIG.staticImageSrc;
     canvas.dataset.payload = '';
-    const note = document.getElementById('qrImageNominalNote');
     note.style.display = 'block';
     note.innerHTML = '⚠️ Scan QRIS lalu masukkan nominal <b>Rp' + amount.toLocaleString('id-ID') + '</b> secara manual.';
     return;
   }
-
-  document.getElementById('qrImageNominalNote').style.display = 'none';
+  note.style.display = 'none';
   canvas.style.display = 'block';
   img.style.display = 'none';
   const payload = qrPayload || buildQrisPayload(trxId, amount);
   if(window.QRCode && QRCode.toCanvas){
-    QRCode.toCanvas(canvas, payload, {
-      width:188, margin:1, errorCorrectionLevel:'M',
-      color:{ dark:'#193B39', light:'#FFFFFF' }
-    }, function(err){ if(err) console.log(err); });
+    QRCode.toCanvas(canvas, payload, { width:188, margin:1, errorCorrectionLevel:'M', color:{ dark:'#193B39', light:'#FFFFFF' } }, function(err){ if(err) console.log(err); });
   }
   canvas.dataset.payload = payload;
 }
-/* Payload DEMO (tidak bisa dibayar). Produksi: payload asli dibuat server PSP. */
 function buildQrisPayload(trxId, amount){
   const amt = amount.toFixed ? amount.toFixed(2) : `${amount}.00`;
   return `00020101021226610014ID.CO.QRIS.WWW0215ID20232112345670303UMI5204581253033605802ID5913TEMANGURUTK6007SURAKARTA6105571126304${trxId}5406${amt}62200716${Date.now()}6304`;
 }
 function copyQrisPayload(){
-  const canvas = document.getElementById('qrCanvas');
-  const payload = canvas.dataset.payload || '';
+  const payload = document.getElementById('qrCanvas').dataset.payload || '';
   if(!payload){ showToast('Mode gambar QRIS tidak punya kode teks untuk disalin'); return; }
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(payload).then(()=> showToast('Kode QRIS disalin'));
-  } else {
-    showToast('Kode QRIS: ' + payload.slice(0,24) + '...');
-  }
+  if(navigator.clipboard){ navigator.clipboard.writeText(payload).then(()=> showToast('Kode QRIS disalin')); }
+  else { showToast('Kode QRIS: ' + payload.slice(0,24) + '...'); }
 }
-
 function finishPayment(trxId, method){
   const trx = {id: trxId, method, date: new Date().toISOString(), amount: currentPayment.amount, item: currentPayment.item};
-  db.transactions = db.transactions || [];
   db.transactions.unshift(trx);
   save();
-
   document.getElementById('payDoneMessage').innerHTML = currentPayment.successMessage || `Transaksi <b>${currentPayment.item}</b> berhasil diselesaikan.`;
   if(typeof currentPayment.onSuccess === 'function') currentPayment.onSuccess(trx);
-
   document.getElementById('payStep2').style.display = 'none';
   document.getElementById('payStep3').style.display = 'block';
   refreshNotifDot();
 }
 
 /* ===========================================================
-   PREMIUM (1 bulan / 1 tahun)
+   PREMIUM
 =========================================================== */
 function buyPremium(key){
-  // Alur: LOGIN dulu -> BAYAR (QRIS) -> baru Premium aktif
   if(!db.auth.loggedIn || !db.auth.currentUser){
     openAuthModal('register');
     showToast('Masuk / daftar dulu, lalu lanjutkan pembayaran Premium');
@@ -1970,56 +1609,48 @@ function buyPremium(key){
   }
   const p = PLANS[key];
   openPaymentModal({
-    title:'💳 Upgrade Premium',
-    item:p.item,
-    amount:p.price,
-    planKey:key,
+    title:'💳 Upgrade Premium', item:p.item, amount:p.price, planKey:key,
     successMessage:`Akun kamu telah beralih ke <b>Premium ⭐ (${p.label})</b>`,
     onSuccess:(trx)=> onPremiumPaid(trx, key)
   });
 }
-
+/* Simpan premium ke data USER (bukan data global) */
 function onPremiumPaid(trx, planKey){
   const p = PLANS[planKey];
-  // Jika masih Premium, masa aktif diperpanjang (bukan ditimpa)
-  const base = (db.premium && db.premiumEmail===(db.auth.currentUser&&db.auth.currentUser.email) && db.premiumUntil && db.premiumUntil > Date.now()) ? db.premiumUntil : Date.now();
-  db.premiumUntil = base + p.days*24*60*60*1000;
-  db.premium = true;
-  db.premiumEmail = db.auth.currentUser.email;
-  db.premiumPlan = planKey;
-  db.premiumTrx = trx;
+  const u = getUserRecord(); if(!u) return;
+  const base = (u.premium && u.premiumUntil && u.premiumUntil > Date.now()) ? u.premiumUntil : Date.now();
+  u.premiumUntil = base + p.days*24*60*60*1000;   // diperpanjang, bukan ditimpa
+  u.premium = true;
+  u.premiumPlan = planKey;
+  u.premiumTrx = trx;
   save();
-  refreshPremiumUI();
-  renderWsQuota();
-  renderChildList();
-  renderDashboard();
-  updateAuthUI();
+  updateAuthUI(); renderWsQuota(); renderChildList(); renderDashboard();
   showToast('Pembayaran berhasil, akun beralih ke Premium 🎉');
+}
+
+function expiryNoticeHTML(u){
+  const d = daysLeft(u.premiumUntil), warn = d <= 7;
+  return `<div class="trial-banner ${warn?'':'ok'}">
+    <span style="font-size:1.3rem;">${warn?'⚠️':'⭐'}</span>
+    <div>Premium aktif sampai <b>${fmtDate(u.premiumUntil)}</b> (${d} hari lagi).${warn?'<br>Segera perpanjang agar tidak terputus.':''}</div>
+  </div>`;
 }
 
 function refreshPremiumUI(){
   checkPremiumExpiry();
-  const el = document.getElementById('premiumStatus');
-  if(isPremium()){
-    const sampai = db.premiumUntil ? ' s/d ' + new Date(db.premiumUntil).toLocaleDateString('id-ID') : '';
-    el.textContent = 'Premium ⭐' + sampai;
-  } else {
-    el.textContent = 'Gratis';
-  }
-  // ===== status kartu paket =====
-  const prem = isPremium();
-  const until = db.premiumUntil ? new Date(db.premiumUntil).toLocaleDateString('id-ID') : '';
+  const u = getUserRecord(), prem = isPremium();
+  const until = prem && u.premiumUntil ? fmtDate(u.premiumUntil) : '';
+  const plan = prem ? u.premiumPlan : 'free';
+
   const setBtn = (id, current, label)=>{
     const b = document.getElementById(id);
     b.disabled = current;
     b.classList.toggle('is-current', current);
     b.textContent = current ? '✓ Paket Saat Ini' : label;
   };
-  const plan = prem ? db.premiumPlan : 'free';
   setBtn('btnFree',    plan==='free',    'Paket Gratis');
   setBtn('btnMonthly', plan==='monthly', prem ? 'Perpanjang' : 'Pilih');
   setBtn('btnYearly',  plan==='yearly',  prem ? 'Perpanjang' : 'Pilih');
-  // paket aktif tetap bisa diperpanjang
   if(plan==='monthly'){ const b=document.getElementById('btnMonthly'); b.disabled=false; b.textContent='✓ Aktif s/d '+until+' · Perpanjang'; }
   if(plan==='yearly'){ const b=document.getElementById('btnYearly'); b.disabled=false; b.textContent='✓ Aktif s/d '+until+' · Perpanjang'; }
   document.getElementById('btnFree').disabled = true;
@@ -2032,21 +1663,16 @@ function refreshPremiumUI(){
   document.getElementById('cardMonthly').classList.toggle('is-active', plan==='monthly');
   document.getElementById('cardYearly').classList.toggle('is-active', plan==='yearly');
   const banner = document.getElementById('dashPremiumBanner');
-  if(banner) banner.style.display = isPremium() ? 'none' : 'block';
-}
+  if(banner) banner.style.display = prem ? 'none' : 'block';
 
-function saveTeacherName(){
-  const name = document.getElementById('teacherNameInput').value.trim();
-  if(!name) return;
-  db.teacherName = name; save();
-  document.getElementById('teacherName').textContent = name;
-  if(db.auth.loggedIn && db.auth.currentUser){ db.auth.currentUser.name = name; save(); }
-  showToast('Nama disimpan');
+  // Pemberitahuan masa aktif (Profil + Beranda)
+  const html = (prem && u.premiumUntil) ? expiryNoticeHTML(u) : '';
+  document.getElementById('premiumExpiryNotice').innerHTML = html;
+  document.getElementById('dashExpiryNotice').innerHTML = html;
 }
 
 /* ===========================================================
-   AUTENTIKASI & GERBANG PERCOBAAN AI (harian)
-   Tamu: 2x/hari | Login non-premium: 5x/hari | Premium: tanpa batas
+   AUTENTIKASI & KUOTA AI
 =========================================================== */
 let authModalInstance;
 let authTabMode = 'login';
@@ -2054,9 +1680,7 @@ let authTabMode = 'login';
 function canUseAI(){
   resetDailyTrialsIfNeeded();
   checkPremiumExpiry();
-
-  if(isPremium()) return true;   // Premium = sudah login + sudah membayar
-
+  if(isPremium()) return true;
   if(db.auth.loggedIn){
     if(db.auth.userTrialCount < USER_TRIAL_LIMIT) return true;
     promptUpgradeForDailyLimit();
@@ -2067,30 +1691,19 @@ function canUseAI(){
   showToast('Percobaan gratis hari ini sudah habis. Daftar untuk melanjutkan.');
   return false;
 }
-
 function promptUpgradeForDailyLimit(){
   showToast(`Kamu sudah memakai ${USER_TRIAL_LIMIT}x pembuatan AI hari ini. Upgrade Premium untuk akses tanpa batas.`);
   goTo('premium');
 }
-
 function consumeGuestTrial(){
   resetDailyTrialsIfNeeded();
   if(isPremium()) return;
   if(db.auth.loggedIn){
-    if(!isPremium() && db.auth.userTrialCount < USER_TRIAL_LIMIT){
-      db.auth.userTrialCount++;
-      save();
-      updateAuthUI();
-    }
+    if(db.auth.userTrialCount < USER_TRIAL_LIMIT){ db.auth.userTrialCount++; save(); updateAuthUI(); }
     return;
   }
-  if(db.auth.guestTrialCount < GUEST_TRIAL_LIMIT){
-    db.auth.guestTrialCount++;
-    save();
-    updateAuthUI();
-  }
+  if(db.auth.guestTrialCount < GUEST_TRIAL_LIMIT){ db.auth.guestTrialCount++; save(); updateAuthUI(); }
 }
-
 function openAuthModal(mode){
   switchAuthTab(mode || 'login');
   document.getElementById('authTrialNotice').style.display =
@@ -2100,7 +1713,6 @@ function openAuthModal(mode){
   if(!authModalInstance){ authModalInstance = new bootstrap.Modal(document.getElementById('authModal')); }
   authModalInstance.show();
 }
-
 function switchAuthTab(mode){
   authTabMode = mode;
   document.getElementById('authFormLogin').style.display = mode==='login' ? 'block' : 'none';
@@ -2109,41 +1721,34 @@ function switchAuthTab(mode){
   document.getElementById('authTabRegisterBtn').classList.toggle('auth-tab-active', mode==='register');
   document.getElementById('authModalTitle').textContent = mode==='login' ? '🔐 Masuk ke Akun' : '📝 Daftar Akun Baru';
 }
-
 function isValidEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
 
-/* DEMO lokal: akun disimpan di localStorage. Untuk produksi pakai server/auth sungguhan. */
 function registerUser(){
   const name = document.getElementById('regName').value.trim();
   const email = document.getElementById('regEmail').value.trim().toLowerCase();
   const password = document.getElementById('regPassword').value;
   const errEl = document.getElementById('regError');
   errEl.textContent = '';
-
   if(!name || !email || !password){ errEl.textContent = 'Semua kolom wajib diisi.'; return; }
   if(!isValidEmail(email)){ errEl.textContent = 'Format email tidak valid.'; return; }
   if(password.length < 6){ errEl.textContent = 'Kata sandi minimal 6 karakter.'; return; }
   if(db.users.find(u=>u.email===email)){ errEl.textContent = 'Email sudah terdaftar, silakan masuk.'; return; }
 
-  db.users.push({name, email, password});
+  db.users.push({name, email, password, premium:false, premiumPlan:null, premiumUntil:null});
   db.auth.loggedIn = true;
   db.auth.currentUser = {name, email};
   db.teacherName = name;
   save();
-
   authModalInstance.hide();
   document.getElementById('teacherName').textContent = name;
-  document.getElementById('teacherNameInput').value = name;
-  updateAuthUI();
+  updateAuthUI(); renderWsQuota(); renderChildList(); renderDashboard();
   showToast(`Selamat datang, ${name}! Akun berhasil dibuat 🎉`);
 }
-
 function loginUser(){
   const email = document.getElementById('loginEmail').value.trim().toLowerCase();
   const password = document.getElementById('loginPassword').value;
   const errEl = document.getElementById('loginError');
   errEl.textContent = '';
-
   if(!email || !password){ errEl.textContent = 'Isi email dan kata sandi.'; return; }
   const user = db.users.find(u=>u.email===email && u.password===password);
   if(!user){ errEl.textContent = 'Email atau kata sandi salah.'; return; }
@@ -2152,31 +1757,31 @@ function loginUser(){
   db.auth.currentUser = {name:user.name, email:user.email};
   db.teacherName = user.name;
   save();
-
   authModalInstance.hide();
   document.getElementById('teacherName').textContent = user.name;
-  document.getElementById('teacherNameInput').value = user.name;
-  updateAuthUI();
+  updateAuthUI(); renderWsQuota(); renderChildList(); renderDashboard();
   showToast(`Selamat datang kembali, ${user.name}! 👋`);
 }
-
 function logoutUser(){
   db.auth.loggedIn = false;
   db.auth.currentUser = null;
+  db.teacherName = 'Bu Guru';
   save();
-  updateAuthUI();
+  document.getElementById('teacherName').textContent = 'Bu Guru';
+  updateAuthUI(); renderWsQuota(); renderChildList(); renderDashboard();
   showToast('Kamu telah keluar dari akun');
 }
 
 function updateAuthUI(){
   resetDailyTrialsIfNeeded();
-  if(typeof refreshPremiumUI==='function') refreshPremiumUI();
+  refreshPremiumUI();
   const badge = document.getElementById('authBadge');
   const trialBanner = document.getElementById('trialBanner');
   const accountCard = document.getElementById('accountStatusCard');
 
   if(db.auth.loggedIn && db.auth.currentUser){
     if(isPremium()){
+      const u = getUserRecord();
       badge.textContent = '⭐ ' + db.auth.currentUser.name.split(' ')[0] + ' · Premium';
       trialBanner.style.display = 'none';
       accountCard.innerHTML = `
@@ -2184,23 +1789,20 @@ function updateAuthUI(){
           <span style="font-size:1.2rem;">⭐</span>
           <div class="flex-grow-1">
             <div class="fw-semibold small">${db.auth.currentUser.name}</div>
-            <div class="text-muted" style="font-size:.72rem;">${db.auth.currentUser.email} · Premium (tanpa batas)</div>
+            <div class="text-muted" style="font-size:.72rem;">${db.auth.currentUser.email} · Premium sampai ${fmtDate(u.premiumUntil)}</div>
           </div>
           <span class="chip">Akun Aktif</span>
         </div>
         <button class="btn btn-outline-toska btn-sm w-100" onclick="logoutUser()">🚪 Keluar</button>`;
       return;
     }
-
     const sisaUser = Math.max(0, USER_TRIAL_LIMIT - db.auth.userTrialCount);
     const userHabis = sisaUser <= 0;
     badge.textContent = '✅ ' + db.auth.currentUser.name.split(' ')[0] + ` · ${sisaUser}/${USER_TRIAL_LIMIT} hari ini`;
     trialBanner.style.display = userHabis ? 'flex' : 'none';
     trialBanner.innerHTML = `
       <span style="font-size:1.3rem;">🔒</span>
-      <div class="flex-grow-1">
-        <b>Kuota AI gratis hari ini sudah habis (${USER_TRIAL_LIMIT}x/hari).</b><br>Upgrade Premium untuk membuat rencana & soal tanpa batas.
-      </div>
+      <div class="flex-grow-1"><b>Kuota AI gratis hari ini sudah habis (${USER_TRIAL_LIMIT}x/hari).</b><br>Upgrade Premium untuk membuat rencana & soal tanpa batas.</div>
       <button class="btn btn-sm btn-orange" onclick="goTo('premium')">Upgrade</button>`;
     accountCard.innerHTML = `
       <div class="d-flex align-items-center gap-2 mb-2">
@@ -2220,9 +1822,7 @@ function updateAuthUI(){
     trialBanner.style.display = tamuHabis ? 'flex' : 'none';
     trialBanner.innerHTML = `
       <span style="font-size:1.3rem;">🔒</span>
-      <div class="flex-grow-1">
-        <b>Percobaan AI gratis hari ini sudah dipakai (${GUEST_TRIAL_LIMIT}x/hari untuk tamu).</b><br>Daftar/masuk untuk mendapat ${USER_TRIAL_LIMIT}x percobaan gratis per hari.
-      </div>
+      <div class="flex-grow-1"><b>Percobaan AI gratis hari ini sudah dipakai (${GUEST_TRIAL_LIMIT}x/hari untuk tamu).</b><br>Daftar/masuk untuk mendapat ${USER_TRIAL_LIMIT}x percobaan gratis per hari.</div>
       <button class="btn btn-sm btn-orange" onclick="openAuthModal('register')">Daftar</button>`;
     accountCard.innerHTML = `
       <div class="d-flex align-items-center gap-2 mb-2">
@@ -2240,7 +1840,7 @@ function updateAuthUI(){
 }
 
 /* ===========================================================
-   SPLASH SCREEN & ONBOARDING
+   SPLASH & ONBOARDING
 =========================================================== */
 const ONB_KEY = 'tgtk_onboarded_v1';
 function initSplashAndOnboarding(){
@@ -2255,7 +1855,6 @@ function initSplashAndOnboarding(){
     }, 350);
   }, 2200);
 }
-
 let onbIndex = 0;
 const onbTotal = 3;
 function updateOnbUI(){
@@ -2263,13 +1862,8 @@ function updateOnbUI(){
   document.querySelectorAll('.onb-dot').forEach((d,i)=> d.classList.toggle('active', i===onbIndex));
   const nextBtn = document.getElementById('onbNextBtn');
   const skipBtn = document.getElementById('onbSkipBtn');
-  if(onbIndex === onbTotal-1){
-    nextBtn.textContent = 'Mulai Sekarang';
-    skipBtn.style.visibility = 'hidden';
-  } else {
-    nextBtn.textContent = 'Lanjut';
-    skipBtn.style.visibility = 'visible';
-  }
+  if(onbIndex === onbTotal-1){ nextBtn.textContent = 'Mulai Sekarang'; skipBtn.style.visibility = 'hidden'; }
+  else { nextBtn.textContent = 'Lanjut'; skipBtn.style.visibility = 'visible'; }
 }
 function onbNext(){
   if(onbIndex < onbTotal-1){ onbIndex++; updateOnbUI(); }
@@ -2281,13 +1875,21 @@ function finishOnboarding(){
 }
 
 /* ===========================================================
-   NOTIFICATION PANEL
+   NOTIFIKASI
 =========================================================== */
 function buildNotifList(){
   const items = [];
   db.reminders.slice(0,3).forEach(r=> items.push({icon:'⏰', title:`Pengingat: ${r.title}`, desc:`Dijadwalkan pukul ${r.time}`}));
-  if(!isPremium()) items.push({icon:'⭐', title:'Coba Premium', desc:'Unlimited, HD, tanpa watermark mulai Rp20.000/bulan.'});
-  else if(db.premiumUntil) items.push({icon:'⭐', title:'Premium aktif', desc:'Berlaku sampai ' + new Date(db.premiumUntil).toLocaleDateString('id-ID') + '.'});
+  if(!isPremium()){
+    items.push({icon:'⭐', title:'Coba Premium', desc:'Unlimited, HD, tanpa watermark mulai Rp20.000/bulan.'});
+  } else {
+    const u = getUserRecord();
+    if(u && u.premiumUntil){
+      const d = daysLeft(u.premiumUntil);
+      items.push({icon: d<=7?'⚠️':'⭐', title: d<=7?'Premium segera berakhir':'Premium aktif',
+        desc:`Berlaku sampai ${fmtDate(u.premiumUntil)} (${d} hari lagi).`});
+    }
+  }
   if(db.plans.length) items.push({icon:'🗓️', title:'Rencana tersimpan', desc:`${db.plans.length} rencana pembelajaran telah dibuat.`});
   if(!items.length) items.push({icon:'📭', title:'Belum ada notifikasi', desc:'Aktivitasmu akan muncul di sini.'});
   return items;
@@ -2324,9 +1926,8 @@ function renderDashboard(){
 /* ===========================================================
    INIT
 =========================================================== */
-document.getElementById('teacherName').textContent = db.teacherName;
-document.getElementById('teacherNameInput').value = db.teacherName;
-refreshPremiumUI();
+document.getElementById('teacherName').textContent =
+  (db.auth.loggedIn && db.auth.currentUser) ? db.auth.currentUser.name : db.teacherName;
 renderWsQuota();
 renderChildList();
 renderChildSelect();
@@ -2344,34 +1945,26 @@ updateConnStatus();
 updateOnbUI();
 initSplashAndOnboarding();
 refreshNotifDot();
-updateAuthUI();
+updateAuthUI();   // juga memanggil refreshPremiumUI()
 
 /* ===========================================================
-   PWA: Manifest + Service Worker (inline, single-file)
+   PWA
 =========================================================== */
 const iconSVG = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%2300A99D'/><path d='M20 6 L44 6 L48 14 L16 14 Z' fill='%23F7941D'/><rect x='14' y='14' width='36' height='4' rx='2' fill='%23F7941D'/><path d='M32 20c-7.7 0-14 6.3-14 14 0 5.6 3.3 10.4 8 12.6V50h12v-3.4c4.7-2.2 8-7 8-12.6 0-7.7-6.3-14-14-14z' fill='white'/><rect x='27' y='50' width='10' height='4' rx='2' fill='%23F7941D'/></svg>`;
 const iconDataUri = 'data:image/svg+xml,' + iconSVG.replace(/\n/g,'').replace(/#/g,'%23');
-
 const manifest = {
-  name: "TemanGuruTK — Asisten AI Guru TK/PAUD",
-  short_name: "TemanGuruTK",
-  description: "Platform AI untuk membantu guru TK/PAUD menyusun pembelajaran, mengelola administrasi, dan bekerja lebih efisien lewat perintah suara.",
-  start_url: ".",
-  display: "standalone",
-  background_color: "#FBF8F2",
-  theme_color: "#00A99D",
-  orientation: "portrait",
-  icons: [
-    {src: iconDataUri, sizes:"64x64", type:"image/svg+xml", purpose:"any"},
-    {src: iconDataUri, sizes:"192x192", type:"image/svg+xml", purpose:"any maskable"},
-    {src: iconDataUri, sizes:"512x512", type:"image/svg+xml", purpose:"any maskable"},
+  name:"TemanGuruTK — Asisten AI Guru TK/PAUD", short_name:"TemanGuruTK",
+  description:"Platform AI untuk membantu guru TK/PAUD menyusun pembelajaran, mengelola administrasi, dan bekerja lebih efisien lewat perintah suara.",
+  start_url:".", display:"standalone", background_color:"#FBF8F2", theme_color:"#00A99D", orientation:"portrait",
+  icons:[
+    {src:iconDataUri, sizes:"64x64", type:"image/svg+xml", purpose:"any"},
+    {src:iconDataUri, sizes:"192x192", type:"image/svg+xml", purpose:"any maskable"},
+    {src:iconDataUri, sizes:"512x512", type:"image/svg+xml", purpose:"any maskable"}
   ]
 };
-const manifestBlob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
-const manifestURL = URL.createObjectURL(manifestBlob);
 const manifestLink = document.createElement('link');
 manifestLink.rel = 'manifest';
-manifestLink.href = manifestURL;
+manifestLink.href = URL.createObjectURL(new Blob([JSON.stringify(manifest)], {type:'application/json'}));
 document.head.appendChild(manifestLink);
 
 const swSource = `
@@ -2389,22 +1982,17 @@ self.addEventListener('fetch', event => {
       }).catch(() => cached);
     })
   );
-});
-`;
+});`;
 if('serviceWorker' in navigator){
   try{
-    const swBlob = new Blob([swSource], {type:'application/javascript'});
-    const swURL = URL.createObjectURL(swBlob);
-    navigator.serviceWorker.register(swURL).then(()=>{
-      console.log('Service worker terdaftar — mode offline aktif');
-    }).catch(err=> console.log('SW gagal (browser mungkin membatasi blob SW):', err));
+    const swURL = URL.createObjectURL(new Blob([swSource], {type:'application/javascript'}));
+    navigator.serviceWorker.register(swURL).then(()=> console.log('Service worker terdaftar'))
+      .catch(err=> console.log('SW gagal (browser membatasi blob SW):', err));
   }catch(e){ console.log('SW tidak dapat dijalankan pada mode ini.'); }
 }
-
 let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e)=>{
-  e.preventDefault();
-  deferredPrompt = e;
+window.addEventListener('beforeinstallprompt', e=>{
+  e.preventDefault(); deferredPrompt = e;
   document.getElementById('installStrip').style.display = 'flex';
 });
 document.getElementById('installBtn').addEventListener('click', async ()=>{
