@@ -843,6 +843,48 @@ db.users = db.users || [];
 db.premiumUntil = db.premiumUntil || null;
 db.premiumPlan = db.premiumPlan || null;
 
+/* ===========================================================
+   SEEDING: Buat 10 akun otomatis dengan email custom
+   Password pola: usernumber01 s/d usernumber10
+=========================================================== */
+if(!db.users || db.users.length === 0){
+  const hariKeDepan = (n) => Date.now() + n * 24 * 60 * 60 * 1000;
+
+  const daftarAkun = [
+    // 3 akun GRATIS
+    { nama: "Siti Aminah",   email: "nyoba@gmail.com",      premium: false, plan: null,      until: null },
+    { nama: "Dewi Lestari",  email: "semangat@gmail.com",   premium: false, plan: null,      until: null },
+    { nama: "Rina Marlina",  email: "sendiri@gmail.com",    premium: false, plan: null,      until: null },
+
+    // 4 akun PREMIUM BULANAN
+    { nama: "Fatikah Angraini",  email: "fatikahangraini@gmail.com",       premium: true,  plan: "monthly", until: hariKeDepan(30) },
+    { nama: "Sri Wahyuni",   email: "sri@gmail.com",        premium: true,  plan: "monthly", until: hariKeDepan(30) },
+    { nama: "Ratna Sari",    email: "ratna@gmail.com",      premium: true,  plan: "monthly", until: hariKeDepan(30) },
+    { nama: "Indah Permata", email: "indah@gmail.com",      premium: true,  plan: "monthly", until: hariKeDepan(30) },
+
+    // 3 akun PREMIUM TAHUNAN
+    { nama: "Maya Sari",     email: "maya@gmail.com",       premium: true,  plan: "yearly",  until: hariKeDepan(365) },
+    { nama: "Fitriani",      email: "fitri@gmail.com",      premium: true,  plan: "yearly",  until: hariKeDepan(365) },
+    { nama: "Nur Aisyah",    email: "nur@gmail.com",        premium: true,  plan: "yearly",  until: hariKeDepan(365) }
+  ];
+
+  daftarAkun.forEach((akun, index) => {
+    const nomor = String(index + 1).padStart(2, '0'); // 01, 02, ..., 10
+    db.users.push({
+      name: akun.nama,
+      email: akun.email,               // <-- pakai email custom dari daftar
+      password: `usernumber${nomor}`,  // <-- password otomatis: usernumber01, dst.
+      premium: akun.premium,
+      premiumPlan: akun.plan,
+      premiumUntil: akun.until
+    });
+  });
+
+  save();
+  console.log('🎉 Seeding selesai: 10 akun demo berhasil dibuat.');
+  console.table(db.users);
+}
+
 const GUEST_TRIAL_LIMIT = 2;   // percobaan AI/hari untuk TAMU
 const USER_TRIAL_LIMIT  = 5;   // percobaan AI/hari untuk akun login non-premium
 const FREE_WS_LIMIT     = 3;   // worksheet gratis per hari
