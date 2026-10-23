@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <style>
 :root{--toska:#00A99D;--toska-dark:#00857C;--toska-light:#E1F6F3;--orange:#F7941D;--orange-dark:#DD7A05;--cream:#FBF8F2;--ink:#193B39;--ink-soft:#4C6664;--radius:18px;font-size:16px;}
 *{-webkit-tap-highlight-color:transparent;}
@@ -394,11 +395,31 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
     <div id="reminderList"></div>
   </div>
 
+  <!-- ADMIN -->
+  <div class="screen" id="screen-admin">
+    <button class="btn btn-outline-toska btn-sm mb-2" onclick="goTo('premium')">← Kembali ke Profil</button>
+    <div class="section-title"><span class="dot"></span>Panel Admin</div>
+    <div class="stat-row">
+      <div class="stat-pill"><div class="num" id="admTotal">0</div><div class="lbl">Total pengguna</div></div>
+      <div class="stat-pill"><div class="num" id="admPremium">0</div><div class="lbl">Premium</div></div>
+      <div class="stat-pill"><div class="num" id="admActive">0</div><div class="lbl">Aktif 7 hari</div></div>
+    </div>
+    <div class="card-soft">
+      <div class="d-flex gap-2">
+        <input type="text" class="form-control form-control-sm" id="admSearch" placeholder="Cari nama / email..." oninput="renderAdminUsers()">
+        <button class="btn btn-sm btn-outline-toska" onclick="loadAdminUsers()">🔄</button>
+      </div>
+      <div class="form-text" id="admStatus"></div>
+    </div>
+    <div id="admList"></div>
+  </div>
+
   <!-- PROFIL / PREMIUM -->
   <div class="screen" id="screen-premium">
     <div class="section-title"><span class="dot"></span>Profil</div>
 
     <div class="card-soft" id="accountStatusCard"></div>
+    <div id="adminLinkWrap"></div>
 
     <!-- Pemberitahuan masa aktif -->
     <div id="premiumExpiryNotice"></div>
@@ -489,7 +510,7 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
           <input type="password" class="form-control mb-2" id="regPassword" placeholder="Minimal 6 karakter">
           <div class="text-danger small mb-2" id="regError"></div>
           <button class="btn btn-orange w-100" onclick="registerUser()">Daftar & Mulai</button>
-          <div class="form-text mt-2">*Demo lokal: akun disimpan di perangkat ini saja (belum tersambung server sungguhan).</div>
+          <div class="form-text mt-2">Akun tersimpan aman di server.</div>
         </div>
       </div>
     </div>
@@ -594,34 +615,12 @@ db.auth = Object.assign({
   userTrialCount:0, userTrialDate:todayStr
 }, db.auth || {});
 
-/* ===== SEEDING 10 AKUN DEMO (aman dijalankan berulang, tidak duplikat) =====
-   Password: usernumber01 ... usernumber10 */
-(function seedAccounts(){
-  const hari = n => Date.now() + n*24*60*60*1000;
-  const daftar = [
-    {nama:"Siti Aminah",      email:"nyoba@gmail.com",            premium:false, plan:null,      until:null},
-    {nama:"Dewi Lestari",     email:"semangat@gmail.com",         premium:false, plan:null,      until:null},
-    {nama:"Rina Marlina",     email:"sendiri@gmail.com",          premium:false, plan:null,      until:null},
-    {nama:"Fatikah Angraini", email:"fatikahangraini@gmail.com",  premium:true,  plan:"monthly", until:hari(30)},
-    {nama:"Sri Wahyuni",      email:"sri@gmail.com",              premium:true,  plan:"monthly", until:hari(30)},
-    {nama:"Ratna Sari",       email:"ratna@gmail.com",            premium:true,  plan:"monthly", until:hari(30)},
-    {nama:"Indah Permata",    email:"indah@gmail.com",            premium:true,  plan:"monthly", until:hari(30)},
-    {nama:"Maya Sari",        email:"maya@gmail.com",             premium:true,  plan:"yearly",  until:hari(365)},
-    {nama:"Fitriani",         email:"fitri@gmail.com",            premium:true,  plan:"yearly",  until:hari(365)},
-    {nama:"Nur Aisyah",       email:"nur@gmail.com",              premium:true,  plan:"yearly",  until:hari(365)}
-  ];
-  let added = 0;
-  daftar.forEach((a,i)=>{
-    if(db.users.some(u => u.email === a.email)) return;
-    db.users.push({
-      name:a.nama, email:a.email,
-      password:'usernumber'+String(i+1).padStart(2,'0'),
-      premium:a.premium, premiumPlan:a.plan, premiumUntil:a.until
-    });
-    added++;
-  });
-  if(added) save();
-})();
+
+/* Selalu mulai sebagai tamu. Status login hanya dipulihkan oleh restoreSession()
+   dari sesi Supabase yang valid, jadi data lama di localStorage tidak memunculkan nama. */
+db.auth.loggedIn = false;
+db.auth.currentUser = null;
+db.teacherName = 'Bu Guru';
 
 const GUEST_TRIAL_LIMIT = 2;
 const USER_TRIAL_LIMIT  = 5;
@@ -680,11 +679,13 @@ let selectedAspects = new Set();
 
 /* ---------- Navigasi ---------- */
 function goTo(name){
+  if(name==='admin' && !isAdmin()){ showToast('Halaman ini khusus admin'); return; }
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('screen-'+name).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.target===name));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.target===(name==='admin'?'premium':name)));
   if(name==='children') renderChildSelect();
   if(name==='premium') refreshPremiumUI();
+  if(name==='admin') loadAdminUsers();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function showToast(msg){
@@ -1624,6 +1625,10 @@ function onPremiumPaid(trx, planKey){
   u.premiumPlan = planKey;
   u.premiumTrx = trx;
   save();
+  if(sb && u.id){
+    sb.from('profiles').update({premium_plan:u.premiumPlan, premium_until:new Date(u.premiumUntil).toISOString()})
+      .eq('id',u.id).then(r=>{ if(r.error) console.warn('Gagal sinkron premium ke server:', r.error.message); });
+  }
   updateAuthUI(); renderWsQuota(); renderChildList(); renderDashboard();
   showToast('Pembayaran berhasil, akun beralih ke Premium 🎉');
 }
@@ -1723,7 +1728,66 @@ function switchAuthTab(mode){
 }
 function isValidEmail(email){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
 
-function registerUser(){
+/* ===== SUPABASE =====
+   Nama variabel 'sb' (BUKAN 'supabase') supaya tidak bentrok dengan library CDN. */
+const SUPABASE_URL = 'https://uckqxawsfbczeoxqqzfs.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVja3F4YXdzZmJjemVveHFxemZzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI2NTA2NDksImV4cCI6MjEwODIyNjY0OX0.92Y-hD5C0LbeNcVlfewoXMA75R1NQzNAmNQqJTZm4MI';
+let sb = null;
+try{
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}catch(e){
+  console.error('Supabase gagal dimuat (cek internet / CDN):', e);
+}
+
+function afterAuthChange(){
+  const name = (db.auth.loggedIn && db.auth.currentUser) ? db.auth.currentUser.name : 'Bu Guru';
+  document.getElementById('teacherName').textContent = name;
+  updateAuthUI(); renderWsQuota(); renderChildList(); renderDashboard(); refreshNotifDot();
+}
+
+/* Ambil profil dari tabel 'profiles' & simpan ke cache lokal (db.users) */
+async function applyProfile(user, fallbackName){
+  const email = (user.email || '').toLowerCase();
+  let profile = null;
+  try{
+    const r = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
+    profile = r.data || null;
+  }catch(e){ console.warn('Gagal membaca profil:', e); }
+  if(!profile){
+    try{ await sb.from('profiles').upsert({id:user.id, full_name:fallbackName || email, role:'user'}); }catch(e){}
+  }
+  const name = (profile && profile.full_name) || fallbackName || email;
+  let u = db.users.find(x => x.email === email);
+  if(!u){ u = {email, premium:false, premiumPlan:null, premiumUntil:null}; db.users.push(u); }
+  u.name = name; u.id = user.id; u.role = (profile && profile.role) || 'user';
+  // Sinkron premium dari server bila kolomnya ada di tabel profiles
+  if(profile && 'premium_until' in profile){
+    u.premiumPlan = profile.premium_plan || null;
+    u.premiumUntil = profile.premium_until ? new Date(profile.premium_until).getTime() : null;
+    u.premium = !!(u.premiumUntil && u.premiumUntil > Date.now());
+  }
+  db.auth.loggedIn = true;
+  db.auth.currentUser = {name, email};
+  db.teacherName = name;
+  save();
+  try{
+    sb.from('profiles').update({last_seen:new Date().toISOString(), email}).eq('id',user.id)
+      .then(r=>{ if(r.error) console.warn('last_seen/email:', r.error.message); });
+  }catch(e){}
+  return name;
+}
+
+function friendlyAuthError(msg){
+  msg = String(msg || '');
+  if(/invalid login/i.test(msg)) return 'Email atau kata sandi salah.';
+  if(/not confirmed/i.test(msg)) return 'Email belum dikonfirmasi. Cek kotak masuk email kamu.';
+  if(/already registered/i.test(msg)) return 'Email sudah terdaftar, silakan masuk.';
+  if(/rate limit/i.test(msg)) return 'Terlalu banyak percobaan, coba lagi beberapa menit lagi.';
+  if(/fetch|network/i.test(msg)) return 'Tidak dapat terhubung ke server. Periksa internet kamu.';
+  return msg || 'Terjadi kesalahan, coba lagi.';
+}
+
+async function registerUser(){
   const name = document.getElementById('regName').value.trim();
   const email = document.getElementById('regEmail').value.trim().toLowerCase();
   const password = document.getElementById('regPassword').value;
@@ -1732,48 +1796,74 @@ function registerUser(){
   if(!name || !email || !password){ errEl.textContent = 'Semua kolom wajib diisi.'; return; }
   if(!isValidEmail(email)){ errEl.textContent = 'Format email tidak valid.'; return; }
   if(password.length < 6){ errEl.textContent = 'Kata sandi minimal 6 karakter.'; return; }
-  if(db.users.find(u=>u.email===email)){ errEl.textContent = 'Email sudah terdaftar, silakan masuk.'; return; }
-
-  db.users.push({name, email, password, premium:false, premiumPlan:null, premiumUntil:null});
-  db.auth.loggedIn = true;
-  db.auth.currentUser = {name, email};
-  db.teacherName = name;
-  save();
-  authModalInstance.hide();
-  document.getElementById('teacherName').textContent = name;
-  updateAuthUI(); renderWsQuota(); renderChildList(); renderDashboard();
-  showToast(`Selamat datang, ${name}! Akun berhasil dibuat 🎉`);
+  if(!sb){ errEl.textContent = 'Layanan akun belum termuat. Periksa internet lalu muat ulang halaman.'; return; }
+  try{
+    const { data, error } = await sb.auth.signUp({ email, password, options:{ data:{ full_name:name } } });
+    if(error){ errEl.textContent = friendlyAuthError(error.message); return; }
+    if(data.user && data.user.identities && data.user.identities.length === 0){
+      errEl.textContent = 'Email sudah terdaftar, silakan masuk.'; return;
+    }
+    if(!data.session){   // konfirmasi email aktif di Supabase
+      authModalInstance.hide();
+      showToast('Pendaftaran berhasil! Cek email untuk konfirmasi, lalu masuk.');
+      return;
+    }
+    await applyProfile(data.user, name);
+    authModalInstance.hide();
+    afterAuthChange();
+    showToast(`Selamat datang, ${name}! Akun berhasil dibuat 🎉`);
+  }catch(e){
+    errEl.textContent = friendlyAuthError(e.message);
+  }
 }
-function loginUser(){
+
+async function loginUser(){
   const email = document.getElementById('loginEmail').value.trim().toLowerCase();
   const password = document.getElementById('loginPassword').value;
   const errEl = document.getElementById('loginError');
   errEl.textContent = '';
   if(!email || !password){ errEl.textContent = 'Isi email dan kata sandi.'; return; }
-  const user = db.users.find(u=>u.email===email && u.password===password);
-  if(!user){ errEl.textContent = 'Email atau kata sandi salah.'; return; }
-
-  db.auth.loggedIn = true;
-  db.auth.currentUser = {name:user.name, email:user.email};
-  db.teacherName = user.name;
-  save();
-  authModalInstance.hide();
-  document.getElementById('teacherName').textContent = user.name;
-  updateAuthUI(); renderWsQuota(); renderChildList(); renderDashboard();
-  showToast(`Selamat datang kembali, ${user.name}! 👋`);
+  if(!sb){ errEl.textContent = 'Layanan akun belum termuat. Periksa internet lalu muat ulang halaman.'; return; }
+  try{
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if(error){ errEl.textContent = friendlyAuthError(error.message); return; }
+    const name = await applyProfile(data.user, (data.user.user_metadata && data.user.user_metadata.full_name) || '');
+    authModalInstance.hide();
+    afterAuthChange();
+    showToast(`Selamat datang kembali, ${name}! 👋`);
+  }catch(e){
+    errEl.textContent = friendlyAuthError(e.message);
+  }
 }
-function logoutUser(){
+
+async function logoutUser(){
+  try{ if(sb) await sb.auth.signOut(); }catch(e){}
   db.auth.loggedIn = false;
   db.auth.currentUser = null;
   db.teacherName = 'Bu Guru';
   save();
-  document.getElementById('teacherName').textContent = 'Bu Guru';
-  updateAuthUI(); renderWsQuota(); renderChildList(); renderDashboard();
+  afterAuthChange();
   showToast('Kamu telah keluar dari akun');
+}
+
+/* Pulihkan sesi login saat halaman dibuka lagi */
+async function restoreSession(){
+  if(!sb) return;
+  try{
+    const { data } = await sb.auth.getSession();
+    if(data && data.session){
+      await applyProfile(data.session.user, (data.session.user.user_metadata||{}).full_name || '');
+      afterAuthChange();
+    } else if(db.auth.loggedIn){
+      db.auth.loggedIn = false; db.auth.currentUser = null; save();
+      afterAuthChange();
+    }
+  }catch(e){ console.warn('restoreSession gagal:', e); }
 }
 
 function updateAuthUI(){
   resetDailyTrialsIfNeeded();
+  refreshAdminUI();
   refreshPremiumUI();
   const badge = document.getElementById('authBadge');
   const trialBanner = document.getElementById('trialBanner');
@@ -1836,6 +1926,119 @@ function updateAuthUI(){
         <button class="btn btn-outline-toska btn-sm flex-fill" onclick="openAuthModal('login')">Masuk</button>
         <button class="btn btn-orange btn-sm flex-fill" onclick="openAuthModal('register')">Daftar</button>
       </div>`;
+  }
+}
+
+/* ===========================================================
+   PANEL ADMIN — melihat & mengelola pengguna (khusus role 'admin')
+   Keamanan sebenarnya dijaga oleh RLS di Supabase, bukan oleh tombol ini.
+=========================================================== */
+let adminUsers = [];
+
+function isAdmin(){ const u = getUserRecord(); return !!(u && u.role === 'admin'); }
+
+function refreshAdminUI(){
+  const adm = isAdmin();
+  const w = document.getElementById('adminLinkWrap');
+  if(w) w.innerHTML = adm ? `<button class="btn btn-orange w-100 mb-3" onclick="goTo('admin')">🛠️ Buka Panel Admin (lihat pengguna)</button>` : '';
+  const scr = document.getElementById('screen-admin');
+  if(!adm && scr && scr.classList.contains('active')) goTo('dashboard');
+}
+
+function escH(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDT(iso){
+  if(!iso) return '-';
+  return new Date(iso).toLocaleString('id-ID',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+}
+function rowPremium(p){
+  const until = p.premium_until ? Date.parse(p.premium_until) : null;
+  return !!(until && until > Date.now());
+}
+
+async function loadAdminUsers(){
+  const st = document.getElementById('admStatus');
+  if(!sb || !isAdmin()){ st.textContent = 'Khusus admin.'; return; }
+  st.textContent = 'Memuat data pengguna...';
+  try{
+    const { data, error } = await sb.from('profiles').select('*');
+    if(error) throw error;
+    adminUsers = (data || []).slice().sort((a,b)=>{
+      const ta = Date.parse(a.created_at||0)||0, tb = Date.parse(b.created_at||0)||0;
+      return tb - ta;
+    });
+    st.textContent = 'Diperbarui ' + new Date().toLocaleTimeString('id-ID');
+    renderAdminUsers();
+  }catch(e){
+    console.error(e);
+    st.textContent = 'Gagal memuat: ' + (e.message || e) + ' — pastikan SQL admin sudah dijalankan di Supabase.';
+  }
+}
+
+function renderAdminUsers(){
+  const q = (document.getElementById('admSearch').value || '').trim().toLowerCase();
+  const weekAgo = Date.now() - 7*86400000;
+  document.getElementById('admTotal').textContent = adminUsers.length;
+  document.getElementById('admPremium').textContent = adminUsers.filter(rowPremium).length;
+  document.getElementById('admActive').textContent = adminUsers.filter(p => p.last_seen && Date.parse(p.last_seen) > weekAgo).length;
+
+  const list = adminUsers.filter(p => !q || (p.full_name||'').toLowerCase().includes(q) || (p.email||'').toLowerCase().includes(q));
+  const wrap = document.getElementById('admList');
+  if(!list.length){ wrap.innerHTML = '<p class="text-muted small">Tidak ada pengguna yang cocok.</p>'; return; }
+
+  wrap.innerHTML = list.map(p=>{
+    const adm = p.role === 'admin', prem = rowPremium(p);
+    const until = p.premium_until ? Date.parse(p.premium_until) : null;
+    const planLbl = prem ? (p.premium_plan === 'yearly' ? 'Premium 1 Tahun' : 'Premium 1 Bulan') : 'Gratis';
+    const nm = escH(p.full_name || '(tanpa nama)');
+    const controls = adm ? '' : `
+      <div class="d-flex gap-2 mt-2">
+        <select class="form-select form-select-sm" id="admPlan-${p.id}">
+          <option value="free">Gratis (cabut premium)</option>
+          <option value="monthly">Premium 1 Bulan (+30 hari)</option>
+          <option value="yearly">Premium 1 Tahun (+365 hari)</option>
+        </select>
+        <button class="btn btn-toska btn-sm" onclick="adminSetPlan('${p.id}')">Terapkan</button>
+      </div>`;
+    return `
+      <div class="card-soft py-2 px-3">
+        <div class="d-flex align-items-center gap-2">
+          <div class="avatar">${escH((p.full_name||'?').charAt(0).toUpperCase())}</div>
+          <div class="flex-grow-1" style="min-width:0;">
+            <div class="fw-semibold small text-truncate">${nm}</div>
+            <div class="text-muted text-truncate" style="font-size:.72rem;">${escH(p.email || '(email belum tercatat)')}</div>
+          </div>
+          <span class="chip ${adm?'orange':''}">${adm?'Admin':'Pengguna'}</span>
+        </div>
+        <div class="mt-2">
+          <span class="chip ${prem?'orange':''}">${planLbl}${prem && until ? ' s/d ' + fmtDate(until) : ''}</span>
+          <div class="text-muted" style="font-size:.72rem;">Daftar: ${fmtDT(p.created_at)}<br>Terakhir aktif: ${fmtDT(p.last_seen)}</div>
+        </div>
+        ${controls}
+      </div>`;
+  }).join('');
+}
+
+async function adminSetPlan(id){
+  if(!isAdmin() || !sb) return;
+  const p = adminUsers.find(x => x.id === id); if(!p) return;
+  const v = document.getElementById('admPlan-' + id).value;
+  let patch;
+  if(v === 'free'){
+    patch = { premium:false, premium_plan:null, premium_until:null };
+  } else {
+    const cur = p.premium_until ? Date.parse(p.premium_until) : 0;
+    const base = Math.max(cur, Date.now());
+    patch = { premium:true, premium_plan:v, premium_until:new Date(base + PLANS[v].days*86400000).toISOString() };
+  }
+  try{
+    const { data, error } = await sb.from('profiles').update(patch).eq('id', id).select();
+    if(error) throw error;
+    if(!data || !data.length) throw new Error('Tidak ada baris yang berubah (cek kebijakan RLS admin).');
+    showToast('Paket pengguna diperbarui ✅');
+    loadAdminUsers();
+  }catch(e){
+    console.error(e);
+    showToast('Gagal: ' + (e.message || e));
   }
 }
 
@@ -1926,8 +2129,7 @@ function renderDashboard(){
 /* ===========================================================
    INIT
 =========================================================== */
-document.getElementById('teacherName').textContent =
-  (db.auth.loggedIn && db.auth.currentUser) ? db.auth.currentUser.name : db.teacherName;
+document.getElementById('teacherName').textContent = 'Bu Guru';
 renderWsQuota();
 renderChildList();
 renderChildSelect();
@@ -1946,6 +2148,7 @@ updateOnbUI();
 initSplashAndOnboarding();
 refreshNotifDot();
 updateAuthUI();   // juga memanggil refreshPremiumUI()
+restoreSession();
 
 /* ===========================================================
    PWA
@@ -2002,6 +2205,17 @@ document.getElementById('installBtn').addEventListener('click', async ()=>{
   deferredPrompt = null;
   document.getElementById('installStrip').style.display = 'none';
 });
+</script>
+<script>
+/* Pengaman: jika ada error JavaScript, splash tetap tertutup */
+setTimeout(function(){
+  var sp=document.getElementById('splashScreen');
+  if(sp && sp.style.display!=='none'){
+    sp.style.display='none';
+    var ob=document.getElementById('onboardingScreen');
+    try{ if(ob && !localStorage.getItem('tgtk_onboarded_v1')) ob.style.display='flex'; }catch(e){}
+  }
+},4000);
 </script>
 </body>
 </html>
