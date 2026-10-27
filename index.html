@@ -3932,18 +3932,17 @@ async function approvePayment(id){
   if(!isAdmin() || !sb) return;
   const p = adminPays.find(x=>x.id===id); if(!p || !PLANS[p.plan]) return;
   if(!confirm(`Setujui ${p.full_name} — ${fmtRp(p.amount)} dan aktifkan ${PLANS[p.plan].item}?\n\nPastikan uang sudah masuk ke rekening/e-wallet kamu.`)) return;
+  showToast('Memproses persetujuan...');
   try{
-    const pr = await sb.from('profiles').select('premium_until').eq('id', p.user_id).maybeSingle();
-    const cur = pr.data && pr.data.premium_until ? Date.parse(pr.data.premium_until) : 0;
-    const until = new Date(Math.max(cur, Date.now()) + PLANS[p.plan].days*86400000).toISOString();
-    let r = await sb.from('profiles').update({ premium:true, premium_plan:p.plan, premium_until:until }).eq('id', p.user_id).select();
-    if(r.error) throw r.error;
-    if(!r.data || !r.data.length) throw new Error('Profil pengguna tidak berubah (cek RLS admin).');
-    r = await sb.from('payments').update({ status:'approved', reviewed_at:new Date().toISOString() }).eq('id', id);
-    if(r.error) throw r.error;
+    /* semua dikerjakan atomik di server lewat fungsi SQL approve_payment (lihat supabase-payments.sql) */
+    const { error } = await sb.rpc('approve_payment', { p_id: id });
+    if(error) throw error;
     showToast('Pembayaran disetujui, Premium aktif ✅');
-    loadAdminPayments(); loadAdminUsers();
-  }catch(e){ console.error(e); showToast('Gagal: ' + (e.message || e)); }
+    await loadAdminPayments(); loadAdminUsers();
+  }catch(e){
+    console.error(e);
+    alert('Gagal menyetujui pembayaran:\n' + (e.message || e) + '\n\nPastikan SQL terbaru (fungsi approve_payment) sudah dijalankan di Supabase.');
+  }
 }
 async function rejectPayment(id){
   if(!isAdmin() || !sb) return;
@@ -4360,11 +4359,11 @@ async function adminSetPlan(id){
   const v = document.getElementById('admPlan-' + id).value;
   let patch;
   if(v === 'free'){
-    patch = { premium:false, premium_plan:null, premium_until:null };
+    patch = { premium_plan:null, premium_until:null };
   } else {
     const cur = p.premium_until ? Date.parse(p.premium_until) : 0;
     const base = Math.max(cur, Date.now());
-    patch = { premium:true, premium_plan:v, premium_until:new Date(base + PLANS[v].days*86400000).toISOString() };
+    patch = { premium_plan:v, premium_until:new Date(base + PLANS[v].days*86400000).toISOString() };
   }
   try{
     const { data, error } = await sb.from('profiles').update(patch).eq('id', id).select();
