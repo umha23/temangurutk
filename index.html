@@ -404,26 +404,19 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
       <div class="stat-pill"><div class="num" id="admPremium">0</div><div class="lbl">Premium</div></div>
       <div class="stat-pill"><div class="num" id="admActive">0</div><div class="lbl">Aktif 7 hari</div></div>
     </div>
-    <div class="section-title"><span class="dot"></span>Pembayaran Masuk <span class="chip orange" style="margin-left:auto;"><span id="admPending">0</span> menunggu</span></div>
+    <div class="section-title"><span class="dot"></span>Pengguna & Pembayaran <span class="chip orange" style="margin-left:auto;"><span id="admPending">0</span> perlu dicek</span></div>
     <div class="card-soft">
-      <div class="d-flex gap-2">
-        <select class="form-select form-select-sm" id="admPayFilter" onchange="renderAdminPayments()">
-          <option value="all" selected>Semua</option>
-          <option value="pending">Menunggu verifikasi</option>
-          <option value="approved">Disetujui</option>
-          <option value="rejected">Ditolak</option>
-        </select>
-        <button class="btn btn-sm btn-outline-toska" onclick="loadAdminPayments()">🔄</button>
+      <div class="d-flex gap-2 mb-2">
+        <input type="text" class="form-control form-control-sm" id="admSearch" placeholder="Cari nama / email..." oninput="renderAdminList()">
+        <button class="btn btn-sm btn-outline-toska" onclick="loadAdminAll()">🔄</button>
       </div>
-      <div class="form-text" id="admPayStatus"></div>
-    </div>
-    <div id="admPayList"></div>
-    <div class="section-title mt-3"><span class="dot"></span>Daftar Pengguna</div>
-    <div class="card-soft">
-      <div class="d-flex gap-2">
-        <input type="text" class="form-control form-control-sm" id="admSearch" placeholder="Cari nama / email..." oninput="renderAdminUsers()">
-        <button class="btn btn-sm btn-outline-toska" onclick="loadAdminUsers()">🔄</button>
-      </div>
+      <select class="form-select form-select-sm" id="admFilter" onchange="renderAdminList()">
+        <option value="all" selected>Semua</option>
+        <option value="check">Perlu dicek</option>
+        <option value="approved">Disetujui</option>
+        <option value="rejected">Ditolak / dicabut</option>
+        <option value="free">Belum pernah bayar</option>
+      </select>
       <div class="form-text" id="admStatus"></div>
     </div>
     <div id="admList"></div>
@@ -588,14 +581,14 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
             </div>
             <input type="text" class="form-control form-control-sm mb-3" id="proofNote" maxlength="120" placeholder="Catatan (opsional), cth: a.n. pengirim">
             <button class="btn btn-orange w-100" id="paySubmitBtn" onclick="submitPaymentProof()" disabled>📤 Kirim Bukti Pembayaran</button>
-            <div class="form-text mt-2 text-center">Premium aktif setelah admin memeriksa bukti pembayaranmu.</div>
+            <div class="form-text mt-2 text-center">Premium langsung aktif setelah bukti terkirim.</div>
           </div>
         </div>
       </div>
       <div id="payStep3" style="display:none;">
         <div class="modal-body text-center py-4">
-          <div style="font-size:2.6rem;">📨</div>
-          <div class="fw-bold mt-2 mb-1" style="font-family:'Baloo 2';">Bukti Pembayaran Terkirim</div>
+          <div style="font-size:2.6rem;">🎉</div>
+          <div class="fw-bold mt-2 mb-1" style="font-family:'Baloo 2';">Pembayaran Diterima</div>
           <p class="small text-muted mb-1">ID Transaksi: <span id="payTrxIdDone" class="fw-semibold"></span></p>
           <p class="small text-muted mb-3" id="payDoneMessage"></p>
           <button class="btn btn-toska w-100" data-bs-dismiss="modal">Selesai</button>
@@ -2998,7 +2991,7 @@ function goTo(name){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.target===(name==='admin'?'premium':name)));
   if(name==='children') renderChildSelect();
   if(name==='premium'){ refreshPremiumUI(); loadMyPayments(); }
-  if(name==='admin'){ loadAdminPayments(); loadAdminUsers(); }
+  if(name==='admin') loadAdminAll();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function showToast(msg){
@@ -3823,21 +3816,26 @@ async function submitPaymentProof(){
     path = `${u.id}/${cp.trxId}.jpg`;
     const up = await sb.storage.from(PAY_BUCKET).upload(path, blob, { contentType:'image/jpeg', upsert:false });
     if(up.error) throw up.error;
-    const ins = await sb.from('payments').insert({
-      user_id:u.id, full_name:u.name, email:u.email, plan:cp.planKey, amount:cp.amount,
-      trx_id:cp.trxId, proof_path:path, note:document.getElementById('proofNote').value.trim() || null, status:'pending'
+    const rpc = await sb.rpc('submit_payment', {
+      p_plan: cp.planKey, p_trx: cp.trxId, p_proof_path: path,
+      p_note: document.getElementById('proofNote').value.trim() || null
     });
-    if(ins.error){ try{ await sb.storage.from(PAY_BUCKET).remove([path]); }catch(e){} throw ins.error; }
+    if(rpc.error){ try{ await sb.storage.from(PAY_BUCKET).remove([path]); }catch(e){} throw rpc.error; }
+    const untilTs = rpc.data ? Date.parse(rpc.data) : null;
     document.getElementById('payDoneMessage').innerHTML =
-      `Admin akan memeriksa pembayaran <b>${cp.item}</b> (${fmtRp(cp.amount)}). Premium aktif setelah disetujui — cek statusnya di menu Profil.`;
+      `Premium <b>${cp.item}</b> sudah aktif${untilTs ? ' sampai <b>' + fmtDate(untilTs) + '</b>' : ''}. Terima kasih sudah mendukung TemanGuruTK! ⭐`;
     document.getElementById('payStep2').style.display = 'none';
     document.getElementById('payStep3').style.display = 'block';
+    try{
+      const ur = await sb.auth.getUser();
+      if(ur.data && ur.data.user){ await applyProfile(ur.data.user, ''); afterAuthChange(); }
+    }catch(e){ console.warn(e); }
     loadMyPayments();
-    showToast('Bukti pembayaran terkirim 📨');
+    showToast('Pembayaran diterima, Premium aktif ⭐');
   }catch(err){
     console.error(err);
     btn.disabled = false; btn.textContent = '📤 Kirim Bukti Pembayaran';
-    showToast('Gagal mengirim: ' + (err.message || err));
+    alert('Gagal mengirim bukti:\n' + (err.message || err) + '\n\nKalau pesannya menyebut submit_payment, jalankan dulu SQL supabase-auto-approve.sql di Supabase.');
   }
 }
 
@@ -3879,48 +3877,132 @@ async function refreshMyAccount(){
 
 /* ===== PANEL ADMIN: verifikasi pembayaran ===== */
 let adminPays = [];
-async function loadAdminPayments(){
-  const st = document.getElementById('admPayStatus');
-  if(!sb || !isAdmin()){ if(st) st.textContent = 'Khusus admin.'; return; }
-  st.textContent = 'Memuat pembayaran...';
-  const { data, error } = await sb.from('payments').select('*').order('created_at', {ascending:false}).limit(100);
-  if(error){ st.textContent = 'Gagal memuat: ' + error.message + ' — pastikan SQL tabel payments sudah dijalankan.'; return; }
-  adminPays = data || [];
-  st.textContent = 'Diperbarui ' + new Date().toLocaleTimeString('id-ID');
-  renderAdminPayments();
+const needsCheck = p => p.status === 'pending' || (p.status === 'approved' && p.auto_approved && !p.reviewed_at);
+function payChip(p){
+  if(p.status === 'approved' && p.auto_approved && !p.reviewed_at) return { t:'Otomatis · perlu dicek', cls:'orange' };
+  if(p.status === 'approved') return { t:'Disetujui', cls:'' };
+  if(p.status === 'rejected') return { t:'Ditolak / dicabut', cls:'orange' };
+  return { t:'Menunggu verifikasi', cls:'orange' };
 }
-function renderAdminPayments(){
-  const f = document.getElementById('admPayFilter').value;
-  const pend = adminPays.filter(p=>p.status==='pending').length;
-  document.getElementById('admPending').textContent = pend;
-  const rank = {pending:0, approved:1, rejected:2};
-  const list = adminPays.filter(p => f==='all' || p.status===f)
-    .sort((a,b)=> (rank[a.status]-rank[b.status]) || (Date.parse(b.created_at)-Date.parse(a.created_at)));
-  const wrap = document.getElementById('admPayList');
-  if(!list.length){ wrap.innerHTML = '<p class="text-muted small">Tidak ada pembayaran di filter ini. Coba pilih "Semua".</p>'; return; }
-  wrap.innerHTML = list.map(p=>{
-    const s = PAY_STATUS[p.status] || PAY_STATUS.pending;
-    const pl = PLANS[p.plan] ? PLANS[p.plan].item : p.plan;
-    const mismatch = PLANS[p.plan] && Number(p.amount) !== PLANS[p.plan].price;
-    return `<div class="card-soft py-2 px-3">
-      <div class="d-flex justify-content-between align-items-start gap-2">
-        <div style="min-width:0;">
-          <div class="fw-semibold small text-truncate">${escH(p.full_name || '(tanpa nama)')}</div>
-          <div class="text-muted text-truncate" style="font-size:.72rem;">${escH(p.email || '')}</div>
-        </div>
-        <span class="chip ${s.cls}">${s.t}</span>
-      </div>
-      <div class="mt-1 small"><b>${escH(pl)}</b> · <span style="color:var(--orange-dark);font-weight:700;">${fmtRp(p.amount)}</span>${mismatch?' <span class="text-danger">⚠️ nominal tidak sesuai paket</span>':''}</div>
-      <div class="text-muted" style="font-size:.72rem;">${escH(p.trx_id)} · ${fmtDT(p.created_at)}${p.reviewed_at ? ' · diproses ' + fmtDT(p.reviewed_at) : ''}</div>
-      ${p.note ? `<div class="text-muted" style="font-size:.72rem;">Catatan: ${escH(p.note)}</div>` : ''}
-      <div id="proofBox-${p.id}"></div>
-      <div class="d-flex gap-2 mt-2">
-        <button class="btn btn-outline-toska btn-sm flex-fill" onclick="viewProof('${p.id}')">🖼️ Lihat Bukti</button>
-        ${p.status==='pending' ? `<button class="btn btn-toska btn-sm flex-fill" onclick="approvePayment('${p.id}')">✅ Setujui</button>
-        <button class="btn btn-sm btn-outline-danger flex-fill" onclick="rejectPayment('${p.id}')">✕ Tolak</button>` : ''}
-      </div>
+
+/* Satu daftar gabungan: pembayaran (kartu) + pengguna yang belum pernah bayar */
+async function loadAdminAll(){
+  const st = document.getElementById('admStatus');
+  if(!sb || !isAdmin()){ if(st) st.textContent = 'Khusus admin.'; return; }
+  st.textContent = 'Memuat data...';
+  try{
+    const [u, p] = await Promise.all([
+      sb.from('profiles').select('*'),
+      sb.from('payments').select('*').order('created_at', {ascending:false}).limit(300)
+    ]);
+    if(u.error) throw u.error;
+    adminUsers = u.data || [];
+    adminPays = p.error ? [] : (p.data || []);
+    st.textContent = 'Diperbarui ' + new Date().toLocaleTimeString('id-ID') + (p.error ? ' · tabel payments belum siap: ' + p.error.message : '');
+    renderAdminList();
+  }catch(e){
+    console.error(e);
+    st.textContent = 'Gagal memuat: ' + (e.message || e);
+  }
+}
+function toggleManage(key){
+  const el = document.getElementById('admManage-' + key);
+  if(el) el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+}
+function manageHTML(u, key){
+  if(!u || u.role === 'admin') return '';
+  return `<button class="btn btn-sm p-0 mt-2 text-muted" style="font-size:.78rem;" onclick="toggleManage('${key}')">⚙️ Kelola paket</button>
+    <div id="admManage-${key}" class="gap-2 mt-2" style="display:none;">
+      <select class="form-select form-select-sm" id="admPlan-${key}">
+        <option value="free">Gratis (cabut premium)</option>
+        <option value="monthly">Premium 1 Bulan (+30 hari)</option>
+        <option value="yearly">Premium 1 Tahun (+365 hari)</option>
+      </select>
+      <button class="btn btn-toska btn-sm" onclick="adminSetPlan('${u.id}','${key}')">Terapkan</button>
     </div>`;
-  }).join('');
+}
+function payCardHTML(p){
+  const s = payChip(p), pl = PLANS[p.plan] ? PLANS[p.plan].item : p.plan;
+  const mismatch = PLANS[p.plan] && Number(p.amount) !== PLANS[p.plan].price;
+  const u = adminUsers.find(x => x.id === p.user_id);
+  let row2 = '';
+  if(p.status === 'pending'){
+    row2 = `<button class="btn btn-toska btn-sm flex-fill" onclick="approvePayment('${p.id}')">✅ Setujui</button>
+            <button class="btn btn-sm btn-outline-danger flex-fill" onclick="rejectPayment('${p.id}')">✕ Tolak</button>`;
+  } else if(needsCheck(p)){
+    row2 = `<button class="btn btn-toska btn-sm flex-fill" onclick="markPaymentValid('${p.id}')">✓ Bukti valid</button>
+            <button class="btn btn-sm btn-outline-danger flex-fill" onclick="revokePayment('${p.id}')">✕ Cabut premium</button>`;
+  }
+  return `<div class="card-soft py-2 px-3">
+    <div class="d-flex justify-content-between align-items-start gap-2">
+      <div style="min-width:0;">
+        <div class="fw-semibold small text-truncate">${escH(p.full_name || '(tanpa nama)')}</div>
+        <div class="text-muted text-truncate" style="font-size:.72rem;">${escH(p.email || '')}</div>
+      </div>
+      <span class="chip ${s.cls}">${s.t}</span>
+    </div>
+    <div class="mt-1 small"><b>${escH(pl)}</b> · <span style="color:var(--orange-dark);font-weight:700;">${fmtRp(p.amount)}</span>${mismatch ? ' <span class="text-danger">⚠️ nominal tidak sesuai paket</span>' : ''}</div>
+    <div class="text-muted" style="font-size:.72rem;">${escH(p.trx_id)} · ${fmtDT(p.created_at)}${p.reviewed_at ? ' · diproses ' + fmtDT(p.reviewed_at) : ''}</div>
+    ${p.note ? `<div class="text-muted" style="font-size:.72rem;">Catatan: ${escH(p.note)}</div>` : ''}
+    <div id="proofBox-${p.id}"></div>
+    <button class="btn btn-outline-toska btn-sm w-100 mt-2" onclick="viewProof('${p.id}')">🖼️ Lihat Bukti</button>
+    ${row2 ? `<div class="d-flex gap-2 mt-2">${row2}</div>` : ''}
+    ${manageHTML(u, p.id)}
+  </div>`;
+}
+function userCardHTML(u){
+  const prem = rowPremium(u), until = u.premium_until ? Date.parse(u.premium_until) : null;
+  const adm = u.role === 'admin';
+  const planLbl = prem ? (u.premium_plan === 'yearly' ? 'Premium 1 Tahun' : 'Premium 1 Bulan') + (until ? ' s/d ' + fmtDate(until) : '') : 'Paket Gratis';
+  return `<div class="card-soft py-2 px-3">
+    <div class="d-flex justify-content-between align-items-start gap-2">
+      <div style="min-width:0;">
+        <div class="fw-semibold small text-truncate">${escH(u.full_name || '(tanpa nama)')}</div>
+        <div class="text-muted text-truncate" style="font-size:.72rem;">${escH(u.email || '(email belum tercatat)')}</div>
+      </div>
+      <span class="chip ${adm || prem ? 'orange' : ''}">${adm ? 'Admin' : (prem ? 'Premium' : 'Gratis')}</span>
+    </div>
+    <div class="mt-1 small"><b>${planLbl}</b> · <span class="text-muted">belum ada pembayaran</span></div>
+    <div class="text-muted" style="font-size:.72rem;">Daftar ${fmtDT(u.created_at)} · Terakhir aktif ${fmtDT(u.last_seen)}</div>
+    ${manageHTML(u, 'u-' + u.id)}
+  </div>`;
+}
+function renderAdminList(){
+  const q = (document.getElementById('admSearch').value || '').trim().toLowerCase();
+  const f = document.getElementById('admFilter').value;
+  const weekAgo = Date.now() - 7*86400000;
+  document.getElementById('admTotal').textContent = adminUsers.length;
+  document.getElementById('admPremium').textContent = adminUsers.filter(rowPremium).length;
+  document.getElementById('admActive').textContent = adminUsers.filter(p => p.last_seen && Date.parse(p.last_seen) > weekAgo).length;
+  document.getElementById('admPending').textContent = adminPays.filter(needsCheck).length;
+
+  const hit = o => !q || (o.full_name || '').toLowerCase().includes(q) || (o.email || '').toLowerCase().includes(q);
+  const paid = new Set(adminPays.map(p => p.user_id));
+  let items = [];
+  adminPays.filter(hit).forEach(p => {
+    if(f === 'all' || (f === 'check' && needsCheck(p)) || (f === 'approved' && p.status === 'approved') || (f === 'rejected' && p.status === 'rejected'))
+      items.push({ rank: needsCheck(p) ? 0 : 1, ts: Date.parse(p.created_at) || 0, html: payCardHTML(p) });
+  });
+  if(f === 'all' || f === 'free'){
+    adminUsers.filter(u => !paid.has(u.id) && hit(u)).forEach(u =>
+      items.push({ rank: 2, ts: Date.parse(u.created_at || 0) || 0, html: userCardHTML(u) }));
+  }
+  items.sort((a, b) => (a.rank - b.rank) || (b.ts - a.ts));
+  document.getElementById('admList').innerHTML = items.length ? items.map(i => i.html).join('') : '<p class="text-muted small">Tidak ada data di filter ini.</p>';
+}
+async function markPaymentValid(id){
+  const { error } = await sb.from('payments').update({ reviewed_at:new Date().toISOString() }).eq('id', id);
+  if(error){ alert('Gagal: ' + error.message); return; }
+  showToast('Ditandai valid ✓'); loadAdminAll();
+}
+async function revokePayment(id){
+  const p = adminPays.find(x => x.id === id); if(!p) return;
+  if(!confirm(`Cabut Premium dari ${p.full_name} (${fmtRp(p.amount)})?\n\nMasa aktif yang diberikan pembayaran ini akan dikurangi.`)) return;
+  const why = prompt('Alasan (opsional, terlihat oleh pengguna):', 'Bukti pembayaran tidak valid');
+  if(why === null) return;
+  const { error } = await sb.rpc('revoke_payment', { p_id:id, p_reason:why.trim() || null });
+  if(error){ alert('Gagal mencabut: ' + error.message + '\n\nPastikan SQL supabase-auto-approve.sql sudah dijalankan.'); return; }
+  showToast('Premium dicabut'); loadAdminAll();
 }
 async function viewProof(id){
   const p = adminPays.find(x=>x.id===id), box = document.getElementById('proofBox-'+id);
@@ -3940,7 +4022,7 @@ async function approvePayment(id){
     const { error } = await sb.rpc('approve_payment', { p_id: id });
     if(error) throw error;
     showToast('Pembayaran disetujui, Premium aktif ✅');
-    await loadAdminPayments(); loadAdminUsers();
+    await loadAdminAll();
   }catch(e){
     console.error(e);
     alert('Gagal menyetujui pembayaran:\n' + (e.message || e) + '\n\nPastikan SQL terbaru (fungsi approve_payment) sudah dijalankan di Supabase.');
@@ -3954,7 +4036,7 @@ async function rejectPayment(id){
   const { error } = await sb.from('payments').update({ status:'rejected', note: why.trim() || p.note || null, reviewed_at:new Date().toISOString() }).eq('id', id);
   if(error){ showToast('Gagal: ' + error.message); return; }
   showToast('Pembayaran ditolak');
-  loadAdminPayments();
+  loadAdminAll();
 }
 
 /* ===========================================================
@@ -4292,73 +4374,12 @@ function rowPremium(p){
   return !!(until && until > Date.now());
 }
 
-async function loadAdminUsers(){
-  const st = document.getElementById('admStatus');
-  if(!sb || !isAdmin()){ st.textContent = 'Khusus admin.'; return; }
-  st.textContent = 'Memuat data pengguna...';
-  try{
-    const { data, error } = await sb.from('profiles').select('*');
-    if(error) throw error;
-    adminUsers = (data || []).slice().sort((a,b)=>{
-      const ta = Date.parse(a.created_at||0)||0, tb = Date.parse(b.created_at||0)||0;
-      return tb - ta;
-    });
-    st.textContent = 'Diperbarui ' + new Date().toLocaleTimeString('id-ID');
-    renderAdminUsers();
-  }catch(e){
-    console.error(e);
-    st.textContent = 'Gagal memuat: ' + (e.message || e) + ' — pastikan SQL admin sudah dijalankan di Supabase.';
-  }
-}
+function loadAdminUsers(){ return loadAdminAll(); }
 
-function renderAdminUsers(){
-  const q = (document.getElementById('admSearch').value || '').trim().toLowerCase();
-  const weekAgo = Date.now() - 7*86400000;
-  document.getElementById('admTotal').textContent = adminUsers.length;
-  document.getElementById('admPremium').textContent = adminUsers.filter(rowPremium).length;
-  document.getElementById('admActive').textContent = adminUsers.filter(p => p.last_seen && Date.parse(p.last_seen) > weekAgo).length;
-
-  const list = adminUsers.filter(p => !q || (p.full_name||'').toLowerCase().includes(q) || (p.email||'').toLowerCase().includes(q));
-  const wrap = document.getElementById('admList');
-  if(!list.length){ wrap.innerHTML = '<p class="text-muted small">Tidak ada pengguna yang cocok.</p>'; return; }
-
-  wrap.innerHTML = list.map(p=>{
-    const adm = p.role === 'admin', prem = rowPremium(p);
-    const until = p.premium_until ? Date.parse(p.premium_until) : null;
-    const planLbl = prem ? (p.premium_plan === 'yearly' ? 'Premium 1 Tahun' : 'Premium 1 Bulan') : 'Gratis';
-    const nm = escH(p.full_name || '(tanpa nama)');
-    const controls = adm ? '' : `
-      <div class="d-flex gap-2 mt-2">
-        <select class="form-select form-select-sm" id="admPlan-${p.id}">
-          <option value="free">Gratis (cabut premium)</option>
-          <option value="monthly">Premium 1 Bulan (+30 hari)</option>
-          <option value="yearly">Premium 1 Tahun (+365 hari)</option>
-        </select>
-        <button class="btn btn-toska btn-sm" onclick="adminSetPlan('${p.id}')">Terapkan</button>
-      </div>`;
-    return `
-      <div class="card-soft py-2 px-3">
-        <div class="d-flex align-items-center gap-2">
-          <div class="avatar">${escH((p.full_name||'?').charAt(0).toUpperCase())}</div>
-          <div class="flex-grow-1" style="min-width:0;">
-            <div class="fw-semibold small text-truncate">${nm}</div>
-            <div class="text-muted text-truncate" style="font-size:.72rem;">${escH(p.email || '(email belum tercatat)')}</div>
-          </div>
-          <span class="chip ${adm?'orange':''}">${adm?'Admin':'Pengguna'}</span>
-        </div>
-        <div class="mt-2">
-          <span class="chip ${prem?'orange':''}">${planLbl}${prem && until ? ' s/d ' + fmtDate(until) : ''}</span>
-          <div class="text-muted" style="font-size:.72rem;">Daftar: ${fmtDT(p.created_at)}<br>Terakhir aktif: ${fmtDT(p.last_seen)}</div>
-        </div>
-        ${controls}
-      </div>`;
-  }).join('');
-}
-
-async function adminSetPlan(id){
+async function adminSetPlan(userId, key){
   if(!isAdmin() || !sb) return;
-  const p = adminUsers.find(x => x.id === id); if(!p) return;
-  const v = document.getElementById('admPlan-' + id).value;
+  const p = adminUsers.find(x => x.id === userId); if(!p) return;
+  const v = document.getElementById('admPlan-' + key).value;
   let patch;
   if(v === 'free'){
     patch = { premium_plan:null, premium_until:null };
@@ -4368,14 +4389,14 @@ async function adminSetPlan(id){
     patch = { premium_plan:v, premium_until:new Date(base + PLANS[v].days*86400000).toISOString() };
   }
   try{
-    const { data, error } = await sb.from('profiles').update(patch).eq('id', id).select();
+    const { data, error } = await sb.from('profiles').update(patch).eq('id', userId).select();
     if(error) throw error;
     if(!data || !data.length) throw new Error('Tidak ada baris yang berubah (cek kebijakan RLS admin).');
     showToast('Paket pengguna diperbarui ✅');
-    loadAdminUsers();
+    loadAdminAll();
   }catch(e){
     console.error(e);
-    showToast('Gagal: ' + (e.message || e));
+    alert('Gagal: ' + (e.message || e));
   }
 }
 
