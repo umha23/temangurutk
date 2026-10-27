@@ -408,10 +408,10 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
     <div class="card-soft">
       <div class="d-flex gap-2">
         <select class="form-select form-select-sm" id="admPayFilter" onchange="renderAdminPayments()">
+          <option value="all" selected>Semua</option>
           <option value="pending">Menunggu verifikasi</option>
           <option value="approved">Disetujui</option>
           <option value="rejected">Ditolak</option>
-          <option value="all">Semua</option>
         </select>
         <button class="btn btn-sm btn-outline-toska" onclick="loadAdminPayments()">🔄</button>
       </div>
@@ -3893,9 +3893,11 @@ function renderAdminPayments(){
   const f = document.getElementById('admPayFilter').value;
   const pend = adminPays.filter(p=>p.status==='pending').length;
   document.getElementById('admPending').textContent = pend;
-  const list = adminPays.filter(p => f==='all' || p.status===f);
+  const rank = {pending:0, approved:1, rejected:2};
+  const list = adminPays.filter(p => f==='all' || p.status===f)
+    .sort((a,b)=> (rank[a.status]-rank[b.status]) || (Date.parse(b.created_at)-Date.parse(a.created_at)));
   const wrap = document.getElementById('admPayList');
-  if(!list.length){ wrap.innerHTML = '<p class="text-muted small">Tidak ada pembayaran.</p>'; return; }
+  if(!list.length){ wrap.innerHTML = '<p class="text-muted small">Tidak ada pembayaran di filter ini. Coba pilih "Semua".</p>'; return; }
   wrap.innerHTML = list.map(p=>{
     const s = PAY_STATUS[p.status] || PAY_STATUS.pending;
     const pl = PLANS[p.plan] ? PLANS[p.plan].item : p.plan;
@@ -3909,7 +3911,7 @@ function renderAdminPayments(){
         <span class="chip ${s.cls}">${s.t}</span>
       </div>
       <div class="mt-1 small"><b>${escH(pl)}</b> · <span style="color:var(--orange-dark);font-weight:700;">${fmtRp(p.amount)}</span>${mismatch?' <span class="text-danger">⚠️ nominal tidak sesuai paket</span>':''}</div>
-      <div class="text-muted" style="font-size:.72rem;">${escH(p.trx_id)} · ${fmtDT(p.created_at)}</div>
+      <div class="text-muted" style="font-size:.72rem;">${escH(p.trx_id)} · ${fmtDT(p.created_at)}${p.reviewed_at ? ' · diproses ' + fmtDT(p.reviewed_at) : ''}</div>
       ${p.note ? `<div class="text-muted" style="font-size:.72rem;">Catatan: ${escH(p.note)}</div>` : ''}
       <div id="proofBox-${p.id}"></div>
       <div class="d-flex gap-2 mt-2">
