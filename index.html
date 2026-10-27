@@ -145,6 +145,10 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
 #authTabLoginBtn,#authTabRegisterBtn{color:var(--ink-soft);background:transparent;transition:.15s;}
 #authTabLoginBtn.auth-tab-active,#authTabRegisterBtn.auth-tab-active{background:var(--toska);color:#fff;}
 .guest-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:2px 10px;font-size:.68rem;font-weight:600;margin-top:4px;}
+.seg{display:flex;background:#F3EFE4;border-radius:12px;padding:4px;gap:4px;margin-bottom:12px;}
+.seg-btn{flex:1;border:none;background:transparent;color:var(--ink-soft);font-family:'Baloo 2',sans-serif;font-weight:600;font-size:.88rem;border-radius:9px;padding:8px 6px;transition:.15s;}
+.seg-btn.active{background:var(--toska);color:#fff;}
+.seg-badge{display:inline-block;min-width:18px;padding:0 6px;border-radius:10px;background:var(--orange);color:#fff;font-size:.68rem;margin-left:4px;}
 </style>
 </head>
 <body>
@@ -404,19 +408,16 @@ label.form-label{font-size:.78rem;font-weight:600;color:var(--ink-soft);}
       <div class="stat-pill"><div class="num" id="admPremium">0</div><div class="lbl">Premium</div></div>
       <div class="stat-pill"><div class="num" id="admActive">0</div><div class="lbl">Aktif 7 hari</div></div>
     </div>
-    <div class="section-title"><span class="dot"></span>Pengguna & Pembayaran <span class="chip orange" style="margin-left:auto;"><span id="admPending">0</span> perlu dicek</span></div>
+    <div class="seg">
+      <button class="seg-btn active" id="admTabPay" onclick="setAdminTab('pay')">💳 Pembayaran<span class="seg-badge" id="admPending" style="display:none;">0</span></button>
+      <button class="seg-btn" id="admTabUser" onclick="setAdminTab('user')">👥 Pengguna</button>
+    </div>
     <div class="card-soft">
       <div class="d-flex gap-2 mb-2">
         <input type="text" class="form-control form-control-sm" id="admSearch" placeholder="Cari nama / email..." oninput="renderAdminList()">
         <button class="btn btn-sm btn-outline-toska" onclick="loadAdminAll()">🔄</button>
       </div>
-      <select class="form-select form-select-sm" id="admFilter" onchange="renderAdminList()">
-        <option value="all" selected>Semua</option>
-        <option value="check">Perlu dicek</option>
-        <option value="approved">Disetujui</option>
-        <option value="rejected">Ditolak / dicabut</option>
-        <option value="free">Belum pernah bayar</option>
-      </select>
+      <select class="form-select form-select-sm" id="admFilter" onchange="renderAdminList()"></select>
       <div class="form-text" id="admStatus"></div>
     </div>
     <div id="admList"></div>
@@ -3943,6 +3944,7 @@ function payCardHTML(p){
     </div>
     <div class="mt-1 small"><b>${escH(pl)}</b> · <span style="color:var(--orange-dark);font-weight:700;">${fmtRp(p.amount)}</span>${mismatch ? ' <span class="text-danger">⚠️ nominal tidak sesuai paket</span>' : ''}</div>
     <div class="text-muted" style="font-size:.72rem;">${escH(p.trx_id)} · ${fmtDT(p.created_at)}${p.reviewed_at ? ' · diproses ' + fmtDT(p.reviewed_at) : ''}</div>
+    ${p.status === 'approved' && PLANS[p.plan] ? `<div class="small mt-1" style="color:var(--toska-dark);font-weight:600;">📅 Aktif ${fmtDate(Date.parse(p.created_at))} – ${fmtDate(Date.parse(p.created_at) + PLANS[p.plan].days*86400000)}</div>` : ''}
     ${p.note ? `<div class="text-muted" style="font-size:.72rem;">Catatan: ${escH(p.note)}</div>` : ''}
     <div id="proofBox-${p.id}"></div>
     <button class="btn btn-outline-toska btn-sm w-100 mt-2" onclick="viewProof('${p.id}')">🖼️ Lihat Bukti</button>
@@ -3951,9 +3953,21 @@ function payCardHTML(p){
   </div>`;
 }
 function userCardHTML(u){
-  const prem = rowPremium(u), until = u.premium_until ? Date.parse(u.premium_until) : null;
-  const adm = u.role === 'admin';
-  const planLbl = prem ? (u.premium_plan === 'yearly' ? 'Premium 1 Tahun' : 'Premium 1 Bulan') + (until ? ' s/d ' + fmtDate(until) : '') : 'Paket Gratis';
+  const until = u.premium_until ? Date.parse(u.premium_until) : null;
+  const prem = rowPremium(u), adm = u.role === 'admin';
+  const planName = u.premium_plan === 'yearly' ? 'Premium 1 Tahun' : 'Premium 1 Bulan';
+  const nPay = adminPays.filter(p => p.user_id === u.id && p.status === 'approved').length;
+  let line1, line2;
+  if(prem){
+    line1 = `<b>${planName}</b> · berakhir <span style="color:var(--orange-dark);font-weight:700;">${fmtDate(until)}</span>`;
+    line2 = `${daysLeft(until)} hari lagi · ${nPay}x pembayaran`;
+  } else if(until){
+    line1 = `<b>Paket Gratis</b> · <span class="text-muted">Premium berakhir ${fmtDate(until)}</span>`;
+    line2 = `${nPay}x pembayaran`;
+  } else {
+    line1 = `<b>Paket Gratis</b> · <span class="text-muted">belum pernah bayar</span>`;
+    line2 = '';
+  }
   return `<div class="card-soft py-2 px-3">
     <div class="d-flex justify-content-between align-items-start gap-2">
       <div style="min-width:0;">
@@ -3962,30 +3976,44 @@ function userCardHTML(u){
       </div>
       <span class="chip ${adm || prem ? 'orange' : ''}">${adm ? 'Admin' : (prem ? 'Premium' : 'Gratis')}</span>
     </div>
-    <div class="mt-1 small"><b>${planLbl}</b> · <span class="text-muted">belum ada pembayaran</span></div>
-    <div class="text-muted" style="font-size:.72rem;">Daftar ${fmtDT(u.created_at)} · Terakhir aktif ${fmtDT(u.last_seen)}</div>
+    <div class="mt-1 small">${line1}</div>
+    <div class="text-muted" style="font-size:.72rem;">${line2 ? line2 + ' · ' : ''}Daftar ${fmtDT(u.created_at)} · Terakhir aktif ${fmtDT(u.last_seen)}</div>
     ${manageHTML(u, 'u-' + u.id)}
   </div>`;
 }
+let adminTab = 'pay';
+const ADM_FILTERS = {
+  pay:  [['all','Semua pembayaran'],['check','Perlu dicek'],['approved','Disetujui'],['rejected','Ditolak / dicabut']],
+  user: [['all','Semua pengguna'],['premium','Premium aktif'],['free','Paket gratis'],['admin','Admin']]
+};
+function setAdminTab(t){
+  adminTab = t;
+  document.getElementById('admTabPay').classList.toggle('active', t === 'pay');
+  document.getElementById('admTabUser').classList.toggle('active', t === 'user');
+  document.getElementById('admFilter').innerHTML = ADM_FILTERS[t].map(o => `<option value="${o[0]}">${o[1]}</option>`).join('');
+  renderAdminList();
+}
 function renderAdminList(){
   const q = (document.getElementById('admSearch').value || '').trim().toLowerCase();
-  const f = document.getElementById('admFilter').value;
+  const f = document.getElementById('admFilter').value || 'all';
   const weekAgo = Date.now() - 7*86400000;
   document.getElementById('admTotal').textContent = adminUsers.length;
   document.getElementById('admPremium').textContent = adminUsers.filter(rowPremium).length;
   document.getElementById('admActive').textContent = adminUsers.filter(p => p.last_seen && Date.parse(p.last_seen) > weekAgo).length;
-  document.getElementById('admPending').textContent = adminPays.filter(needsCheck).length;
+  const nCheck = adminPays.filter(needsCheck).length;
+  const badge = document.getElementById('admPending');
+  badge.textContent = nCheck; badge.style.display = nCheck ? 'inline-block' : 'none';
 
   const hit = o => !q || (o.full_name || '').toLowerCase().includes(q) || (o.email || '').toLowerCase().includes(q);
-  const paid = new Set(adminPays.map(p => p.user_id));
   let items = [];
-  adminPays.filter(hit).forEach(p => {
-    if(f === 'all' || (f === 'check' && needsCheck(p)) || (f === 'approved' && p.status === 'approved') || (f === 'rejected' && p.status === 'rejected'))
-      items.push({ rank: needsCheck(p) ? 0 : 1, ts: Date.parse(p.created_at) || 0, html: payCardHTML(p) });
-  });
-  if(f === 'all' || f === 'free'){
-    adminUsers.filter(u => !paid.has(u.id) && hit(u)).forEach(u =>
-      items.push({ rank: 2, ts: Date.parse(u.created_at || 0) || 0, html: userCardHTML(u) }));
+  if(adminTab === 'pay'){
+    items = adminPays.filter(hit)
+      .filter(p => f === 'all' || (f === 'check' && needsCheck(p)) || (f === 'approved' && p.status === 'approved') || (f === 'rejected' && p.status === 'rejected'))
+      .map(p => ({ rank: needsCheck(p) ? 0 : 1, ts: Date.parse(p.created_at) || 0, html: payCardHTML(p) }));
+  } else {
+    items = adminUsers.filter(hit)
+      .filter(u => f === 'all' || (f === 'premium' && rowPremium(u)) || (f === 'free' && !rowPremium(u) && u.role !== 'admin') || (f === 'admin' && u.role === 'admin'))
+      .map(u => ({ rank: rowPremium(u) ? 0 : 1, ts: u.premium_until ? Date.parse(u.premium_until) : (Date.parse(u.created_at || 0) || 0), html: userCardHTML(u) }));
   }
   items.sort((a, b) => (a.rank - b.rank) || (b.ts - a.ts));
   document.getElementById('admList').innerHTML = items.length ? items.map(i => i.html).join('') : '<p class="text-muted small">Tidak ada data di filter ini.</p>';
@@ -4502,6 +4530,7 @@ window.addEventListener('online', updateConnStatus);
 window.addEventListener('offline', updateConnStatus);
 updateConnStatus();
 
+setAdminTab('pay');
 updateOnbUI();
 initSplashAndOnboarding();
 refreshNotifDot();
